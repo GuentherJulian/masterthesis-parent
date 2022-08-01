@@ -6,27 +6,7 @@
     <version>dev-SNAPSHOT</version>
   </parent>
   <artifactId>parsing</artifactId>
-
-
-  <properties>
-    <!--<antlr4.version>4.10.1</antlr4.version> -->
-    <antlr4.version>4.7</antlr4.version>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4</artifactId>
-      <version>${antlr4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <version>${antlr4.version}</version>
-    </dependency>
-  </dependencies>
+  <version>0.0.1-SNAPSHOT</version>
 
   <build>
     <plugins>
