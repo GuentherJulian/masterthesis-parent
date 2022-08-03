@@ -70,4 +70,16 @@ public class CFreemarkerTemplateGrammarParserTest extends AbstractParserTest {
 			templateParser.showTree(tree);
 		}
 	}
+
+	@Test
+	void cFreeMarkerComplexTemplateTest() throws Exception {
+		Path inputFile = testResourcesPath.resolve("templates/c_freemarker/ComplexTemplate.c");
+
+		TemplateParser<CFreemarkerTemplateParser> templateParser = getTemplateParser("compilationUnit", inputFile,
+				grammar);
+		List<ParserRuleContext> trees = templateParser.parseAmbiguties(PredictionMode.LL);
+		for (ParserRuleContext tree : trees) {
+			templateParser.showTree(tree);
+		}
+	}
 }

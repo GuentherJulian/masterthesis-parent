@@ -1,8 +1,6 @@
 <#if anything>
 class A {
-	<#list field as fields>
-	${field}
-	</#list>
+	private int i;
 }
 <#else>
 class B {
