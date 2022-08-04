@@ -3,6 +3,7 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.matching;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,14 +19,14 @@ public class ParseTreeMatcher {
 
 	private ParseTree compilationUnitParseTree;
 	private ParseTree aimPatternTemplateParseTree;
-	private Map<String, List<String>> placeholderSubstitutions;
+	private Map<String, Set<String>> placeholderSubstitutions;
 
 	public ParseTreeMatcher(ParseTree compilationUnitParseTree, ParseTree aimPatternTemplateParseTree) {
 		this.compilationUnitParseTree = compilationUnitParseTree;
 		this.aimPatternTemplateParseTree = aimPatternTemplateParseTree;
 	}
 
-	public TreeMatch match(Map<String, List<String>> placeholderSubstitutions) {
+	public TreeMatch match(Map<String, Set<String>> placeholderSubstitutions) {
 		// TODO implement tree matching
 		long startTime = System.nanoTime();
 

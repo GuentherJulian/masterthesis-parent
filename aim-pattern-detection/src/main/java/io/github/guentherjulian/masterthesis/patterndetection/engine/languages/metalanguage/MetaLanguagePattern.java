@@ -17,4 +17,6 @@ public interface MetaLanguagePattern {
 	Pattern getMetaLangPatternList();
 
 	Pattern getMetaLangPatternListClose();
+
+	String getMetaLangFileExtension();
 }

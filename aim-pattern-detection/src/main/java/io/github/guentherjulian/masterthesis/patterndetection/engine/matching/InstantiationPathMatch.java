@@ -1,13 +1,13 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.matching;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class InstantiationPathMatch {
 
 	private boolean isMatch;
-	private Map<String, List<String>> placeholderSubstitutions;
+	private Map<String, Set<String>> placeholderSubstitutions;
 
 	public InstantiationPathMatch() {
 		this.isMatch = false;
@@ -22,11 +22,11 @@ public class InstantiationPathMatch {
 		this.isMatch = isMatch;
 	}
 
-	public Map<String, List<String>> getPlaceholderSubstitutions() {
+	public Map<String, Set<String>> getPlaceholderSubstitutions() {
 		return placeholderSubstitutions;
 	}
 
-	public void setPlaceholderSubstitutions(Map<String, List<String>> placeholderSubstitutions) {
+	public void setPlaceholderSubstitutions(Map<String, Set<String>> placeholderSubstitutions) {
 		this.placeholderSubstitutions = placeholderSubstitutions;
 	}
 }

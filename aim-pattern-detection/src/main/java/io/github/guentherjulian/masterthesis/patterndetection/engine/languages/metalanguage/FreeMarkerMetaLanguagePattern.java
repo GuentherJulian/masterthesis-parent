@@ -18,6 +18,8 @@ public class FreeMarkerMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	private static final String META_LANG_LIST_CLOSE = "</#list>";
 
+	private static final String META_LANG_FILE_EXTENSION = "ftl";
+
 	@Override
 	public Pattern getMetaLangPatternIf() {
 		return Pattern.compile(META_LANG_IF);
@@ -51,5 +53,10 @@ public class FreeMarkerMetaLanguagePattern extends AbstractMetaLanguagePattern {
 	@Override
 	public Pattern getMetaLangPatternPlaceholder() {
 		return Pattern.compile(META_LANG_PLACEHOLDER);
+	}
+
+	@Override
+	public String getMetaLangFileExtension() {
+		return this.META_LANG_FILE_EXTENSION;
 	}
 }

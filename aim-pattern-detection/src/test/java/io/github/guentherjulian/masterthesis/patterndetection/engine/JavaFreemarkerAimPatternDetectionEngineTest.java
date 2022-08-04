@@ -19,6 +19,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.m
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.JavaProperties;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
 
 public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
 
@@ -26,6 +28,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 	private MetaLanguagePattern metaLanguagePattern = new FreeMarkerMetaLanguagePattern();
 	private MetaLanguageLexerRules metaLanguageLexerRules = new FreeMarkerLexerRuleNames();
 	private ObjectLanguageProperties objectLanguageProperties = new JavaProperties(this.metaLangPrefix);
+	private PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
 
 	@BeforeAll
 	public static void setupTests() throws URISyntaxException {
@@ -49,7 +52,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
+				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
@@ -69,7 +72,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
+				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
@@ -91,7 +94,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
+				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
@@ -113,7 +116,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
+				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
@@ -136,7 +139,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
+				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
