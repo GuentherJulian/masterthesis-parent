@@ -7,4 +7,8 @@ public class ParseTree {
 	public ParseTree(ParseTreePathList parseTreePathList) {
 		this.parseTreePathList = parseTreePathList;
 	}
+
+	public ParseTreePathList getParseTreePathList() {
+		return parseTreePathList;
+	}
 }

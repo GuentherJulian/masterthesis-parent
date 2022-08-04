@@ -18,6 +18,7 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.m
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.JavaProperties;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 
 public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
 
@@ -50,7 +51,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
 
-		AimPatternDetectionResult aimPatternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
 
 	@Test
@@ -70,7 +71,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
 
-		AimPatternDetectionResult aimPatternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
 
 	@Test
@@ -92,7 +93,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
 
-		AimPatternDetectionResult aimPatternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
 
 	@Test
@@ -114,7 +115,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
 
-		AimPatternDetectionResult aimPatternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
 
 	@Test
@@ -137,6 +138,6 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties);
 
-		AimPatternDetectionResult aimPatternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
 }

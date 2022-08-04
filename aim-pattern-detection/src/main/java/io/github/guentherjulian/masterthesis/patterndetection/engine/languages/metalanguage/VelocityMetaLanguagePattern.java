@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
+	private static final String META_LANG_PLACEHOLDER = "\\$\\{(.+)\\}";
+
 	private static final String META_LANG_IF = "#if[ \\t]*[(](.+)[)]";
 
 	private static final String META_LANG_ELSE = "#else";
@@ -44,5 +46,10 @@ public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
 	@Override
 	public Pattern getMetaLangPatternListClose() {
 		return Pattern.compile(META_LANG_LIST_CLOSE);
+	}
+
+	@Override
+	public Pattern getMetaLangPatternPlaceholder() {
+		return Pattern.compile(META_LANG_PLACEHOLDER);
 	}
 }

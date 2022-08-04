@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -20,6 +21,8 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.github.guentherjulian.masterthesis.antlr4.parser.TemplateParser;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
@@ -27,10 +30,16 @@ import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatt
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.InstantiationPathMatch;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.InstantiationPathMatcher;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.ParseTreeMatcher;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTree;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreeTransformer;
 
 public class AimPatternDetectionEngine {
+
+	private static final Logger LOGGER = LogManager.getLogger(AimPatternDetectionEngine.class);
 
 	private List<AimPattern> aimpattern;
 	private List<Path> compilationUnits;
@@ -57,16 +66,14 @@ public class AimPatternDetectionEngine {
 		this.objectLanguageProperties = objectLanguageProperties;
 	}
 
-	public AimPatternDetectionResult detect() throws Exception {
+	public List<TreeMatch> detect() throws Exception {
 		return detect("compilationUnit");
 	}
 
-	public AimPatternDetectionResult detect(String startRuleName) throws Exception {
+	public List<TreeMatch> detect(String startRuleName) throws Exception {
 
 		// Each path only has one parse tree
 		Map<Path, ParseTree> compilationUnitParseTrees = new HashMap<Path, ParseTree>();
-		// Each path has multiple parse trees
-		Map<AimPatternTemplate, List<ParseTree>> aimPatternParseTrees = new HashMap<AimPatternTemplate, List<ParseTree>>();
 
 		Map<String, List<String>> listPatterns = null;
 		ParseTreeTransformer parseTreeTransformer = null;
@@ -75,14 +82,17 @@ public class AimPatternDetectionEngine {
 
 		TemplateParser<? extends Parser> templateParser;
 
+		LOGGER.info("Parsing compilation units...");
+		long startTime = System.nanoTime();
 		for (Path compilationUnit : this.compilationUnits) {
+
 			Parser parser = createParser(compilationUnit);
 			templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
 					grammarInputStream);
 
 			List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
 			ParserRuleContext parseTree = parseTrees.get(0);
-			templateParser.showTree(parseTree);
+			// templateParser.showTree(parseTree);
 
 			if (listPatterns == null) {
 				listPatterns = templateParser.getListPatterns();
@@ -93,32 +103,78 @@ public class AimPatternDetectionEngine {
 						templateParser.getListPatterns(), this.metaLanguagePattern, this.metaLanguageLexerRules,
 						this.objectLanguageProperties);
 			}
+
 			compilationUnitParseTrees.put(compilationUnit, parseTreeTransformer.transform(parseTree));
 		}
+		long endTime = System.nanoTime();
+		LOGGER.info("Finished parsing compilation units (took {} ns, {} ms)", (endTime - startTime),
+				((endTime - startTime) / 1e6));
 
 		// TODO Implement iteration over all aim pattern
+		List<TreeMatch> treeMatches = new ArrayList<>();
 		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.get(0).getAimPatternTemplates()) {
-			Parser parser = createParser(aimPatternTemplate.getTemplatePath());
-			templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
-					grammarInputStream);
 
-			List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
-			List<ParseTree> transformedParseTrees = new ArrayList<>();
-			for (ParserRuleContext parseTree : parseTrees) {
-				transformedParseTrees.add(parseTreeTransformer.transform(parseTree));
+			LOGGER.info("Process AIM pattern template {}", aimPatternTemplate.getTemplatePath());
+			// match each template with all compilation units
+			for (Entry<Path, ParseTree> entry : compilationUnitParseTrees.entrySet()) {
+				Path compilationUnitPath = entry.getKey();
+				ParseTree compilationUnitParseTree = entry.getValue();
+
+				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
+						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
+						this.metaLanguagePattern.getMetaLangPatternPlaceholder().pattern());
+				// only try to match if instantiation path matches
+				// TODO remove setMatch(true)
+				instantiationPathMatch.setMatch(true);
+				if (instantiationPathMatch.isMatch()) {
+					LOGGER.info("Instantiation path matches with {}", compilationUnitPath);
+					// TODO matching of instantiation path
+					Map<String, List<String>> placeholderSubstitutions = instantiationPathMatch
+							.getPlaceholderSubstitutions();
+
+					LOGGER.info("Parse template...");
+					startTime = System.nanoTime();
+
+					// TODO only parse template once, not for every compilation unit
+					Parser parser = createParser(aimPatternTemplate.getTemplatePath());
+					templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
+							grammarInputStream);
+
+					List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
+					List<ParseTree> transformedParseTrees = new ArrayList<>();
+					for (ParserRuleContext parseTree : parseTrees) {
+						transformedParseTrees.add(parseTreeTransformer.transform(parseTree));
+					}
+					endTime = System.nanoTime();
+					LOGGER.info("Finished parsing template (took {} ns, {} ms)", (endTime - startTime),
+							((endTime - startTime) / 1e6));
+
+					LOGGER.info("Match parse trees of {} and {}...", aimPatternTemplate.getTemplatePath().getFileName(),
+							compilationUnitPath.getFileName());
+					TreeMatch treeMatch = this.match(compilationUnitParseTree, transformedParseTrees,
+							placeholderSubstitutions);
+					if (treeMatch.isMatch()) {
+						treeMatches.add(treeMatch);
+					}
+				}
 			}
-			aimPatternParseTrees.put(aimPatternTemplate, transformedParseTrees);
 		}
 
-		return this.match(compilationUnitParseTrees, aimPatternParseTrees);
+		return treeMatches;
 	}
 
-	private AimPatternDetectionResult match(Map<Path, ParseTree> compilationUnitParseTrees,
-			Map<AimPatternTemplate, List<ParseTree>> aimPatternParseTrees) {
+	private TreeMatch match(ParseTree compilationUnitParseTree, List<ParseTree> aimPatternParseTrees,
+			Map<String, List<String>> placeholderSubstitutions) {
 
-		// Matching logic
+		TreeMatch treeMatch = null;
+		for (ParseTree aimPatternParseTree : aimPatternParseTrees) {
+			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree);
+			treeMatch = parseTreeMatcher.match(placeholderSubstitutions);
+			if (treeMatch.isMatch())
+				break;
+		}
 
-		return null;
+		return treeMatch;
 	}
 
 	public PredictionMode getPredictionMode() {
@@ -131,6 +187,7 @@ public class AimPatternDetectionEngine {
 
 	private Parser createParser(Path inputPath) throws IOException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
 		InputStream inputStream = new FileInputStream(inputPath.toFile());
 		CharStream charStream = CharStreams.fromStream(inputStream);
 
@@ -138,7 +195,6 @@ public class AimPatternDetectionEngine {
 		Lexer lexer = lexerConstructor.newInstance(charStream);
 
 		TokenStream tokenStream = new CommonTokenStream(lexer);
-
 		Constructor<? extends Parser> parserConstructor = this.parserClass.getConstructor(TokenStream.class);
 		Parser parser = parserConstructor.newInstance(tokenStream);
 

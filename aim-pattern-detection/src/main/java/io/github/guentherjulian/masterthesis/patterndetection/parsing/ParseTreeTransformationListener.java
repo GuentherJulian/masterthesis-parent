@@ -154,8 +154,8 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			this.parseTree = new ParseTree(this.parseTreePaths);
 		}
 
-		LOGGER.info(this.parseTreePaths.toString());
-		printParseTreePathList(this.parseTreePaths);
+		// LOGGER.info(this.parseTreePaths.toString());
+		// printParseTreePathList(this.parseTreePaths);
 
 		return this.parseTree;
 	}

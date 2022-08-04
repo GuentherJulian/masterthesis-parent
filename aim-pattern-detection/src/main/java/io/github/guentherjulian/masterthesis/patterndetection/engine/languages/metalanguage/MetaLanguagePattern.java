@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 public interface MetaLanguagePattern {
 
+	Pattern getMetaLangPatternPlaceholder();
+
 	Pattern getMetaLangPatternIf();
 
 	Pattern getMetaLangPatternElse();
