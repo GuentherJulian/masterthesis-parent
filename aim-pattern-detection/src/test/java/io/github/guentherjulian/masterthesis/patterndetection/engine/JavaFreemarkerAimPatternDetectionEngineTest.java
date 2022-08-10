@@ -143,4 +143,24 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 	}
+
+	@Test
+	void javaFreeMarkerComplexFileTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates
+				.add(new AimPatternTemplate(templatesPath.resolve("ComplexTemplate.java"), "ComplexTemplate.java"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("ComplexFile.java"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
+				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
+
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+	}
 }

@@ -278,6 +278,42 @@
             </configuration>
           </execution>
           
+          <execution>
+            <id>antlr4-python3-freemarker-template-parser</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${basedir}/src/main/resources/grammars/python3</sourceDirectory>
+              <includes>
+                <include>Python3FreemarkerTemplate.g4</include>
+                <include>Python3Lexer.g4</include>
+              </includes>
+              <arguments>
+                <argument>-package</argument>
+                <argument>org.antlr.parser.python3</argument>
+              </arguments>
+              <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/python3</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>antlr4-csharp-freemarker-template-parser</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${basedir}/src/main/resources/grammars/csharp</sourceDirectory>
+              <includes>
+                <include>CSharpParser.g4</include>
+                <include>CSharpLexer.g4</include>
+              </includes>
+              <arguments>
+                <argument>-package</argument>
+                <argument>org.antlr.parser.csharp</argument>
+              </arguments>
+              <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/csharp</outputDirectory>
+            </configuration>
+          </execution>
 
         </executions>
       </plugin>

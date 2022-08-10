@@ -31,6 +31,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 	private ParseTreePathList parseTreePaths;
 	private Stack<ParseTreePathList> currentCollection = new Stack<>();
 	private Stack<Boolean> toPop = new Stack<>();
+	private Stack<ParseTreePath> lastParseTreeElement = new Stack<>();
 
 	public ParseTreeTransformationListener(Vocabulary parserVocabulary, Map<String, List<String>> listPatterns,
 			MetaLanguagePattern metaLanguagePattern, MetaLanguageLexerRules metaLanguageLexerRules,
@@ -51,6 +52,8 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			this.currentCollection.push(parseTreePaths);
 			this.toPop.push(true);
 		}
+		this.lastParseTreeElement.push(new ParseTreePath(ctx.getText(), ruleName,
+				this.lastParseTreeElement.isEmpty() ? null : this.lastParseTreeElement.peek(), false));
 
 		if (this.objectLanguageProperties.getNonOrderingNodes().contains(ruleName)) {
 			ParseTreePathList parseTreePathList = new ParseTreePathList(ListType.NONORDERED, ruleName);
@@ -64,6 +67,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 
 	@Override
 	public void exitEveryRule(ParserRuleContext ctx) {
+		this.lastParseTreeElement.pop();
 		if (this.toPop.pop()) {
 			this.currentCollection.pop();
 		}
@@ -138,7 +142,8 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 		} else {
 			boolean isMetaLanguage = tokenType.toLowerCase()
 					.startsWith(this.metaLanguageLexerRules.getMetaLanguagePrefix());
-			this.currentCollection.peek().add(new ParseTreePath(node.getText(), tokenType, null, isMetaLanguage));
+			this.currentCollection.peek().add(
+					new ParseTreePath(node.getText(), tokenType, this.lastParseTreeElement.peek(), isMetaLanguage));
 		}
 
 	}
