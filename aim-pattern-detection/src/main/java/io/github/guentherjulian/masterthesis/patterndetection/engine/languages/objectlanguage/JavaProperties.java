@@ -7,7 +7,8 @@ import java.util.Set;
 public class JavaProperties extends AbstractObjectLanguageProperties {
 
 	private static final Set<String> nonOrderingNodes = new HashSet<>(Arrays.asList("ImportDeclaration",
-			"InterfaceMemberDeclaration", "ClassMemberDeclaration", "TypeDeclaration"));
+			"InterfaceMemberDeclaration", "ClassMemberDeclaration", "TypeDeclaration", "ClassBodyDeclaration"));
+	// TODO check if ClassBodyDeclaration is a correct member
 
 	public JavaProperties(String placeholderPrefix) {
 		super(placeholderPrefix);

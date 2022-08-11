@@ -12,14 +12,17 @@ public class ParseTreePath implements ParseTreeElement {
 	private ParseTreePath parent;
 	private boolean isMetaLanguageElement;
 	private boolean containsMetaLanguage;
+	private boolean isNonOrderingNode;
 
-	public ParseTreePath(String text, String name, ParseTreePath parent, boolean isMetaLanguage) {
+	public ParseTreePath(String text, String name, ParseTreePath parent, boolean isMetaLanguage,
+			boolean isNonOrderingNode) {
 		this.text = text;
 		this.name = name;
 		this.parent = parent;
 		this.isMetaLanguageElement = isMetaLanguage;
 		this.containsMetaLanguage = this.isMetaLanguageElement
 				|| (this.parent != null ? this.parent.containsMetaLanguage() : false);
+		this.isNonOrderingNode = isNonOrderingNode;
 	}
 
 	public String getText() {
@@ -84,5 +87,13 @@ public class ParseTreePath implements ParseTreeElement {
 	public Object getPureObjLangPath() {
 		return getPathElements().stream().filter(e -> !e.isMetaLanguageElement).map(ParseTreePath::getName)
 				.collect(Collectors.joining("/"));
+	}
+
+	public boolean isNonOrderingNode() {
+		return isNonOrderingNode;
+	}
+
+	public void setNonOrderingNode(boolean isNonOrderingNode) {
+		this.isNonOrderingNode = isNonOrderingNode;
 	}
 }

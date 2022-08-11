@@ -1,6 +1,7 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.matching;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.NoMatchException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderClashException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.utils.MathUtil;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTree;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreeElement;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreePath;
@@ -38,7 +40,7 @@ public class ParseTreeMatcher {
 	}
 
 	public TreeMatch match(Map<String, Set<String>> placeholderSubstitutions) {
-		// TODO implement tree matching
+		// TODO implement correct tree matching
 		long startTime = System.nanoTime();
 
 		this.matches = new ArrayList<>();
@@ -79,7 +81,9 @@ public class ParseTreeMatcher {
 		List<ParseTreeElement> unorderedTemplatePaths = new ArrayList<>();
 		List<ParseTreeElement> orderedTemplatePaths = new ArrayList<>();
 		for (ParseTreeElement parseTreeElement : templateParseTreePathList) {
-			if (parseTreeElement instanceof ParseTreePathList && !((ParseTreePathList) parseTreeElement).isOrdered()) {
+			if ((parseTreeElement instanceof ParseTreePathList && !((ParseTreePathList) parseTreeElement).isOrdered())
+					|| (parseTreeElement instanceof ParseTreePath
+							&& ((ParseTreePath) parseTreeElement).isNonOrderingNode())) {
 				unorderedTemplatePaths.add(parseTreeElement);
 			} else if (parseTreeElement instanceof ParseTreePath || (parseTreeElement instanceof ParseTreePathList
 					&& ((ParseTreePathList) parseTreeElement).isOrdered())) {
@@ -159,6 +163,10 @@ public class ParseTreeMatcher {
 					}
 					if (parseTreeElementTemplate instanceof ParseTreePathList
 							&& parseTreeElementCompilationUnit instanceof ParseTreePathList) {
+						LOGGER.info("matchUnorderedPaths: {}, {}, {}",
+								((ParseTreePathList) parseTreeElementTemplate).getType(),
+								((ParseTreePathList) parseTreeElementTemplate).getHint(),
+								((ParseTreePathList) parseTreeElementTemplate).isMetaLang());
 						matchPathList((ParseTreePathList) parseTreeElementTemplate,
 								(ParseTreePathList) parseTreeElementCompilationUnit);
 					}
@@ -236,8 +244,126 @@ public class ParseTreeMatcher {
 			ParseTreePathList parseTreePathListTemplate = (ParseTreePathList) templatePathElement;
 			ParseTreePathList parseTreePathListCompilationUnit = (ParseTreePathList) compilationUnitPathElement;
 
-			matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit);
+			// matchOrderedPaths(parseTreePathListTemplate,
+			// parseTreePathListCompilationUnit);
+			if (parseTreePathListTemplate.isAtomic() && parseTreePathListCompilationUnit.isAtomic()) {
+				matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit);
+			} else if (parseTreePathListTemplate.isListPattern() && parseTreePathListCompilationUnit.isListPattern()) {
+				matchListPattern(parseTreePathListTemplate, parseTreePathListCompilationUnit);
+			} else if (!parseTreePathListTemplate.isAtomic() & !parseTreePathListCompilationUnit.isAtomic()) {
+				matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit);
+			} else {
+				throw new NoMatchException("Unable to match the parse tree lists");
+			}
 		}
+		return null;
+	}
+
+	private TreeMatch matchListPattern(ParseTreePathList parseTreePathListTemplate,
+			ParseTreePathList parseTreePathListCompilationUnit) throws NoMatchException {
+
+		int numOfPlaceholders = (int) parseTreePathListTemplate.stream().filter(path -> path instanceof ParseTreePath)
+				.map(path -> (ParseTreePath) path).filter(path -> path.containsMetaLanguage()).count();
+		int maxSubstitutions = parseTreePathListCompilationUnit.size() - parseTreePathListTemplate.size()
+				+ numOfPlaceholders;
+
+		// will be small enough to cast to int
+		int[][] combinations;
+		if (maxSubstitutions == 0) {
+			// if there are PHs, than all of them will just replace one element
+			combinations = new int[1][numOfPlaceholders];
+			Arrays.fill(combinations, new int[] { 1 });
+		} else if (maxSubstitutions < numOfPlaceholders) {
+			throw new NoMatchException("App path list to short. Could not instantiate all placeholders.");
+		} else {
+			// n = maxSubstitutions, k = PHs; different buckets, same balls.
+			combinations = MathUtil.multichooseMin1(maxSubstitutions, numOfPlaceholders);
+		}
+
+		List<List<Match>> foundMatches = new ArrayList<>();
+		for (int[] combination : combinations) {
+			Map<String, String> variableSubstitutions = new HashMap<>();
+
+			try {
+				int observedPhIndex = 0;
+				int j = 0;
+				for (int i = 0; i < parseTreePathListTemplate.size(); i++) {
+
+					boolean isPh = false;
+					ParseTreeElement tempElem = parseTreePathListTemplate.get(i);
+					String tempName;
+					if (tempElem instanceof ParseTreePath) {
+						isPh = ((ParseTreePath) tempElem).isMetaLanguageElement();
+						tempName = ((ParseTreePath) tempElem).getName();
+					} else {
+						// let's not support this for now
+						throw new IllegalStateException("AstPathCollection not supported here so far!");
+					}
+
+					ParseTreeElement appElem;
+					String appMatch = "";
+					boolean matches = false;
+					int consumedAppElems = 0;
+					do {
+						if (j >= parseTreePathListCompilationUnit.size()) {
+							// template could not be found entirely in app!
+							String debugVal = tempElem instanceof ParseTreePath ? ((ParseTreePath) tempElem).getPath()
+									: ((ParseTreePathList) tempElem).getHint();
+							throw new NoMatchException("Could not find path " + debugVal);
+						}
+						appElem = parseTreePathListCompilationUnit.get(j);
+
+						if (appElem instanceof ParseTreePath) {
+							appMatch += ((ParseTreePath) appElem).getText();
+							consumedAppElems++;
+						} else {
+							// let's not support this for now
+							throw new IllegalStateException("AstPathCollection not supported here so far!");
+						}
+
+						if (isPh) {
+							if (combination[observedPhIndex] > consumedAppElems) {
+								j++;
+								continue;
+							} else {
+								System.out.println("Consume (t->a): " + tempElem + " --> " + appMatch);
+								// variableSubstitutions
+								// .putAll(matchPlaceholder(((ParseTreePath) tempElem).getText(), appMatch));
+								j++;
+								observedPhIndex++;
+								break;
+							}
+						} else {
+							matches = tempName.equals(((ParseTreePath) appElem).getName())
+									&& ((ParseTreePath) tempElem).getText().equals(((ParseTreePath) appElem).getText());
+						}
+
+						if (!matches) {
+							if (isPh) {
+								j++;
+							} else {
+								throw new NoMatchException(
+										"Could not match template path " + ((ParseTreePath) tempElem).getPath());
+							}
+						} else {
+							System.out.println("Consume (t->a): " + tempElem + " --> " + appMatch);
+							j++;
+						}
+					} while (!matches);
+				}
+
+				// foundMatches.add(Arrays.asList(new AtomarMatch(parseTreePathListTemplate,
+				// parseTreePathListCompilationUnit, variableSubstitutions)));
+			} catch (NoMatchException e) {
+				// ignore, try next
+			}
+		}
+
+		if (foundMatches.isEmpty()) {
+			throw new NoMatchException("Could not match template " + parseTreePathListTemplate + " to "
+					+ parseTreePathListCompilationUnit);
+		}
+
 		return null;
 	}
 

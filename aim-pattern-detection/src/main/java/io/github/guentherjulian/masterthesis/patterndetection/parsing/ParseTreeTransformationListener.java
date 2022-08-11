@@ -53,7 +53,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			this.toPop.push(true);
 		}
 		this.lastParseTreeElement.push(new ParseTreePath(ctx.getText(), ruleName,
-				this.lastParseTreeElement.isEmpty() ? null : this.lastParseTreeElement.peek(), false));
+				this.lastParseTreeElement.isEmpty() ? null : this.lastParseTreeElement.peek(), false, false));
 
 		if (this.objectLanguageProperties.getNonOrderingNodes().contains(ruleName)) {
 			ParseTreePathList parseTreePathList = new ParseTreePathList(ListType.NONORDERED, ruleName);
@@ -142,8 +142,11 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 		} else {
 			boolean isMetaLanguage = tokenType.toLowerCase()
 					.startsWith(this.metaLanguageLexerRules.getMetaLanguagePrefix());
-			this.currentCollection.peek().add(
-					new ParseTreePath(node.getText(), tokenType, this.lastParseTreeElement.peek(), isMetaLanguage));
+
+			boolean isNonOrderingNode = this.objectLanguageProperties.getNonOrderingNodes()
+					.contains(tokenType + "Context");
+			this.currentCollection.peek().add(new ParseTreePath(node.getText(), tokenType,
+					this.lastParseTreeElement.peek(), isMetaLanguage, isNonOrderingNode));
 		}
 
 	}
