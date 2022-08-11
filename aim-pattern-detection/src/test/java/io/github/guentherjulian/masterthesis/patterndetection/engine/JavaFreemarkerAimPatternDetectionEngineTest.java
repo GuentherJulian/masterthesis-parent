@@ -1,5 +1,9 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -12,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderClashException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerLexerRuleNames;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerMetaLanguagePattern;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
@@ -55,6 +60,13 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${c}"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${c}").contains("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${e}"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${e}").contains("e"));
 	}
 
 	@Test
@@ -97,6 +109,18 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+
+		assertEquals(treeMatches.size(), 2);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${name}"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${name}").contains("A"));
+
+		assertFalse(treeMatches.get(1).isMatch());
+		assertTrue(treeMatches.get(1).getException() instanceof PlaceholderClashException);
+
+		PlaceholderClashException exception = (PlaceholderClashException) treeMatches.get(1).getException();
+		assertTrue(exception.getPlaceholder().equals("${name}"));
+		assertTrue(exception.getClashSubstitution().equals("B"));
 	}
 
 	@Test

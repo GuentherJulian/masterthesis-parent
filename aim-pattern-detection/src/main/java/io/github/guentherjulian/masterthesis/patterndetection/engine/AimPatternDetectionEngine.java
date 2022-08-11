@@ -147,6 +147,7 @@ public class AimPatternDetectionEngine {
 					List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
 					List<ParseTree> transformedParseTrees = new ArrayList<>();
 					for (ParserRuleContext parseTree : parseTrees) {
+						// templateParser.showTree(parseTree);
 						transformedParseTrees.add(parseTreeTransformer.transform(parseTree));
 					}
 					endTime = System.nanoTime();
@@ -157,9 +158,7 @@ public class AimPatternDetectionEngine {
 							compilationUnitPath.getFileName());
 					TreeMatch treeMatch = this.match(compilationUnitParseTree, transformedParseTrees,
 							placeholderSubstitutions);
-					if (treeMatch.isMatch()) {
-						treeMatches.add(treeMatch);
-					}
+					treeMatches.add(treeMatch);
 				}
 			}
 		}
@@ -172,7 +171,8 @@ public class AimPatternDetectionEngine {
 
 		TreeMatch treeMatch = null;
 		for (ParseTree aimPatternParseTree : aimPatternParseTrees) {
-			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree);
+			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree,
+					this.metaLanguageLexerRules);
 			treeMatch = parseTreeMatcher.match(placeholderSubstitutions);
 			if (treeMatch.isMatch())
 				break;
