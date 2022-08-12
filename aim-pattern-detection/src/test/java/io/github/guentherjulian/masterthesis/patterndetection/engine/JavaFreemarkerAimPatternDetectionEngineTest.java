@@ -87,6 +87,22 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertEquals(treeMatches.get(0).getPlaceholderSubstitutions().size(), 4);
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${a}"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${a}").contains("a"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${a}").contains("a.b"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${b}"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${b}").contains("b.c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${b}").contains("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${e}"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${e}").contains("e"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${e}").contains("e.f"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${f}"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${f}").contains("f.g"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${f}").contains("g"));
+
 	}
 
 	@Test
@@ -143,6 +159,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertTrue(treeMatches.get(7).isMatch());
 	}
 
 	@Test
@@ -158,7 +175,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<Path> compilationUnits = new ArrayList<>();
 		// TODO enable
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIfCorrect1.java"));
-		// compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIfCorrect2.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIfCorrect2.java"));
 		// compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIfIncorrect.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
@@ -166,6 +183,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				metaLanguagePattern, metaLanguageLexerRules, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 3);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(1).isMatch());
+		assertTrue(treeMatches.get(2).isMatch());
 	}
 
 	@Test

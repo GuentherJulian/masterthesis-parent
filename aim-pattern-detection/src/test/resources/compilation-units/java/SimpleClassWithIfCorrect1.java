@@ -1,4 +1,3 @@
 class A {
-	int i;
-	void m();
+	private int i;
 }

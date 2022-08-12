@@ -147,7 +147,7 @@ public class AimPatternDetectionEngine {
 					List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
 					List<ParseTree> transformedParseTrees = new ArrayList<>();
 					for (ParserRuleContext parseTree : parseTrees) {
-						// templateParser.showTree(parseTree);
+						templateParser.showTree(parseTree);
 						transformedParseTrees.add(parseTreeTransformer.transform(parseTree));
 					}
 					endTime = System.nanoTime();
@@ -172,7 +172,7 @@ public class AimPatternDetectionEngine {
 		TreeMatch treeMatch = null;
 		for (ParseTree aimPatternParseTree : aimPatternParseTrees) {
 			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree,
-					this.metaLanguageLexerRules);
+					this.metaLanguageLexerRules, this.metaLanguagePattern);
 			treeMatch = parseTreeMatcher.match(placeholderSubstitutions);
 			if (treeMatch.isMatch())
 				break;

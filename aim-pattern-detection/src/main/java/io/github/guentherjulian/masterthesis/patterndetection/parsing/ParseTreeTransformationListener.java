@@ -32,6 +32,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 	private Stack<ParseTreePathList> currentCollection = new Stack<>();
 	private Stack<Boolean> toPop = new Stack<>();
 	private Stack<ParseTreePath> lastParseTreeElement = new Stack<>();
+	private Stack<ParseTreePathList> lastPotentialElsePath = new Stack<>();
 
 	public ParseTreeTransformationListener(Vocabulary parserVocabulary, Map<String, List<String>> listPatterns,
 			MetaLanguagePattern metaLanguagePattern, MetaLanguageLexerRules metaLanguageLexerRules,
@@ -48,7 +49,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 		String ruleName = ctx.getClass().getSimpleName();
 
 		if (this.parseTreePaths == null) {
-			this.parseTreePaths = new ParseTreePathList(ListType.ORDERED, ruleName);
+			this.parseTreePaths = new ParseTreePathList(ListType.ORDERED, ruleName, null);
 			this.currentCollection.push(parseTreePaths);
 			this.toPop.push(true);
 		}
@@ -56,7 +57,11 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 				this.lastParseTreeElement.isEmpty() ? null : this.lastParseTreeElement.peek(), false, false));
 
 		if (this.objectLanguageProperties.getNonOrderingNodes().contains(ruleName)) {
-			ParseTreePathList parseTreePathList = new ParseTreePathList(ListType.NONORDERED, ruleName);
+			ParseTreePathList parseTreePathList = new ParseTreePathList(ListType.NONORDERED, ruleName, null);
+			if (ruleName.toLowerCase()
+					.matches(this.metaLanguageLexerRules.getMetaLanguagePrefix() + "(.+)(Opt|Star|Plus)?Context")) {
+				parseTreePathList.setIsMetaLang(true);
+			}
 			currentCollection.peek().add(parseTreePathList);
 			currentCollection.push(parseTreePathList);
 			toPop.push(true);
@@ -87,7 +92,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 		// create a new ParseTreePathList for list pattern productions
 		if (this.listPatterns.containsKey(tokenType) && this.listPatterns.get(tokenType).contains(parentParseRule)
 				&& !this.currentCollection.peek().isListPattern()) {
-			ParseTreePathList parseTreePathList = new ParseTreePathList(ListType.LIST_PATTERN, tokenType);
+			ParseTreePathList parseTreePathList = new ParseTreePathList(ListType.LIST_PATTERN, tokenType, null);
 			this.currentCollection.peek().add(parseTreePathList);
 			this.currentCollection.push(parseTreePathList);
 		} else {
@@ -101,37 +106,59 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 
 		if (tokenType.equals(this.metaLanguageLexerRules.getIfTokenLexerRuleName())) {
 			// IF case
-			ParseTreePathList optionalList = new ParseTreePathList(ListType.OPTIONAL, node.getText());
+			ParseTreePathList optionalList = new ParseTreePathList(ListType.OPTIONAL, node.getText(), null);
 			this.currentCollection.peek().add(optionalList);
 			this.currentCollection.push(optionalList);
-			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText());
+			this.lastPotentialElsePath.push(optionalList);
+			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText(), MetaLanguageElement.IF);
 			atomic.setIsMetaLang(true);
 			this.currentCollection.peek().add(atomic);
 			this.currentCollection.push(atomic);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getElseTokenLexerRuleName())) {
 			// ELSE case
 			this.currentCollection.pop();
-			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText());
+			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText(), MetaLanguageElement.ELSE);
 			atomic.setIsMetaLang(true);
 			this.currentCollection.peek().add(atomic);
 			this.currentCollection.push(atomic);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getIfElseTokenLexerRuleName())) {
 			// IF ELSE case
+			this.lastPotentialElsePath.peek().setType(ListType.ALTERNATIVE);
 			this.currentCollection.pop();
-			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText());
+			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText(),
+					MetaLanguageElement.IF_ELSE);
 			atomic.setIsMetaLang(true);
 			this.currentCollection.peek().add(atomic);
 			this.currentCollection.push(atomic);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getIfCloseTokenLexerRuleName())) {
 			// IF CLOSE case
-			this.currentCollection.pop();
-			this.currentCollection.pop();
+			// TODO enable
+			// this.currentCollection.pop();
+			// this.currentCollection.pop();
+			// TODO disable
+			ParseTreePathList p = this.currentCollection.pop();
+			LOGGER.info("Last was {}", p.getType());
+			p = this.currentCollection.pop();
+			LOGGER.info("Last was {}", p.getType());
+
+			p = (ParseTreePathList) this.currentCollection.get(0).get(0);
+			LOGGER.info("{}", p.getType());
+			for (ParseTreeElement parseTreeElement : p) {
+				if (parseTreeElement instanceof ParseTreePathList) {
+					LOGGER.info("{}", ((ParseTreePathList) parseTreeElement).getType());
+
+					ParseTreePathList l = (ParseTreePathList) ((ParseTreePathList) parseTreeElement).get(0);
+					LOGGER.info("l {}", l.getType());
+				}
+			}
+			this.lastPotentialElsePath.pop();
+			// TODO end of the other two TODOs
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getListTokenLexerRuleName())) {
 			// LIST case
-			ParseTreePathList optional = new ParseTreePathList(ListType.OPTIONAL, node.getText());
+			ParseTreePathList optional = new ParseTreePathList(ListType.OPTIONAL, node.getText(), null);
 			this.currentCollection.peek().add(optional);
 			this.currentCollection.push(optional);
-			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText());
+			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText(), null);
 			this.currentCollection.peek().add(atomic);
 			this.currentCollection.push(atomic);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getListCloseTokenLexerRuleName())) {

@@ -7,10 +7,12 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 	public ListType type;
 	public String hint;
 	public Boolean isMetaLang;
+	public MetaLanguageElement metaLanguageElement;
 
-	public ParseTreePathList(ListType type, String hint) {
+	public ParseTreePathList(ListType type, String hint, MetaLanguageElement metaLanguageElement) {
 		this.hint = hint;
 		this.type = type;
+		this.metaLanguageElement = metaLanguageElement;
 	}
 
 	public void setType(ListType type) {
@@ -43,5 +45,13 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 
 	public void setIsMetaLang(boolean isMetaLang) {
 		this.isMetaLang = isMetaLang;
+	}
+
+	public MetaLanguageElement getMetaLanguageElement() {
+		return metaLanguageElement;
+	}
+
+	public void setMetaLanguageElement(MetaLanguageElement metaLanguageElement) {
+		this.metaLanguageElement = metaLanguageElement;
 	}
 }
