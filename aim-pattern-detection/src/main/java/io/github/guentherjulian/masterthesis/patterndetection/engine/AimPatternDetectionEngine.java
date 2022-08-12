@@ -147,7 +147,7 @@ public class AimPatternDetectionEngine {
 					List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
 					List<ParseTree> transformedParseTrees = new ArrayList<>();
 					for (ParserRuleContext parseTree : parseTrees) {
-						templateParser.showTree(parseTree);
+						// templateParser.showTree(parseTree);
 						transformedParseTrees.add(parseTreeTransformer.transform(parseTree));
 					}
 					endTime = System.nanoTime();
