@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.NoMatchException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderClashException;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.utils.MathUtil;
@@ -31,24 +32,21 @@ public class ParseTreeMatcher {
 
 	private static final Logger LOGGER = LogManager.getLogger(ParseTreeMatcher.class);
 
-	private TreeMatch match;
+	private TreeMatch treeMatch;
 	private ParseTree aimPatternTemplateParseTree;
 	private ParseTree compilationUnitParseTree;
 	private Map<String, Set<String>> placeholderSubstitutions;
 	private List<Match> matches;
-	private MetaLanguageLexerRules metaLanguageLexerRules;
-	private MetaLanguagePattern metaLanguagePattern;
+	private MetaLanguageConfiguration metaLanguageConfiguration;
 
 	public ParseTreeMatcher(ParseTree compilationUnitParseTree, ParseTree aimPatternTemplateParseTree,
-			MetaLanguageLexerRules metaLanguageLexerRules, MetaLanguagePattern metaLanguagePattern) {
+			MetaLanguageConfiguration metaLanguageConfiguration) {
 		this.compilationUnitParseTree = compilationUnitParseTree;
 		this.aimPatternTemplateParseTree = aimPatternTemplateParseTree;
-		this.metaLanguageLexerRules = metaLanguageLexerRules;
-		this.metaLanguagePattern = metaLanguagePattern;
+		this.metaLanguageConfiguration = metaLanguageConfiguration;
 	}
 
 	public TreeMatch match(Map<String, Set<String>> placeholderSubstitutions) {
-		// TODO implement correct tree matching
 		long startTime = System.nanoTime();
 
 		this.matches = new ArrayList<>();
@@ -58,12 +56,12 @@ public class ParseTreeMatcher {
 			this.placeholderSubstitutions = new HashMap<>();
 		}
 
-		this.match = new TreeMatch();
-		this.match.setTemplateParseTree(this.aimPatternTemplateParseTree);
-		this.match.setCompilationUnitParseTree(this.compilationUnitParseTree);
-		this.match.setPlaceholderSubstitutions(this.placeholderSubstitutions);
-		this.match.setMatches(this.matches);
-		this.match.setMatch(true);
+		this.treeMatch = new TreeMatch();
+		this.treeMatch.setTemplateParseTree(this.aimPatternTemplateParseTree);
+		this.treeMatch.setCompilationUnitParseTree(this.compilationUnitParseTree);
+		this.treeMatch.setPlaceholderSubstitutions(this.placeholderSubstitutions);
+		this.treeMatch.setMatches(this.matches);
+		this.treeMatch.setMatch(true);
 
 		try {
 			matchPathList(this.aimPatternTemplateParseTree.getParseTreePathList(),
@@ -72,15 +70,15 @@ public class ParseTreeMatcher {
 			// e.printStackTrace();
 			LOGGER.error(e.getMessage());
 		} catch (NoMatchException e) {
-			this.match.setMatch(false);
-			this.match.setException(e);
+			this.treeMatch.setMatch(false);
+			this.treeMatch.setException(e);
 		}
 
 		long endTime = System.nanoTime();
 		LOGGER.info("Finished matching parse trees (took {} ns, {} ms)", (endTime - startTime),
 				((endTime - startTime) / 1e6));
 
-		return this.match;
+		return this.treeMatch;
 	}
 
 	private boolean matchPathList(ParseTreePathList templateParseTreePathList,
@@ -119,11 +117,11 @@ public class ParseTreeMatcher {
 		} catch (RuntimeException e) {
 			// e.printStackTrace();
 			LOGGER.error(e.getMessage());
-		} catch (NoMatchException e) {
-			// e.printStackTrace();
-			LOGGER.error(e.getMessage());
-			return false;
 		}
+		/*
+		 * catch (NoMatchException e) { // e.printStackTrace();
+		 * LOGGER.error(e.getMessage()); return false; }
+		 */
 
 		return true;
 	}
@@ -170,24 +168,23 @@ public class ParseTreeMatcher {
 		while (iterator.hasNext()) {
 			ParseTreeElement parseTreeElementTemplate = iterator.next();
 
+			List<Boolean> matches = new ArrayList<>();
 			for (ParseTreeElement parseTreeElementCompilationUnit : unorderedCompilationUnitPaths) {
+				boolean match = false;
 				try {
+
 					if (parseTreeElementTemplate instanceof ParseTreePath
 							&& parseTreeElementCompilationUnit instanceof ParseTreePath) {
-						matchPath(parseTreeElementTemplate, parseTreeElementCompilationUnit);
+						match = matchPath(parseTreeElementTemplate, parseTreeElementCompilationUnit);
 					}
 					if (parseTreeElementTemplate instanceof ParseTreePathList
 							&& parseTreeElementCompilationUnit instanceof ParseTreePathList) {
-						LOGGER.info("matchUnorderedPaths: {}, {}, {}",
-								((ParseTreePathList) parseTreeElementTemplate).getType(),
-								((ParseTreePathList) parseTreeElementTemplate).getHint(),
-								((ParseTreePathList) parseTreeElementTemplate).isMetaLang());
 						// TODO evaluate return value
 						if (((ParseTreePathList) parseTreeElementTemplate).isMetaLang()) {
-							matchMetaLanguagePathList((ParseTreePathList) parseTreeElementTemplate,
+							match = matchMetaLanguagePathList((ParseTreePathList) parseTreeElementTemplate,
 									(ParseTreePathList) parseTreeElementCompilationUnit);
 						} else {
-							matchPathList((ParseTreePathList) parseTreeElementTemplate,
+							match = matchPathList((ParseTreePathList) parseTreeElementTemplate,
 									(ParseTreePathList) parseTreeElementCompilationUnit);
 						}
 					}
@@ -197,12 +194,30 @@ public class ParseTreeMatcher {
 				} catch (NoMatchException e) {
 					// e.printStackTrace();
 					LOGGER.error(e.getMessage());
-					return false;
 				}
 
-				// TODO evaluate match
+				if (match) {
+					matches.add(match);
+					break;
+				}
+			}
+
+			if (!matches.isEmpty()) {
+				iterator.remove();
 			}
 		}
+
+		if (!unorderedTemplatePaths.isEmpty()) {
+			throw new NoMatchException("The following template paths could not be found: \n" + unorderedTemplatePaths);
+		}
+
+		/*
+		 * List<List<Match>> allDistinctMatches = getAllDistinctMatches(matches,
+		 * matchTargets); if (allDistinctMatches.isEmpty()) { throw new
+		 * NoMatchException("The following template paths could not be found: \n" +
+		 * unorderedTempPaths .stream().map(e -> printPaths(e, AstPath::getText,
+		 * false)).collect(Collectors.joining("\n"))); }
+		 */
 
 		return true;
 	}
@@ -210,37 +225,29 @@ public class ParseTreeMatcher {
 	private boolean matchMetaLanguagePathList(ParseTreePathList parseTreePathListTemplate,
 			ParseTreePathList parseTreePathListCompilationUnit) throws NoMatchException {
 
-		ListType type = parseTreePathListTemplate.getType();
-		LOGGER.info("{}", type);
-		for (ParseTreeElement parseTreeElement : parseTreePathListTemplate) {
-			if (parseTreeElement instanceof ParseTreePath) {
-				LOGGER.info("ParseTreePath");
-			} else {
-				ParseTreePathList elem = (ParseTreePathList) parseTreeElement;
-				LOGGER.info("ParseTreePathList {}", elem.getType());
-				ParseTreeElement firstChild = elem.get(0);
-				if (firstChild instanceof ParseTreePath) {
-					LOGGER.info("First Child ParseTreePath {}", ((ParseTreePath) firstChild).getText());
-				} else {
-					LOGGER.info("First Child ParseTreePathList {}", ((ParseTreePathList) firstChild).getType());
-				}
-			}
-		}
+		/*
+		 * ListType type = parseTreePathListTemplate.getType(); LOGGER.info("{}", type);
+		 * for (ParseTreeElement parseTreeElement : parseTreePathListTemplate) { if
+		 * (parseTreeElement instanceof ParseTreePath) { LOGGER.info("ParseTreePath"); }
+		 * else { ParseTreePathList elem = (ParseTreePathList) parseTreeElement;
+		 * LOGGER.info("ParseTreePathList {}", elem.getType()); ParseTreeElement
+		 * firstChild = elem.get(0); if (firstChild instanceof ParseTreePath) {
+		 * LOGGER.info("First Child ParseTreePath {}", ((ParseTreePath)
+		 * firstChild).getText()); } else {
+		 * LOGGER.info("First Child ParseTreePathList {}", ((ParseTreePathList)
+		 * firstChild).getType()); } } }
+		 */
 
 		ListType listType = parseTreePathListTemplate.getType();
 		if (listType == ListType.ALTERNATIVE) {
-			List<String> conditions = new ArrayList<>();
-			List<Boolean> matches = new ArrayList<>();
+			List<ConditionalExpression> conditions = new ArrayList<>();
 			for (ParseTreeElement parseTreeElementChild : parseTreePathListTemplate) {
 				String rawHint = ((ParseTreePathList) parseTreeElementChild).getHint();
 				MetaLanguageElement metaLanguageElement = ((ParseTreePathList) parseTreeElementChild)
 						.getMetaLanguageElement();
 
 				String condition = getCondition(rawHint, metaLanguageElement);
-				// TODO fix, cause error for else token
-				// if (condition.isEmpty()) {
-				// throw new NoMatchException("Unable to get condition for " + rawHint);
-				// }
+				ConditionalExpression conditionalExpression = new ConditionalExpression(condition, metaLanguageElement);
 
 				boolean match = true;
 				try {
@@ -255,17 +262,18 @@ public class ParseTreeMatcher {
 					// do not return, try other paths
 					match = false;
 				}
-				matches.add(match);
+				conditionalExpression.setValue(match);
+				conditions.add(conditionalExpression);
 			}
 
 			// Check matches
-			int countMatches = (int) matches.stream().filter(match -> match).count();
-			LOGGER.info("{}, true = {}", matches, countMatches);
+			int countMatches = (int) conditions.stream().filter(condition -> condition.isTrue()).count();
+			LOGGER.info("{}, true = {}", conditions, countMatches);
 			if (countMatches == 0) {
 				throw new NoMatchException("No of the alternative match!" + parseTreePathListTemplate);
 			}
 
-		} else if (listType == ListType.OPTIONAL || listType == listType.ARBITRARY) {
+		} else if (listType == ListType.OPTIONAL || listType == ListType.ARBITRARY) {
 
 		} else if (listType == ListType.ATOMIC) {
 			ParseTreePathList child = (ParseTreePathList) parseTreePathListTemplate.get(0);
@@ -280,20 +288,21 @@ public class ParseTreeMatcher {
 	}
 
 	private String getCondition(String rawHint, MetaLanguageElement metaLanguageElement) {
+		MetaLanguagePattern metaLanguagePattern = this.metaLanguageConfiguration.getMetaLanguagePattern();
 		Pattern pattern = null;
 		String condition = "";
 		if (metaLanguageElement == MetaLanguageElement.IF) {
-			pattern = this.metaLanguagePattern.getMetaLangPatternIf();
+			pattern = metaLanguagePattern.getMetaLangPatternIf();
 		} else if (metaLanguageElement == MetaLanguageElement.IF_ELSE) {
-			pattern = this.metaLanguagePattern.getMetaLangPatternIfElse();
+			pattern = metaLanguagePattern.getMetaLangPatternIfElse();
 		} else if (metaLanguageElement == MetaLanguageElement.ELSE) {
-			pattern = this.metaLanguagePattern.getMetaLangPatternElse();
+			pattern = metaLanguagePattern.getMetaLangPatternElse();
 		} else if (metaLanguageElement == MetaLanguageElement.IF_CLOSE) {
-			pattern = this.metaLanguagePattern.getMetaLangPatternIfClose();
+			pattern = metaLanguagePattern.getMetaLangPatternIfClose();
 		} else if (metaLanguageElement == MetaLanguageElement.LIST) {
-			pattern = this.metaLanguagePattern.getMetaLangPatternList();
+			pattern = metaLanguagePattern.getMetaLangPatternList();
 		} else if (metaLanguageElement == MetaLanguageElement.LIST_CLOSE) {
-			pattern = this.metaLanguagePattern.getMetaLangPatternListClose();
+			pattern = metaLanguagePattern.getMetaLangPatternListClose();
 		}
 
 		if (pattern != null) {
@@ -347,9 +356,11 @@ public class ParseTreeMatcher {
 					if (currentParseTreePathTemplate.getName().equals(currentParseTreePathCompilationUnit.getName())) {
 						currentParseTreePathCompilationUnit = currentParseTreePathCompilationUnit.getParent();
 					} else if (currentParseTreePathTemplate.isMetaLanguageElement()) {
+						MetaLanguageLexerRules metaLanguageLexerRules = this.metaLanguageConfiguration
+								.getMetaLanguageLexerRules();
 						String parserRuleToCheck = Character
-								.toUpperCase(this.metaLanguageLexerRules.getMetaLanguagePrefix().charAt(0))
-								+ this.metaLanguageLexerRules.getMetaLanguagePrefix().substring(1)
+								.toUpperCase(metaLanguageLexerRules.getMetaLanguagePrefix().charAt(0))
+								+ metaLanguageLexerRules.getMetaLanguagePrefix().substring(1)
 								+ currentParseTreePathCompilationUnit.getName() + "Context";
 						if (currentParseTreePathTemplate.getParent().getName().matches(parserRuleToCheck)) {
 							this.registerNewPlaceholderSubstitution(currentParseTreePathTemplate.getText(),
@@ -482,39 +493,47 @@ public class ParseTreeMatcher {
 					} while (!matches);
 				}
 
-				possibleSubstitutions.add(variableSubstitutions);
+				if (!variableSubstitutions.isEmpty()) {
+					possibleSubstitutions.add(variableSubstitutions);
+				}
 			} catch (NoMatchException e) {
 				// ignore, try next
 			}
 		}
 
-		if (possibleSubstitutions.isEmpty()) {
-			throw new NoMatchException(
-					String.format("Could not match template  %s to %s! No possible placeholder substitutions found.",
-							parseTreePathListTemplate, parseTreePathListCompilationUnit));
-		}
+		// no error
+		// if (possibleSubstitutions.isEmpty()) {
+		// throw new NoMatchException(
+		// String.format("Could not match template %s to %s! No possible placeholder
+		// substitutions found.",
+		// parseTreePathListTemplate, parseTreePathListCompilationUnit));
+		// }
 
-		LOGGER.info("{} possible placeholder substitutions found. {}", possibleSubstitutions.size(),
-				possibleSubstitutions);
-		List<Map<String, String>> validSubstitutions = new ArrayList<>();
-		for (Map<String, String> possiblePlaceholderSubstitution : possibleSubstitutions) {
-			boolean isValidSubstitution = true;
-			for (Entry<String, String> placeholderSub : possiblePlaceholderSubstitution.entrySet()) {
+		LOGGER.info("Match list pattern {} -> {}", parseTreePathListTemplate, parseTreePathListCompilationUnit);
+		if (!possibleSubstitutions.isEmpty()) {
+			LOGGER.info("{} possible placeholder substitutions found. {}", possibleSubstitutions.size(),
+					possibleSubstitutions);
+			List<Map<String, String>> validSubstitutions = new ArrayList<>();
+			for (Map<String, String> possiblePlaceholderSubstitution : possibleSubstitutions) {
+				boolean isValidSubstitution = true;
+				for (Entry<String, String> placeholderSub : possiblePlaceholderSubstitution.entrySet()) {
 
-				isValidSubstitution = checkPlaceholderSubstitution(placeholderSub.getKey(), placeholderSub.getValue());
-				if (isValidSubstitution)
-					break;
+					isValidSubstitution = checkPlaceholderSubstitution(placeholderSub.getKey(),
+							placeholderSub.getValue());
+					if (isValidSubstitution)
+						break;
+				}
+
+				if (isValidSubstitution) {
+					validSubstitutions.add(possiblePlaceholderSubstitution);
+				}
 			}
 
-			if (isValidSubstitution) {
-				validSubstitutions.add(possiblePlaceholderSubstitution);
-			}
-		}
-
-		LOGGER.info("{} valid placeholder substitutions found. {}", validSubstitutions.size(), validSubstitutions);
-		for (Map<String, String> validSubstitution : validSubstitutions) {
-			for (Entry<String, String> validSub : validSubstitution.entrySet()) {
-				this.registerNewPlaceholderSubstitution(validSub.getKey(), validSub.getValue(), false);
+			LOGGER.info("{} valid placeholder substitutions found. {}", validSubstitutions.size(), validSubstitutions);
+			for (Map<String, String> validSubstitution : validSubstitutions) {
+				for (Entry<String, String> validSub : validSubstitution.entrySet()) {
+					this.registerNewPlaceholderSubstitution(validSub.getKey(), validSub.getValue(), false);
+				}
 			}
 		}
 

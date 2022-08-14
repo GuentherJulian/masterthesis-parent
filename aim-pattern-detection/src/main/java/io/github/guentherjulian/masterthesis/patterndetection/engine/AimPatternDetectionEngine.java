@@ -28,8 +28,7 @@ import org.apache.logging.log4j.Logger;
 import io.github.guentherjulian.masterthesis.antlr4.parser.TemplateParser;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.InstantiationPathMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.InstantiationPathMatcher;
@@ -48,8 +47,7 @@ public class AimPatternDetectionEngine {
 	private Class<? extends Parser> parserClass;
 	private Class<? extends Lexer> lexerClass;
 	private Path templateGrammarPath;
-	private MetaLanguagePattern metaLanguagePattern;
-	private MetaLanguageLexerRules metaLanguageLexerRules;
+	private MetaLanguageConfiguration metaLanguageConfiguration;
 	private ObjectLanguageProperties objectLanguageProperties;
 	private PlaceholderResolver placeholderResolver;
 
@@ -57,15 +55,14 @@ public class AimPatternDetectionEngine {
 
 	public AimPatternDetectionEngine(List<AimPattern> aimpattern, List<Path> compilationUnits,
 			Class<? extends Parser> parserClass, Class<? extends Lexer> lexerClass, Path templateGrammarPath,
-			MetaLanguagePattern metaLanguagePattern, MetaLanguageLexerRules metaLanguageLexerRules,
-			ObjectLanguageProperties objectLanguageProperties, PlaceholderResolver placeholderResolver) {
+			MetaLanguageConfiguration metaLanguageConfiguration, ObjectLanguageProperties objectLanguageProperties,
+			PlaceholderResolver placeholderResolver) {
 		this.aimpattern = aimpattern;
 		this.compilationUnits = compilationUnits;
 		this.parserClass = parserClass;
 		this.lexerClass = lexerClass;
 		this.templateGrammarPath = templateGrammarPath;
-		this.metaLanguagePattern = metaLanguagePattern;
-		this.metaLanguageLexerRules = metaLanguageLexerRules;
+		this.metaLanguageConfiguration = metaLanguageConfiguration;
 		this.objectLanguageProperties = objectLanguageProperties;
 		this.placeholderResolver = placeholderResolver;
 	}
@@ -104,7 +101,7 @@ public class AimPatternDetectionEngine {
 
 			if (parseTreeTransformer == null) {
 				parseTreeTransformer = new ParseTreeTransformer(parser.getVocabulary(),
-						templateParser.getListPatterns(), this.metaLanguagePattern, this.metaLanguageLexerRules,
+						templateParser.getListPatterns(), this.metaLanguageConfiguration.getMetaLanguageLexerRules(),
 						this.objectLanguageProperties);
 			}
 
@@ -126,7 +123,7 @@ public class AimPatternDetectionEngine {
 
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
 						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
-						this.metaLanguagePattern, this.placeholderResolver);
+						this.metaLanguageConfiguration.getMetaLanguagePattern(), this.placeholderResolver);
 				// only try to match if instantiation path matches
 				// TODO remove setMatch(true)
 				instantiationPathMatch.setMatch(true);
@@ -172,7 +169,7 @@ public class AimPatternDetectionEngine {
 		TreeMatch treeMatch = null;
 		for (ParseTree aimPatternParseTree : aimPatternParseTrees) {
 			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree,
-					this.metaLanguageLexerRules, this.metaLanguagePattern);
+					this.metaLanguageConfiguration);
 			treeMatch = parseTreeMatcher.match(placeholderSubstitutions);
 			if (treeMatch.isMatch())
 				break;
