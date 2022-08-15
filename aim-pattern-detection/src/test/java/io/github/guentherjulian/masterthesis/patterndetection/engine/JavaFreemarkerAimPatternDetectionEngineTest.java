@@ -223,7 +223,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 2);
-		assertTrue(treeMatches.get(0).isMatch());
+		assertFalse(treeMatches.get(0).isMatch());
 		assertTrue(treeMatches.get(1).isMatch());
 	}
 

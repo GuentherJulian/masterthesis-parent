@@ -1,9 +1,6 @@
 public class ${name} {
-	${fieldDeclaration}
+	${fieldDeclaration1}
+	${fieldDeclaration2}
+	${fieldDeclaration3}
 	String str;
-	<#if anything>
-	private int isdfs;
-	<#else>
-	private int sddfs;
-	</#if>
 }

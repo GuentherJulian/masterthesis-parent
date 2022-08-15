@@ -137,7 +137,7 @@ public class ParseTreeMatcher {
 			ParseTreeElement parseTreeElementCompilationUnit;
 			boolean matches = false;
 			do {
-				if (j >= orderedTemplatePaths.size()) {
+				if (j >= orderedTemplatePaths.size() || j >= orderedCompilationUnitPaths.size()) {
 					throw new NoMatchException(String.format("No match for ordered paths: %s -> %s",
 							orderedTemplatePaths, orderedCompilationUnitPaths));
 				}
@@ -188,14 +188,8 @@ public class ParseTreeMatcher {
 					}
 					if (parseTreeElementTemplate instanceof ParseTreePathList
 							&& parseTreeElementCompilationUnit instanceof ParseTreePathList) {
-						// TODO evaluate return value
-						if (((ParseTreePathList) parseTreeElementTemplate).isMetaLang()) {
-							match = matchMetaLanguagePathList((ParseTreePathList) parseTreeElementTemplate,
-									(ParseTreePathList) parseTreeElementCompilationUnit);
-						} else {
-							match = matchPathList((ParseTreePathList) parseTreeElementTemplate,
-									(ParseTreePathList) parseTreeElementCompilationUnit);
-						}
+						match = matchPathList((ParseTreePathList) parseTreeElementTemplate,
+								(ParseTreePathList) parseTreeElementCompilationUnit);
 					}
 				} catch (RuntimeException e) {
 					// e.printStackTrace();
@@ -218,7 +212,11 @@ public class ParseTreeMatcher {
 			}
 		}
 
-		// Check if there are still non metalanguage elements left
+		if (unorderedTemplatePaths.isEmpty() && unorderedCompilationUnitPaths.isEmpty()) {
+			return true;
+		}
+
+		// check if there are still non metalanguage elements left
 		int countNonMetalanguageTemplateElements = (int) unorderedTemplatePaths.stream()
 				.filter(parseTreeElement -> (parseTreeElement instanceof ParseTreePathList
 						&& !((ParseTreePathList) parseTreeElement).isMetaLang())
@@ -231,7 +229,7 @@ public class ParseTreeMatcher {
 							+ unorderedTemplatePaths);
 		}
 
-		// Try to match the remaining metalanguage elements. Start with path list
+		// try to match the remaining metalanguage elements, start with path list
 		// elements
 		List<ParseTreeElement> metalanguageTemplateListElements = unorderedTemplatePaths.stream()
 				.filter(parseTreeElement -> parseTreeElement instanceof ParseTreePathList
@@ -246,13 +244,8 @@ public class ParseTreeMatcher {
 			for (ParseTreeElement parseTreeElementCompilationUnit : unorderedCompilationUnitPaths) {
 				boolean match = false;
 				try {
-					if (parseTreeElementTemplate.isMetaLang()) {
-						match = matchMetaLanguagePathList(parseTreeElementTemplate,
-								(ParseTreePathList) parseTreeElementCompilationUnit);
-					} else {
-						match = matchPathList(parseTreeElementTemplate,
-								(ParseTreePathList) parseTreeElementCompilationUnit);
-					}
+					match = matchMetaLanguagePathList(parseTreeElementTemplate,
+							(ParseTreePathList) parseTreeElementCompilationUnit);
 				} catch (RuntimeException e) {
 					// e.printStackTrace();
 					LOGGER.error(e.getMessage());
@@ -274,14 +267,43 @@ public class ParseTreeMatcher {
 			}
 		}
 
-		if (!unorderedTemplatePaths.isEmpty()) {
-			if (!unorderedCompilationUnitPaths.isEmpty()) {
-				throw new NoMatchException(
-						"The following template paths could not be found: \n" + unorderedTemplatePaths);
-			} else {
-				// TODO remaining template paths are empty
-			}
+		if (unorderedTemplatePaths.isEmpty() && unorderedCompilationUnitPaths.isEmpty()) {
+			return true;
 		}
+
+		// check if there are non optional template path lists
+		int countNonOptionalTemplatePathLists = (int) unorderedTemplatePaths.stream()
+				.filter(parseTreeElement -> (parseTreeElement instanceof ParseTreePathList
+						&& ((ParseTreePathList) parseTreeElement).getType() == ListType.ALTERNATIVE))
+				.count();
+		if (countNonOptionalTemplatePathLists > 0) {
+			throw new NoMatchException("There are non optional template paths that cannot be matched: "
+					+ metalanguageTemplateListElements);
+		}
+
+		if (!unorderedTemplatePaths.isEmpty() && unorderedCompilationUnitPaths.isEmpty()) {
+			throw new NoMatchException(
+					"There are metalanguage elements that cannot be matched: " + unorderedTemplatePaths);
+		}
+
+		// Check single placeholder elements
+		List<ParseTreeElement> metalanguageTemplateElements = unorderedTemplatePaths.stream()
+				.filter(parseTreeElement -> parseTreeElement instanceof ParseTreePath
+						&& ((ParseTreePath) parseTreeElement).isMetaLanguageElement())
+				.collect(Collectors.toList());
+		List<String> placeholders = metalanguageTemplateElements.stream()
+				.map(parseTreeElement -> ((ParseTreePath) parseTreeElement).getText()).collect(Collectors.toList());
+		List<String> substitutions = unorderedCompilationUnitPaths.stream()
+				.map(parseTreeElement -> parseTreeElement.toString()).collect(Collectors.toList());
+
+		// TODO handle all possible permutations of placeholders
+
+		/*
+		 * if (!unorderedTemplatePaths.isEmpty()) { if
+		 * (!unorderedCompilationUnitPaths.isEmpty()) { throw new NoMatchException(
+		 * "The following template paths could not be found: \n" +
+		 * unorderedTemplatePaths); } }
+		 */
 
 		return true;
 	}
@@ -465,8 +487,6 @@ public class ParseTreeMatcher {
 			ParseTreePathList parseTreePathListTemplate = (ParseTreePathList) templatePathElement;
 			ParseTreePathList parseTreePathListCompilationUnit = (ParseTreePathList) compilationUnitPathElement;
 
-			// matchOrderedPaths(parseTreePathListTemplate,
-			// parseTreePathListCompilationUnit);
 			if (parseTreePathListTemplate.isAtomic() && parseTreePathListCompilationUnit.isAtomic()) {
 				matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit);
 			} else if (parseTreePathListTemplate.isListPattern() && parseTreePathListCompilationUnit.isListPattern()) {
