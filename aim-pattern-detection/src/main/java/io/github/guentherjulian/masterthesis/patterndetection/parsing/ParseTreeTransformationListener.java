@@ -112,6 +112,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			this.currentCollection.push(atomic);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getElseTokenLexerRuleName())) {
 			// ELSE case
+			this.lastPotentialElsePath.peek().setType(ListType.ALTERNATIVE);
 			this.currentCollection.pop();
 			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText(), MetaLanguageElement.ELSE);
 			atomic.setIsMetaLang(true);
@@ -119,7 +120,6 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			this.currentCollection.push(atomic);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getIfElseTokenLexerRuleName())) {
 			// IF ELSE case
-			this.lastPotentialElsePath.peek().setType(ListType.ALTERNATIVE);
 			this.currentCollection.pop();
 			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText(),
 					MetaLanguageElement.IF_ELSE);
@@ -128,27 +128,24 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			this.currentCollection.push(atomic);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getIfCloseTokenLexerRuleName())) {
 			// IF CLOSE case
-			// TODO enable
-			// this.currentCollection.pop();
-			// this.currentCollection.pop();
-			// TODO disable
-			ParseTreePathList p = this.currentCollection.pop();
-			LOGGER.info("Last was {}", p.getType());
-			p = this.currentCollection.pop();
-			LOGGER.info("Last was {}", p.getType());
+			this.currentCollection.pop();
+			this.currentCollection.pop();
 
-			p = (ParseTreePathList) this.currentCollection.get(0).get(0);
-			LOGGER.info("{}", p.getType());
-			for (ParseTreeElement parseTreeElement : p) {
-				if (parseTreeElement instanceof ParseTreePathList) {
-					LOGGER.info("{}", ((ParseTreePathList) parseTreeElement).getType());
+			/*
+			 * ParseTreePathList p = this.currentCollection.pop();
+			 * LOGGER.info("Last was {}", p.getType()); p = this.currentCollection.pop();
+			 * LOGGER.info("Last was {}", p.getType());
+			 * 
+			 * p = (ParseTreePathList) this.currentCollection.get(0).get(0);
+			 * LOGGER.info("{}", p.getType()); for (ParseTreeElement parseTreeElement : p) {
+			 * if (parseTreeElement instanceof ParseTreePathList) { LOGGER.info("{}",
+			 * ((ParseTreePathList) parseTreeElement).getType());
+			 * 
+			 * ParseTreePathList l = (ParseTreePathList) ((ParseTreePathList)
+			 * parseTreeElement).get(0); LOGGER.info("l {}", l.getType()); } }
+			 */
 
-					ParseTreePathList l = (ParseTreePathList) ((ParseTreePathList) parseTreeElement).get(0);
-					LOGGER.info("l {}", l.getType());
-				}
-			}
 			this.lastPotentialElsePath.pop();
-			// TODO end of the other two TODOs
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getListTokenLexerRuleName())) {
 			// LIST case
 			ParseTreePathList optional = new ParseTreePathList(ListType.OPTIONAL, node.getText(), null);
@@ -195,17 +192,5 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 		String className = node.getClass().getSimpleName();
 		String grammarName = className.replace("Context", "");
 		return Character.toLowerCase(grammarName.charAt(0)) + grammarName.substring(1);
-	}
-
-	private void printParseTreePathList(ParseTreePathList parseTreePathList) {
-		for (ParseTreeElement parseTreeElement : parseTreePathList) {
-			if (parseTreeElement instanceof ParseTreePath) {
-				LOGGER.info(parseTreeElement.toString());
-			}
-			if (parseTreeElement instanceof ParseTreePathList) {
-				LOGGER.info("List from type " + ((ParseTreePathList) parseTreeElement).getType());
-				printParseTreePathList((ParseTreePathList) parseTreeElement);
-			}
-		}
 	}
 }

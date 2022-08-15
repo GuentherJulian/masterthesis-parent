@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -74,7 +74,7 @@ public class AimPatternDetectionEngine {
 	public List<TreeMatch> detect(String startRuleName) throws Exception {
 
 		// Each path only has one parse tree
-		Map<Path, ParseTree> compilationUnitParseTrees = new HashMap<Path, ParseTree>();
+		Map<Path, ParseTree> compilationUnitParseTrees = new LinkedHashMap<Path, ParseTree>();
 
 		Map<String, List<String>> listPatterns = null;
 		ParseTreeTransformer parseTreeTransformer = null;

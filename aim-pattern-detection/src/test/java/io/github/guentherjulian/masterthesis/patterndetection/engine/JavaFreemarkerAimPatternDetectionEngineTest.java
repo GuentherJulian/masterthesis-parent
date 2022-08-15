@@ -137,11 +137,6 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		assertFalse(treeMatches.get(1).isMatch());
 		assertTrue(treeMatches.get(1).getException() instanceof NoMatchException);
-
-		// PlaceholderClashException exception = (PlaceholderClashException)
-		// treeMatches.get(1).getException();
-		// assertTrue(exception.getPlaceholder().equals("${name}"));
-		// assertTrue(exception.getClashSubstitution().equals("B"));
 	}
 
 	@Test
@@ -227,24 +222,25 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
-		assertTrue(treeMatches.get(7).isMatch());
+		assertEquals(treeMatches.size(), 2);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(1).isMatch());
 	}
 
 	@Test
-	void javaFreeMarkerSimpleIfCondition() throws Exception {
+	void javaFreeMarkerSimpleIfElseCondition() throws Exception {
 
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfTemplate.java"),
-				"SimpleClassWithIfTemplate.java"));
+		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseTemplate.java"),
+				"SimpleClassWithIfElseTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		// TODO enable
-		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIfCorrect1.java"));
-		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIfCorrect2.java"));
-		// compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIfIncorrect.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf1.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
@@ -253,7 +249,78 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 3);
 		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("true"));
+
+		assertFalse(treeMatches.get(1).isMatch());
+
+		assertTrue(treeMatches.get(2).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerSimpleIfElseifCondition() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseifTemplate.java"),
+				"SimpleClassWithIfElseifTemplate.java"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf1.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
+				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 3);
+
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("true"));
+
 		assertTrue(treeMatches.get(1).isMatch());
+		assertTrue(treeMatches.get(1).getPlaceholderSubstitutions().containsKey("somethingElse"));
+		assertTrue(treeMatches.get(1).getPlaceholderSubstitutions().get("somethingElse").contains("true"));
+
+		assertTrue(treeMatches.get(2).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerSimpleIfElseifElseCondition() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates
+				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseifElseTemplate.java"),
+						"SimpleClassWithIfElseifElseTemplate.java"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf1.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
+				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 3);
+
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("true"));
+
+		assertTrue(treeMatches.get(1).isMatch());
+		assertTrue(treeMatches.get(1).getPlaceholderSubstitutions().containsKey("somethingElse"));
+		assertTrue(treeMatches.get(1).getPlaceholderSubstitutions().get("somethingElse").contains("true"));
+
 		assertTrue(treeMatches.get(2).isMatch());
 	}
 
@@ -275,5 +342,6 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertTrue(false);
 	}
 }
