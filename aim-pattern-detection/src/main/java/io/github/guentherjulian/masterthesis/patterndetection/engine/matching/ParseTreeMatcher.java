@@ -10,6 +10,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,6 +46,8 @@ public class ParseTreeMatcher {
 	private MetaLanguageConfiguration metaLanguageConfiguration;
 	private PlaceholderResolver placeholderResolver;
 	private boolean flagMatchedByListPlaceholder = false;
+	private Stack<String> listPlaceholderCollectionVariable = new Stack<>();
+	private Stack<String> listPlaceholderIterationVariable = new Stack<>();
 
 	public ParseTreeMatcher(ParseTree compilationUnitParseTree, ParseTree aimPatternTemplateParseTree,
 			MetaLanguageConfiguration metaLanguageConfiguration, PlaceholderResolver placeholderResolver) {
@@ -293,10 +296,13 @@ public class ParseTreeMatcher {
 					+ metalanguageTemplateListElements);
 		}
 
-		if (!unorderedTemplatePaths.isEmpty() && unorderedCompilationUnitPaths.isEmpty()) {
-			throw new NoMatchException(
-					"There are metalanguage elements that cannot be matched: " + unorderedTemplatePaths);
-		}
+		// TODO match remaining template paths or path lists
+		// if (!unorderedTemplatePaths.isEmpty() &&
+		// unorderedCompilationUnitPaths.isEmpty()) {
+		// throw new NoMatchException(
+		// "There are metalanguage elements that cannot be matched: " +
+		// unorderedTemplatePaths);
+		// }
 
 		// Check single placeholder elements
 		List<ParseTreeElement> metalanguageTemplateElements = unorderedTemplatePaths.stream()
@@ -331,7 +337,7 @@ public class ParseTreeMatcher {
 				MetaLanguageElement metaLanguageElement = ((ParseTreePathList) parseTreeElementChild)
 						.getMetaLanguageElement();
 
-				String condition = getCondition(rawHint, metaLanguageElement);
+				String condition = getConditionForIfExpression(rawHint, metaLanguageElement);
 				ConditionalExpression conditionalExpression = new ConditionalExpression(condition, metaLanguageElement);
 
 				boolean match = true;
@@ -373,21 +379,32 @@ public class ParseTreeMatcher {
 			// matchUnordeeredPaths
 
 		} else if (listType == ListType.ARBITRARY) {
-			ParseTreeElement child = parseTreePathListTemplate.get(0);
+			String rawHint = ((ParseTreePathList) parseTreePathListTemplate).getHint();
+			String[] conditions = getConditionForListExpression(rawHint,
+					((ParseTreePathList) parseTreePathListTemplate).getMetaLanguageElement());
+			this.listPlaceholderCollectionVariable.push(conditions[0]);
+			this.listPlaceholderIterationVariable.push(conditions[1]);
+
+			ParseTreeElement parseTreeElementTemplateChild = parseTreePathListTemplate.get(0);
 			boolean match = false;
 			try {
-				if (((ParseTreePathList) child).isMetaLang()) {
-					match = matchMetaLanguagePathList((ParseTreePathList) child, parseTreePathListCompilationUnit);
+				if (((ParseTreePathList) parseTreeElementTemplateChild).isMetaLang()) {
+					match = matchMetaLanguagePathList((ParseTreePathList) parseTreeElementTemplateChild,
+							parseTreePathListCompilationUnit);
 				} else {
-					match = matchPathList((ParseTreePathList) child, parseTreePathListCompilationUnit);
+					match = matchPathList((ParseTreePathList) parseTreeElementTemplateChild,
+							parseTreePathListCompilationUnit);
 				}
 			} catch (NoMatchException e) {
 				// do not return, try other paths
 				match = false;
 			}
 
+			this.listPlaceholderCollectionVariable.pop();
+			this.listPlaceholderIterationVariable.pop();
+
 			if (!match) {
-				throw new NoMatchException("No match" + parseTreePathListTemplate);
+				throw new NoMatchException("Cannot match parse tree: " + parseTreePathListTemplate);
 			} else {
 				this.flagMatchedByListPlaceholder = true;
 			}
@@ -404,7 +421,7 @@ public class ParseTreeMatcher {
 		return true;
 	}
 
-	private String getCondition(String rawHint, MetaLanguageElement metaLanguageElement) {
+	private String getConditionForIfExpression(String rawHint, MetaLanguageElement metaLanguageElement) {
 		MetaLanguagePattern metaLanguagePattern = this.metaLanguageConfiguration.getMetaLanguagePattern();
 		Pattern pattern = null;
 		String condition = "";
@@ -416,10 +433,6 @@ public class ParseTreeMatcher {
 			pattern = metaLanguagePattern.getMetaLangPatternElse();
 		} else if (metaLanguageElement == MetaLanguageElement.IF_CLOSE) {
 			pattern = metaLanguagePattern.getMetaLangPatternIfClose();
-		} else if (metaLanguageElement == MetaLanguageElement.LIST) {
-			pattern = metaLanguagePattern.getMetaLangPatternList();
-		} else if (metaLanguageElement == MetaLanguageElement.LIST_CLOSE) {
-			pattern = metaLanguagePattern.getMetaLangPatternListClose();
 		}
 
 		if (pattern != null) {
@@ -430,12 +443,33 @@ public class ParseTreeMatcher {
 				try {
 					group = matcher.group(1).trim();
 				} catch (Exception e) {
-					// ignore, return empty string instead
+					// else case. ignore, return empty string instead.
 				}
 				condition = group;
 			}
 		}
 		return condition;
+	}
+
+	private String[] getConditionForListExpression(String rawHint, MetaLanguageElement metaLanguageElement) {
+		MetaLanguagePattern metaLanguagePattern = this.metaLanguageConfiguration.getMetaLanguagePattern();
+		Pattern pattern = null;
+		if (metaLanguageElement == MetaLanguageElement.LIST) {
+			pattern = metaLanguagePattern.getMetaLangPatternList();
+		} else if (metaLanguageElement == MetaLanguageElement.LIST_CLOSE) {
+			pattern = metaLanguagePattern.getMetaLangPatternListClose();
+		}
+
+		String[] conditions = new String[2];
+		if (pattern != null) {
+			Matcher matcher = pattern.matcher(rawHint);
+			boolean match = matcher.find();
+			if (match) {
+				conditions[0] = matcher.group(1).trim();
+				conditions[1] = matcher.group(2).trim();
+			}
+		}
+		return conditions;
 	}
 
 	private boolean matchPath(ParseTreeElement templatePathElement, ParseTreeElement compilationUnitPathElement)
@@ -676,6 +710,12 @@ public class ParseTreeMatcher {
 		Set<String> possibleSubstitutions = placeholderResolutionResult.getSubstitutions();
 
 		placeholder = placeholderResolutionResult.getPlaceholder();
+
+		if (!this.listPlaceholderIterationVariable.isEmpty()
+				&& this.listPlaceholderIterationVariable.peek().equals(placeholder)) {
+			placeholder = this.listPlaceholderCollectionVariable.peek();
+			addAlways = true;
+		}
 
 		Set<String> newSubstitutions = null;
 		if (!this.placeholderSubstitutions.containsKey(placeholder)) {

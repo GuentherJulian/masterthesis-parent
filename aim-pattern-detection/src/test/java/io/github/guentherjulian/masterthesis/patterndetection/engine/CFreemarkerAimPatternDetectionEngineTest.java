@@ -1,0 +1,96 @@
+package io.github.guentherjulian.masterthesis.patterndetection.engine;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.antlr.parser.cfreemarkertemplate.CFreemarkerTemplateLexer;
+import org.antlr.parser.cfreemarkertemplate.CFreemarkerTemplateParser;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
+import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerLexerRuleNames;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerMetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.CProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+
+public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
+
+	private final String metaLangPrefix = "fm_";
+	private MetaLanguagePattern metaLanguagePattern = new FreeMarkerMetaLanguagePattern();
+	private MetaLanguageLexerRules metaLanguageLexerRules = new FreeMarkerLexerRuleNames();
+	private MetaLanguageConfiguration metaLanguageConfiguration = new MetaLanguageConfiguration(
+			this.metaLanguageLexerRules, this.metaLanguagePattern);
+	private ObjectLanguageProperties objectLanguageProperties = new CProperties(this.metaLangPrefix);
+	private PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
+
+	@BeforeAll
+	public static void setupTests() throws URISyntaxException {
+		templatesPath = resourcesPath.resolve("templates").resolve("c_freemarker");
+		compilationUnitsPath = resourcesPath.resolve("compilation-units").resolve("c");
+		grammarPath = grammarPath.resolve("cFreemarkerTemplate").resolve("CFreemarkerTemplate.g4");
+
+		parserClass = CFreemarkerTemplateParser.class;
+		lexerClass = CFreemarkerTemplateLexer.class;
+	}
+
+	@Test
+	void cFreeMarkerSimplePlaceholderTransformationTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates
+				.add(new AimPatternTemplate(templatesPath.resolve("SimplePlaceholder.c"), "SimplePlaceholder.c"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("CProgramForPlaceholder.c"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
+
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("var"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("var").contains("foo"));
+	}
+
+	@Test
+	void cFreeMarkerSimpleIfConditionTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates
+				.add(new AimPatternTemplate(templatesPath.resolve("SimpleIfCondition.c"), "SimpleIfCondition.c"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("CProgramForIfCondition.c"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
+
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("true"));
+	}
+}

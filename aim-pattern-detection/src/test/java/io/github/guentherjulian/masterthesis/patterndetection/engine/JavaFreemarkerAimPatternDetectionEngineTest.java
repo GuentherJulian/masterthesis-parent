@@ -44,6 +44,9 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		templatesPath = resourcesPath.resolve("templates").resolve("java_freemarker");
 		compilationUnitsPath = resourcesPath.resolve("compilation-units").resolve("java");
 		grammarPath = grammarPath.resolve("java8FreemarkerTemplate").resolve("Java8FreemarkerTemplate.g4");
+
+		parserClass = Java8FreemarkerTemplateParser.class;
+		lexerClass = Java8FreemarkerTemplateLexer.class;
 	}
 
 	@Test
@@ -60,8 +63,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimplePackageDecl.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 
@@ -87,8 +90,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("ComplexPackageDecl.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 1);
@@ -123,8 +126,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimplePlaceholderTransformation.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 1);
@@ -154,8 +157,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithCopyConstructorIncorrect.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 
@@ -183,8 +186,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("ImportOrderingInvalid.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 
@@ -211,8 +214,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("ImportOrderingInvalid.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 
@@ -247,12 +250,12 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithFieldDecl2.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 2);
-		assertFalse(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).isMatch()); // match. placeholder not matched, but okay since it is optional
 		assertTrue(treeMatches.get(1).isMatch());
 	}
 
@@ -272,8 +275,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 3);
@@ -302,8 +305,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 3);
@@ -336,8 +339,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
 		assertEquals(treeMatches.size(), 3);
@@ -367,15 +370,17 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleList.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
-		assertEquals(treeMatches.size(), 3);
+		assertEquals(treeMatches.size(), 1);
 
 		assertTrue(treeMatches.get(0).isMatch());
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("true"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("fields"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("fields").contains("a"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("fields").contains("b"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("fields").contains("c"));
 	}
 
 	@Test
@@ -392,10 +397,19 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("ComplexFile.java"));
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
-				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver);
 
 		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
-		assertTrue(false);
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("className"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("className").contains("Foo"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("str"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("str").contains("str"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("getter"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("getter").contains("true"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("false"));
 	}
 }

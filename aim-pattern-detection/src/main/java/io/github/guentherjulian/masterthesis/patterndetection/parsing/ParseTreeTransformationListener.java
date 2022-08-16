@@ -151,7 +151,8 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			ParseTreePathList optional = new ParseTreePathList(ListType.OPTIONAL, node.getText(), null);
 			this.currentCollection.peek().add(optional);
 			this.currentCollection.push(optional);
-			ParseTreePathList arbitrary = new ParseTreePathList(ListType.ARBITRARY, node.getText(), null);
+			ParseTreePathList arbitrary = new ParseTreePathList(ListType.ARBITRARY, node.getText(),
+					MetaLanguageElement.LIST);
 			this.currentCollection.peek().add(arbitrary);
 			this.currentCollection.push(arbitrary);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getListCloseTokenLexerRuleName())) {
