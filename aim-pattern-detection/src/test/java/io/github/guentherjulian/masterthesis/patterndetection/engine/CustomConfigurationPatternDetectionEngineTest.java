@@ -103,9 +103,9 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${c}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${c}").contains("c"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${e}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${e}").contains("e"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("c").contains("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("e"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("e").contains("e"));
 	}
 }

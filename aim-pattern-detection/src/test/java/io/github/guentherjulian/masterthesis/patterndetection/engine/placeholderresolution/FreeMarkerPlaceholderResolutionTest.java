@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderTransformationFunctionCallException;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderResolutionException;
 
 public class FreeMarkerPlaceholderResolutionTest extends AbstractPlaceholderResolutionTest {
 
@@ -66,6 +66,6 @@ public class FreeMarkerPlaceholderResolutionTest extends AbstractPlaceholderReso
 
 		assertNull(placeholderResolutionResult);
 		assertNotNull(exception);
-		assertTrue(exception instanceof PlaceholderTransformationFunctionCallException);
+		assertTrue(exception instanceof PlaceholderResolutionException);
 	}
 }
