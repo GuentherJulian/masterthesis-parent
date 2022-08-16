@@ -3,16 +3,16 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.placeholde
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidTransformationFunctionCallException;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderTransformationFunctionCallException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.transformation.functions.ReverseTransformationFunction;
 
 public class FreeMarkerReplaceFunction implements ReverseTransformationFunction {
 
 	@Override
 	public List<String> transform(String substitution, String... args)
-			throws InvalidTransformationFunctionCallException {
+			throws PlaceholderTransformationFunctionCallException {
 		if (args.length != 2) {
-			throw new InvalidTransformationFunctionCallException(
+			throw new PlaceholderTransformationFunctionCallException(
 					"FreeMarker replace function needs two arguments. Given arguments: " + args.length);
 		}
 

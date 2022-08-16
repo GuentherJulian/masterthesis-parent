@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderResolutionException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.transformation.TransformationFunction;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.transformation.TransformationFunctionProcessor;
 
@@ -18,7 +19,7 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 
 	@Override
 	public PlaceholderResolutionResult resolvePlaceholder(String placeholderExpression, String substitution)
-			throws Exception {
+			throws PlaceholderResolutionException {
 		PlaceholderResolutionResult placeholderResolutionResult = new PlaceholderResolutionResult();
 		placeholderResolutionResult.setPlaceholder(getPlaceholderName(placeholderExpression));
 
@@ -46,6 +47,8 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 						subs.add(substitution);
 						placeholderResolutionResult.setSubstitutions(subs);
 						return placeholderResolutionResult;
+					} catch (Exception e) {
+						throw new PlaceholderResolutionException(e.getMessage());
 					}
 
 					for (String possibleSubstitution : possibleSubstitutions) {

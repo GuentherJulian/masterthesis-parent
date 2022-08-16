@@ -2,7 +2,7 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.
 
 import java.util.regex.Pattern;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.ConfigurationException;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidMetalanguageConfigurationException;
 
 public class CustomMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
@@ -24,11 +24,11 @@ public class CustomMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	public CustomMetaLanguagePattern(String patternPlaceholder, String patternIf, String patternIfElse,
 			String patternElse, String patternIfClose, String patternList, String patternListClose,
-			String fileExtension) throws ConfigurationException {
+			String fileExtension) throws InvalidMetalanguageConfigurationException {
 
 		if (!checkParametersForValidity(patternPlaceholder, patternIf, patternIfElse, patternElse, patternIfClose,
 				patternList, patternListClose, fileExtension)) {
-			throw new ConfigurationException("Invalid configuration. You have to pass all parameters.");
+			throw new InvalidMetalanguageConfigurationException("Invalid configuration. You have to pass all parameters.");
 		}
 
 		META_LANG_PLACEHOLDER = patternPlaceholder;

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.ConfigurationException;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidMetalanguageConfigurationException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.CustomLexerRuleNames;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.CustomMetaLanguagePattern;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
@@ -36,7 +36,7 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 	private static Path configurationPath;
 
 	@BeforeAll
-	public static void setupTests() throws URISyntaxException, ConfigurationException {
+	public static void setupTests() throws URISyntaxException, InvalidMetalanguageConfigurationException {
 		templatesPath = resourcesPath.resolve("templates").resolve("java_freemarker");
 		compilationUnitsPath = resourcesPath.resolve("compilation-units").resolve("java");
 		grammarPath = grammarPath.resolve("java8FreemarkerTemplate").resolve("Java8FreemarkerTemplate.g4");
@@ -50,7 +50,7 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 		Exception exception = null;
 		try {
 			metaLanguageConfiguration = new MetaLanguageConfiguration(configurationPath);
-		} catch (ConfigurationException e) {
+		} catch (InvalidMetalanguageConfigurationException e) {
 			exception = e;
 		}
 
@@ -67,12 +67,12 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 		Exception exception = null;
 		try {
 			metaLanguageConfiguration = new MetaLanguageConfiguration(configurationPath);
-		} catch (ConfigurationException e) {
+		} catch (InvalidMetalanguageConfigurationException e) {
 			exception = e;
 		}
 
 		assertNotNull(exception);
-		assertTrue(exception instanceof ConfigurationException);
+		assertTrue(exception instanceof InvalidMetalanguageConfigurationException);
 	}
 
 	@Test

@@ -2,9 +2,9 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.placeholde
 
 import java.util.List;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidTransformationFunctionCallException;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderTransformationFunctionCallException;
 
 public interface ReverseTransformationFunction {
 
-	List<String> transform(String substitution, String... args) throws InvalidTransformationFunctionCallException;
+	List<String> transform(String substitution, String... args) throws PlaceholderTransformationFunctionCallException;
 }

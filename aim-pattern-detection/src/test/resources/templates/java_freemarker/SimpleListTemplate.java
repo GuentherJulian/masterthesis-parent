@@ -1,7 +1,5 @@
 public class A {
 	<#list fields as field>
-		public void set${field}() {
-			
-		}
+	private int ${field};
 	</#list>
 }

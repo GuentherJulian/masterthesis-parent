@@ -169,7 +169,7 @@ public class AimPatternDetectionEngine {
 		TreeMatch treeMatch = null;
 		for (ParseTree aimPatternParseTree : aimPatternParseTrees) {
 			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree,
-					this.metaLanguageConfiguration);
+					this.metaLanguageConfiguration, this.placeholderResolver);
 			treeMatch = parseTreeMatcher.match(placeholderSubstitutions);
 			if (treeMatch.isMatch())
 				break;

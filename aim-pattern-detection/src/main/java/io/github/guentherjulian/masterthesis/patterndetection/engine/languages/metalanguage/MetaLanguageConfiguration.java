@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.ConfigurationException;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidMetalanguageConfigurationException;
 
 public class MetaLanguageConfiguration {
 
@@ -19,7 +19,7 @@ public class MetaLanguageConfiguration {
 		this.metaLanguagePattern = metaLanguagePattern;
 	}
 
-	public MetaLanguageConfiguration(Path configPath) throws ConfigurationException {
+	public MetaLanguageConfiguration(Path configPath) throws InvalidMetalanguageConfigurationException {
 		this.readMetaLanguageConfiguration(configPath);
 	}
 
@@ -39,9 +39,9 @@ public class MetaLanguageConfiguration {
 		this.metaLanguagePattern = metaLanguagePattern;
 	}
 
-	public void readMetaLanguageConfiguration(Path configFile) throws ConfigurationException {
+	public void readMetaLanguageConfiguration(Path configFile) throws InvalidMetalanguageConfigurationException {
 		if (!Files.exists(configFile)) {
-			throw new ConfigurationException("Unable to load configuration. Filepath does not exist: " + configFile);
+			throw new InvalidMetalanguageConfigurationException("Unable to load configuration. Filepath does not exist: " + configFile);
 		}
 
 		try {
@@ -75,7 +75,7 @@ public class MetaLanguageConfiguration {
 					lexerRuleNameListClose, lexerRuleNamePlaceholder);
 
 		} catch (IOException e) {
-			throw new ConfigurationException(e.getMessage());
+			throw new InvalidMetalanguageConfigurationException(e.getMessage());
 		}
 	}
 }

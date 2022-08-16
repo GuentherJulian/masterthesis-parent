@@ -151,12 +151,11 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			ParseTreePathList optional = new ParseTreePathList(ListType.OPTIONAL, node.getText(), null);
 			this.currentCollection.peek().add(optional);
 			this.currentCollection.push(optional);
-			ParseTreePathList atomic = new ParseTreePathList(ListType.ATOMIC, node.getText(), null);
-			this.currentCollection.peek().add(atomic);
-			this.currentCollection.push(atomic);
+			ParseTreePathList arbitrary = new ParseTreePathList(ListType.ARBITRARY, node.getText(), null);
+			this.currentCollection.peek().add(arbitrary);
+			this.currentCollection.push(arbitrary);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getListCloseTokenLexerRuleName())) {
 			// LIST CLOSE case
-			// TODO check if correct
 			this.currentCollection.pop();
 			this.currentCollection.pop();
 		} else {
@@ -181,9 +180,6 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 		if (this.parseTree == null) {
 			this.parseTree = new ParseTree(this.parseTreePaths);
 		}
-
-		// LOGGER.info(this.parseTreePaths.toString());
-		// printParseTreePathList(this.parseTreePaths);
 
 		return this.parseTree;
 	}

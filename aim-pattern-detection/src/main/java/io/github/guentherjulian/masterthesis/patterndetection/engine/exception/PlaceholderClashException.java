@@ -2,17 +2,19 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.exception;
 
 import java.util.Set;
 
-public class PlaceholderClashException extends NoMatchException {
+public class PlaceholderClashException extends PlaceholderResolutionException {
+
+	private static final long serialVersionUID = 1L;
 
 	private String placeholder;
-	private String clashSubstitution;
+	private Set<String> currentSubstitutions;
 	private Set<String> clashSubstitutions;
 
-	public PlaceholderClashException(String placeholder, String substitution, Set<String> clashSubstitutions,
-			String message) {
+	public PlaceholderClashException(String placeholder, Set<String> currentSubstitutions,
+			Set<String> clashSubstitutions, String message) {
 		super(message);
 		this.placeholder = placeholder;
-		this.clashSubstitution = substitution;
+		this.currentSubstitutions = currentSubstitutions;
 		this.clashSubstitutions = clashSubstitutions;
 	}
 
@@ -24,12 +26,12 @@ public class PlaceholderClashException extends NoMatchException {
 		this.placeholder = placeholder;
 	}
 
-	public String getClashSubstitution() {
-		return clashSubstitution;
+	public Set<String> getClashSubstitution() {
+		return currentSubstitutions;
 	}
 
-	public void setClashSubstitution(String clashSubstitution) {
-		this.clashSubstitution = clashSubstitution;
+	public void setClashSubstitution(Set<String> currentSubstitutions) {
+		this.currentSubstitutions = currentSubstitutions;
 	}
 
 	public Set<String> getClashSubstitutions() {

@@ -67,10 +67,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${c}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${c}").contains("c"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${e}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${e}").contains("e"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("c").contains("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("e"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("e").contains("e"));
 	}
 
 	@Test
@@ -94,19 +94,48 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
 		assertEquals(treeMatches.get(0).getPlaceholderSubstitutions().size(), 4);
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${a}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${a}").contains("a"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${a}").contains("a.b"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${b}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${b}").contains("b.c"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${b}").contains("c"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${e}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${e}").contains("e"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${e}").contains("e.f"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${f}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${f}").contains("f.g"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${f}").contains("g"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("a"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("a").contains("a"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("a").contains("a.b"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("b"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("b").contains("b.c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("b").contains("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("e"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("e").contains("e"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("e").contains("e.f"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("f"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("f").contains("f.g"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("f").contains("g"));
+	}
 
+	@Test
+	void javaFreeMarkerSimplePlaceholderTransformationTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates
+				.add(new AimPatternTemplate(templatesPath.resolve("SimplePlaceholderTransformationTemplate.java"),
+						"SimplePlaceholderTransformationTemplate.java"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("SimplePlaceholderTransformation.java"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
+				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("className"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("className").contains("Foo"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("className").contains("foo"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("var1"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("var1").contains("foofoo"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("var2?non_existing_function"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("var2?non_existing_function").contains("test"));
 	}
 
 	@Test
@@ -132,8 +161,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		assertEquals(treeMatches.size(), 2);
 		assertTrue(treeMatches.get(0).isMatch());
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${name}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${name}").contains("A"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("name"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("name").contains("A"));
 
 		assertFalse(treeMatches.get(1).isMatch());
 		assertTrue(treeMatches.get(1).getException() instanceof NoMatchException);
@@ -190,12 +219,12 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		assertEquals(treeMatches.size(), 2);
 		assertTrue(treeMatches.get(0).isMatch());
 		assertFalse(treeMatches.get(0).getPlaceholderSubstitutions().isEmpty());
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${a}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${a}").contains("a"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${b}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${b}").contains("foobar"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("${c}"));
-		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("${c}").contains("MyClass"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("a"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("a").contains("a"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("b"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("b").contains("foobar"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("c"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("c").contains("MyClass"));
 
 		assertFalse(treeMatches.get(1).isMatch());
 		assertNotNull(treeMatches.get(1).getException());
@@ -322,6 +351,31 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		assertTrue(treeMatches.get(1).getPlaceholderSubstitutions().get("somethingElse").contains("true"));
 
 		assertTrue(treeMatches.get(2).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerSimpleList() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(
+				new AimPatternTemplate(templatesPath.resolve("SimpleListTemplate.java"), "SimpleListTemplate.java"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleList.java"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
+				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+
+		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		assertEquals(treeMatches.size(), 3);
+
+		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
+		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("true"));
 	}
 
 	@Test
