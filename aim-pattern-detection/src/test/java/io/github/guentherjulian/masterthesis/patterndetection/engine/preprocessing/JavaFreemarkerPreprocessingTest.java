@@ -60,7 +60,7 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 	}
 
 	@Test
-	void processInvalidFile() throws Exception {
+	void processFileWithInvalidPrefix() throws Exception {
 		Path invalidPrefixFilePath = resourcesPath.resolve("preprocessing").resolve("InvalidPrefix.java");
 		Parser parser = this.createParser(invalidPrefixFilePath);
 
@@ -73,6 +73,41 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 
 		assertNotNull(tree);
 		assertNotNull(tree.exception);
+
+		JavaFreeMarkerPreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(
+				invalidPrefixFilePath);
+
+		Path preprocessedFilePath = javaFreeMarkerPreprocessingStep.process();
+		assertTrue(Files.exists(preprocessedFilePath));
+
+		parser = this.createParser(preprocessedFilePath);
+		tree = null;
+		try {
+			tree = parse(parser, parserStartRule);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		assertNotNull(tree);
+		assertNull(tree.exception);
+
+		Files.delete(preprocessedFilePath);
+	}
+
+	@Test
+	void processFileWithInvalidSuffix() throws Exception {
+		Path invalidPrefixFilePath = resourcesPath.resolve("preprocessing").resolve("InvalidSuffix.java");
+		Parser parser = this.createParser(invalidPrefixFilePath);
+
+		ParserRuleContext tree = null;
+		try {
+			tree = parse(parser, parserStartRule);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		assertNotNull(tree);
+		// assertNotNull(tree.exception);
 
 		JavaFreeMarkerPreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(
 				invalidPrefixFilePath);

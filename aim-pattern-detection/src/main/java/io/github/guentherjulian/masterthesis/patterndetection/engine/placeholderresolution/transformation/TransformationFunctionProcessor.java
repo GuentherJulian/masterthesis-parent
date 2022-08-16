@@ -4,10 +4,6 @@ import java.util.List;
 
 public interface TransformationFunctionProcessor {
 
-	List<String> processTransformationFunction(String transformationFunction, String substitution) throws Exception;
-
-	String getTransformationFunctionPackageName();
-
-	String getTransformationFunctionJavaClassName(String transformationFunction);
-
+	List<String> processTransformationFunction(String transformationFunction, String[] args, String substitution)
+			throws Exception;
 }
