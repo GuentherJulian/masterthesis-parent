@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidMetalanguageConfigurationException;
+import io.github.guentherjulian.masterthesis.patterndetection.exception.InvalidMetalanguageConfigurationException;
 
 public class MetaLanguageConfiguration {
 
@@ -41,7 +41,8 @@ public class MetaLanguageConfiguration {
 
 	public void readMetaLanguageConfiguration(Path configFile) throws InvalidMetalanguageConfigurationException {
 		if (!Files.exists(configFile)) {
-			throw new InvalidMetalanguageConfigurationException("Unable to load configuration. Filepath does not exist: " + configFile);
+			throw new InvalidMetalanguageConfigurationException(
+					"Unable to load configuration. Filepath does not exist: " + configFile);
 		}
 
 		try {
@@ -54,6 +55,8 @@ public class MetaLanguageConfiguration {
 			String regexElse = properties.getProperty("METALANGUAGE_REGEX_ELSE");
 			String regexIfClose = properties.getProperty("METALANGUAGE_REGEX_IF_CLOSE");
 			String regexList = properties.getProperty("METALANGUAGE_REGEX_LIST");
+			String regexListCollectionVar = properties.getProperty("METALANGUAGE_REGEX_LIST_COLLECTION_VAR");
+			String regexListIterationVar = properties.getProperty("METALANGUAGE_REGEX_LIST_ITERATION_VAR");
 			String regexListClose = properties.getProperty("METALANGUAGE_REGEX_LIST_CLOSE");
 			String regexPlaceholder = properties.getProperty("METALANGUAGE_REGEX_PLACEHOLDER");
 			String metaLangFileExtension = properties.getProperty("METALANGUAGE_FILE_EXTENSION");
@@ -68,12 +71,12 @@ public class MetaLanguageConfiguration {
 			String lexerRuleNamePrefix = properties.getProperty("METALANGUAGE_LEXER_RULE_PREFIX");
 
 			this.metaLanguagePattern = new CustomMetaLanguagePattern(regexPlaceholder, regexIf, regexIfElse, regexElse,
-					regexIfClose, regexList, regexListClose, metaLangFileExtension);
+					regexIfClose, regexList, regexListCollectionVar, regexListIterationVar, regexListClose,
+					metaLangFileExtension);
 
 			this.metaLanguageLexerRules = new CustomLexerRuleNames(lexerRuleNamePrefix, lexerRuleNameIf,
 					lexerRuleNameIfElse, lexerRuleNameElse, lexerRuleNameIfClose, lexerRuleNameList,
 					lexerRuleNameListClose, lexerRuleNamePlaceholder);
-
 		} catch (IOException e) {
 			throw new InvalidMetalanguageConfigurationException(e.getMessage());
 		}

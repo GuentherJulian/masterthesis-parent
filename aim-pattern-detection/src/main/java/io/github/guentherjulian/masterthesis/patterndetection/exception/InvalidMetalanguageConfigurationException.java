@@ -1,4 +1,4 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.exception;
+package io.github.guentherjulian.masterthesis.patterndetection.exception;
 
 public class InvalidMetalanguageConfigurationException extends Exception {
 

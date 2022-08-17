@@ -1,6 +1,6 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderResolutionException;
+import io.github.guentherjulian.masterthesis.patterndetection.exception.PlaceholderResolutionException;
 
 public interface PlaceholderResolver {
 

@@ -31,6 +31,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 	private Stack<Boolean> toPop = new Stack<>();
 	private Stack<ParseTreePath> lastParseTreeElement = new Stack<>();
 	private Stack<ParseTreePathList> lastPotentialElsePath = new Stack<>();
+	private Stack<MetaLanguageElement> openMetalanguageElements = new Stack<>();
 
 	public ParseTreeTransformationListener(Vocabulary parserVocabulary, Map<String, List<String>> listPatterns,
 			MetaLanguageLexerRules metaLanguageLexerRules, ObjectLanguageProperties objectLanguageProperties) {
@@ -110,6 +111,8 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			atomic.setIsMetaLang(true);
 			this.currentCollection.peek().add(atomic);
 			this.currentCollection.push(atomic);
+
+			this.openMetalanguageElements.add(MetaLanguageElement.IF);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getElseTokenLexerRuleName())) {
 			// ELSE case
 			this.lastPotentialElsePath.peek().setType(ListType.ALTERNATIVE);
@@ -131,21 +134,12 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 			this.currentCollection.pop();
 			this.currentCollection.pop();
 
-			/*
-			 * ParseTreePathList p = this.currentCollection.pop();
-			 * LOGGER.info("Last was {}", p.getType()); p = this.currentCollection.pop();
-			 * LOGGER.info("Last was {}", p.getType());
-			 * 
-			 * p = (ParseTreePathList) this.currentCollection.get(0).get(0);
-			 * LOGGER.info("{}", p.getType()); for (ParseTreeElement parseTreeElement : p) {
-			 * if (parseTreeElement instanceof ParseTreePathList) { LOGGER.info("{}",
-			 * ((ParseTreePathList) parseTreeElement).getType());
-			 * 
-			 * ParseTreePathList l = (ParseTreePathList) ((ParseTreePathList)
-			 * parseTreeElement).get(0); LOGGER.info("l {}", l.getType()); } }
-			 */
-
-			this.lastPotentialElsePath.pop();
+			// Might be that the closing symbol is the same for ifs and lists.
+			// Check if current metalanguage element is really a if block
+			if (this.openMetalanguageElements.peek() == MetaLanguageElement.IF) {
+				this.lastPotentialElsePath.pop();
+			}
+			this.openMetalanguageElements.pop();
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getListTokenLexerRuleName())) {
 			// LIST case
 			ParseTreePathList optional = new ParseTreePathList(ListType.OPTIONAL, node.getText(), null);
@@ -155,10 +149,13 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 					MetaLanguageElement.LIST);
 			this.currentCollection.peek().add(arbitrary);
 			this.currentCollection.push(arbitrary);
+
+			this.openMetalanguageElements.add(MetaLanguageElement.LIST);
 		} else if (tokenType.equals(this.metaLanguageLexerRules.getListCloseTokenLexerRuleName())) {
 			// LIST CLOSE case
 			this.currentCollection.pop();
 			this.currentCollection.pop();
+			this.openMetalanguageElements.pop();
 		} else {
 			boolean isMetaLanguage = tokenType.toLowerCase()
 					.startsWith(this.metaLanguageLexerRules.getMetaLanguagePrefix());

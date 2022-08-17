@@ -2,7 +2,7 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.placeholde
 
 import java.util.List;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderTransformationFunctionCallException;
+import io.github.guentherjulian.masterthesis.patterndetection.exception.PlaceholderTransformationFunctionCallException;
 
 public interface ReverseTransformationFunction {
 

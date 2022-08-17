@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidMetalanguageConfigurationException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.CustomLexerRuleNames;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.CustomMetaLanguagePattern;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
@@ -26,6 +25,7 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.o
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.exception.InvalidMetalanguageConfigurationException;
 
 public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
 

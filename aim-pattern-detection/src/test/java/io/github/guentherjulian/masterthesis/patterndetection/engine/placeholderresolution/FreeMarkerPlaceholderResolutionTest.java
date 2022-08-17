@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderResolutionException;
+import io.github.guentherjulian.masterthesis.patterndetection.exception.PlaceholderResolutionException;
 
 public class FreeMarkerPlaceholderResolutionTest extends AbstractPlaceholderResolutionTest {
 

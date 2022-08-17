@@ -16,6 +16,10 @@ public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	private static final String META_LANG_LIST = "#foreach[ \\t]*[(](.+)in(.+)[)]";
 
+	private static final String META_LANG_LIST_COLLECTION_VAR = "#foreach[ \\t]*[(].+in(.+)[)]";
+
+	private static final String META_LANG_LIST_ITERATION_VAR = "#foreach[ \\t]*[(](.+)in.+[)]";
+
 	private static final String META_LANG_LIST_CLOSE = "#end";
 
 	private static final String META_LANG_FILE_EXTENSION = "vm";
@@ -46,6 +50,16 @@ public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
 	}
 
 	@Override
+	public Pattern getMetaLangPatternListCollectionVariable() {
+		return Pattern.compile(META_LANG_LIST_COLLECTION_VAR);
+	}
+
+	@Override
+	public Pattern getMetaLangPatternListIterationVariable() {
+		return Pattern.compile(META_LANG_LIST_ITERATION_VAR);
+	}
+
+	@Override
 	public Pattern getMetaLangPatternListClose() {
 		return Pattern.compile(META_LANG_LIST_CLOSE);
 	}
@@ -57,6 +71,6 @@ public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	@Override
 	public String getMetaLangFileExtension() {
-		return this.META_LANG_FILE_EXTENSION;
+		return META_LANG_FILE_EXTENSION;
 	}
 }

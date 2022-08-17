@@ -2,7 +2,7 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.
 
 import java.util.regex.Pattern;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.InvalidMetalanguageConfigurationException;
+import io.github.guentherjulian.masterthesis.patterndetection.exception.InvalidMetalanguageConfigurationException;
 
 public class CustomMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
@@ -18,17 +18,23 @@ public class CustomMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	private static String META_LANG_LIST;
 
+	private static String META_LANG_LIST_COLLECTION_VAR;
+
+	private static String META_LANG_LIST_ITERATION_VAR;
+
 	private static String META_LANG_LIST_CLOSE;
 
 	private static String META_LANG_FILE_EXTENSION;
 
 	public CustomMetaLanguagePattern(String patternPlaceholder, String patternIf, String patternIfElse,
-			String patternElse, String patternIfClose, String patternList, String patternListClose,
-			String fileExtension) throws InvalidMetalanguageConfigurationException {
+			String patternElse, String patternIfClose, String patternList, String patternListCollectionVar,
+			String patternListIterationVar, String patternListClose, String fileExtension)
+			throws InvalidMetalanguageConfigurationException {
 
 		if (!checkParametersForValidity(patternPlaceholder, patternIf, patternIfElse, patternElse, patternIfClose,
-				patternList, patternListClose, fileExtension)) {
-			throw new InvalidMetalanguageConfigurationException("Invalid configuration. You have to pass all parameters.");
+				patternList, patternListCollectionVar, patternListIterationVar, patternListClose, fileExtension)) {
+			throw new InvalidMetalanguageConfigurationException(
+					"Invalid configuration. You have to pass all parameters.");
 		}
 
 		META_LANG_PLACEHOLDER = patternPlaceholder;
@@ -37,6 +43,8 @@ public class CustomMetaLanguagePattern extends AbstractMetaLanguagePattern {
 		META_LANG_ELSE = patternElse;
 		META_LANG_IF_CLOSE = patternIfClose;
 		META_LANG_LIST = patternList;
+		META_LANG_LIST_COLLECTION_VAR = patternListCollectionVar;
+		META_LANG_LIST_ITERATION_VAR = patternListIterationVar;
 		META_LANG_LIST_CLOSE = patternListClose;
 		META_LANG_FILE_EXTENSION = fileExtension;
 	}
@@ -67,6 +75,16 @@ public class CustomMetaLanguagePattern extends AbstractMetaLanguagePattern {
 	}
 
 	@Override
+	public Pattern getMetaLangPatternListCollectionVariable() {
+		return Pattern.compile(META_LANG_LIST_COLLECTION_VAR);
+	}
+
+	@Override
+	public Pattern getMetaLangPatternListIterationVariable() {
+		return Pattern.compile(META_LANG_LIST_ITERATION_VAR);
+	}
+
+	@Override
 	public Pattern getMetaLangPatternListClose() {
 		return Pattern.compile(META_LANG_LIST_CLOSE);
 	}
@@ -82,12 +100,12 @@ public class CustomMetaLanguagePattern extends AbstractMetaLanguagePattern {
 	}
 
 	private boolean checkParametersForValidity(String patternPlaceholder, String patternIf, String patternIfElse,
-			String patternElse, String patternIfClose, String patternList, String patternListClose,
-			String fileExtension) {
+			String patternElse, String patternIfClose, String patternList, String patternListCollectionVar,
+			String patternListIterationVar, String patternListClose, String fileExtension) {
 
 		if (isEmpty(patternPlaceholder) || isEmpty(patternIf) || isEmpty(patternIfElse) || isEmpty(patternElse)
-				|| isEmpty(patternIfClose) || isEmpty(patternList) || isEmpty(patternListClose)
-				|| isEmpty(fileExtension)) {
+				|| isEmpty(patternIfClose) || isEmpty(patternList) || isEmpty(patternListCollectionVar)
+				|| isEmpty(patternListIterationVar) || isEmpty(patternListClose) || isEmpty(fileExtension)) {
 			return false;
 		}
 

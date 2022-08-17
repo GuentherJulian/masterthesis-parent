@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.exception.PlaceholderResolutionException;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.transformation.TransformationFunction;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.transformation.TransformationFunctionProcessor;
+import io.github.guentherjulian.masterthesis.patterndetection.exception.PlaceholderResolutionException;
 
 public abstract class AbstractPlaceholderResolver implements PlaceholderResolver {
 
