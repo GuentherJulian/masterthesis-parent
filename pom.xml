@@ -44,5 +44,6 @@
 	<modules>
 		<module>parsing</module>
 		<module>aim-pattern-detection</module>
+		<module>grammar-generation</module>
 	</modules>
 </project>
