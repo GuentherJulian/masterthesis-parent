@@ -207,6 +207,23 @@
               <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/java8stringtemplatetemplate</outputDirectory>
             </configuration>
           </execution>
+          <execution>
+            <id>antlr4-java-stringtemplate-preprocessed-template-parser</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${basedir}/src/main/resources/grammars/java8StringTemplatePreprocessedTemplate</sourceDirectory>
+              <includes>
+                <include>Java8StringTemplatePreprocessedTemplate.g4</include>
+              </includes>
+              <arguments>
+                <argument>-package</argument>
+                <argument>org.antlr.parser.java8stringtemplatepreprocessedtemplate</argument>
+              </arguments>
+              <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/java8stringtemplatepreprocessedtemplate</outputDirectory>
+            </configuration>
+          </execution>
 
           <execution>
             <id>antlr4-c-freemarker-template-parser</id>

@@ -1,5 +1,5 @@
 public class A {
-	<fields :{ field |
+	<fields : { field |
 		private int <field>;
 	}>
 }

@@ -74,8 +74,7 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 		assertNotNull(tree);
 		assertNotNull(tree.exception);
 
-		JavaFreeMarkerPreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(
-				invalidPrefixFilePath);
+		PreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(invalidPrefixFilePath);
 
 		Path preprocessedFilePath = javaFreeMarkerPreprocessingStep.process();
 		assertTrue(Files.exists(preprocessedFilePath));

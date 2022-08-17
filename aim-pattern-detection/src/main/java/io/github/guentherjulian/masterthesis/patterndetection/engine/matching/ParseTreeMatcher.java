@@ -49,6 +49,8 @@ public class ParseTreeMatcher {
 	private Stack<String> listPlaceholderCollectionVariable = new Stack<>();
 	private Stack<String> listPlaceholderIterationVariable = new Stack<>();
 
+	private final static boolean PRINT_EXCEPTION_STACKTRACE = true;
+
 	public ParseTreeMatcher(ParseTree compilationUnitParseTree, ParseTree aimPatternTemplateParseTree,
 			MetaLanguageConfiguration metaLanguageConfiguration, PlaceholderResolver placeholderResolver) {
 		this.compilationUnitParseTree = compilationUnitParseTree;
@@ -80,9 +82,11 @@ public class ParseTreeMatcher {
 		} catch (RuntimeException e) {
 			// e.printStackTrace();
 			LOGGER.error(e.getMessage());
+			logError(e);
 		} catch (NoMatchException e) {
 			this.treeMatch.setMatch(false);
 			this.treeMatch.setException(e);
+			logError(e);
 		}
 
 		long endTime = System.nanoTime();
@@ -128,6 +132,7 @@ public class ParseTreeMatcher {
 		} catch (RuntimeException e) {
 			// e.printStackTrace();
 			LOGGER.error(e.getMessage());
+			logError(e);
 		}
 		/*
 		 * catch (NoMatchException e) { // e.printStackTrace();
@@ -204,9 +209,11 @@ public class ParseTreeMatcher {
 				} catch (RuntimeException e) {
 					// e.printStackTrace();
 					LOGGER.error(e.getMessage());
+					logError(e);
 				} catch (NoMatchException e) {
 					// e.printStackTrace();
 					LOGGER.error(e.getMessage());
+					logError(e);
 				}
 
 				if (match) {
@@ -259,9 +266,11 @@ public class ParseTreeMatcher {
 				} catch (RuntimeException e) {
 					// e.printStackTrace();
 					LOGGER.error(e.getMessage());
+					logError(e);
 				} catch (NoMatchException e) {
 					// e.printStackTrace();
 					LOGGER.error(e.getMessage());
+					logError(e);
 				}
 
 				if (match) {
@@ -767,5 +776,11 @@ public class ParseTreeMatcher {
 			}
 		}
 		return newSubstitutions;
+	}
+
+	private void logError(Exception e) {
+		if (PRINT_EXCEPTION_STACKTRACE) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -19,6 +19,8 @@ abstract class AbstractPreprocessingStep implements PreprocessingStep {
 		this.inputPath = input;
 	}
 
+	abstract String process(String lineToProcess);
+
 	public Path process() throws IOException {
 		List<String> lines = Files.readAllLines(inputPath);
 
