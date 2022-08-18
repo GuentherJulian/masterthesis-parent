@@ -9,6 +9,7 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.Tr
 public class AimPatternDetectionResult {
 
 	private List<AimPatternDetectionResultEntry> results;
+	private long processingTime;
 
 	public AimPatternDetectionResult() {
 		this.results = new ArrayList<>();
@@ -30,5 +31,13 @@ public class AimPatternDetectionResult {
 	public List<TreeMatch> getTreeMatches() {
 		return this.results.stream().map(AimPatternDetectionResultEntry::getTreeMatchResult)
 				.collect(Collectors.toList());
+	}
+
+	public long getProcessingTime() {
+		return processingTime;
+	}
+
+	public void setProcessingTime(long processingTime) {
+		this.processingTime = processingTime;
 	}
 }

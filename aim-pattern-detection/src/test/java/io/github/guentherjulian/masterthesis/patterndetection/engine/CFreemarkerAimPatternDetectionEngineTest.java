@@ -69,6 +69,10 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		assertTrue(treeMatches.get(0).isMatch());
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("var"));
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("var").contains("foo"));
+
+		long processingTime = patternDetectionResult.getProcessingTime();
+		System.out
+				.println(String.format("Pattern detection took %s ns, %s ms", processingTime, (processingTime / 1e6)));
 	}
 
 	@Test
@@ -94,5 +98,9 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		assertTrue(treeMatches.get(0).isMatch());
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("true"));
+
+		long processingTime = patternDetectionResult.getProcessingTime();
+		System.out
+				.println(String.format("Pattern detection took %s ns, %s ms", processingTime, (processingTime / 1e6)));
 	}
 }

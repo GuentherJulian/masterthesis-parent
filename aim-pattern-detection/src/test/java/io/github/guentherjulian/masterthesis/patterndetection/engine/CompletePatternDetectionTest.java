@@ -1,6 +1,7 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -61,8 +62,12 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 				objectLanguageProperties, placeholderResolver);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		long processingTime = patternDetectionResult.getProcessingTime();
+		System.out
+				.println(String.format("Pattern detection took %s ns, %s ms", processingTime, (processingTime / 1e6)));
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 
-		assertEquals(treeMatches.size(), 1);
+		assertEquals(treeMatches.size(), 9);
+		assertTrue(false);
 	}
 }

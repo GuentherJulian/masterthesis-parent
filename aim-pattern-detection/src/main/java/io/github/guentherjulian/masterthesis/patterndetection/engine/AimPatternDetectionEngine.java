@@ -74,6 +74,7 @@ public class AimPatternDetectionEngine {
 
 	public AimPatternDetectionResult detect(String startRuleName) throws Exception {
 		AimPatternDetectionResult result = new AimPatternDetectionResult();
+		long processingTimeStart = System.nanoTime();
 
 		// Each path only has one parse tree
 		Map<Path, ParseTree> compilationUnitParseTrees = new LinkedHashMap<Path, ParseTree>();
@@ -168,6 +169,8 @@ public class AimPatternDetectionEngine {
 				}
 			}
 		}
+		long processingTimeEnd = System.nanoTime();
+		result.setProcessingTime(processingTimeEnd - processingTimeStart);
 
 		return result;
 	}
