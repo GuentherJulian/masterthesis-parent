@@ -96,7 +96,8 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 
 		assertTrue(metaLanguageConfiguration.getMetaLanguageLexerRules() instanceof CustomLexerRuleNames);
 		assertTrue(metaLanguageConfiguration.getMetaLanguagePattern() instanceof CustomMetaLanguagePattern);

@@ -66,7 +66,8 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
@@ -93,7 +94,8 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
 		assertEquals(treeMatches.get(0).getPlaceholderSubstitutions().size(), 4);
@@ -130,7 +132,8 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 
 		assertEquals(treeMatches.size(), 2);
 		assertTrue(treeMatches.get(0).isMatch());
@@ -166,7 +169,8 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 3);
 		assertTrue(treeMatches.get(0).isMatch());
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
@@ -198,7 +202,8 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
 
 		assertTrue(treeMatches.get(0).isMatch());

@@ -63,7 +63,8 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("var"));
@@ -87,7 +88,8 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver);
 
-		List<TreeMatch> treeMatches = aimPatternDetectionEngine.detect();
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));

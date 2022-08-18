@@ -68,11 +68,12 @@ public class AimPatternDetectionEngine {
 		this.placeholderResolver = placeholderResolver;
 	}
 
-	public List<TreeMatch> detect() throws Exception {
+	public AimPatternDetectionResult detect() throws Exception {
 		return detect("compilationUnit");
 	}
 
-	public List<TreeMatch> detect(String startRuleName) throws Exception {
+	public AimPatternDetectionResult detect(String startRuleName) throws Exception {
+		AimPatternDetectionResult result = new AimPatternDetectionResult();
 
 		// Each path only has one parse tree
 		Map<Path, ParseTree> compilationUnitParseTrees = new LinkedHashMap<Path, ParseTree>();
@@ -113,7 +114,6 @@ public class AimPatternDetectionEngine {
 				((endTime - startTime) / 1e6));
 
 		// TODO Implement iteration over all aim pattern
-		List<TreeMatch> treeMatches = new ArrayList<>();
 		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.get(0).getAimPatternTemplates()) {
 
 			LOGGER.info("Process AIM pattern template {}", aimPatternTemplate.getTemplatePath());
@@ -161,12 +161,15 @@ public class AimPatternDetectionEngine {
 							compilationUnitPath.getFileName());
 					TreeMatch treeMatch = this.match(compilationUnitParseTree, transformedParseTrees,
 							placeholderSubstitutions);
-					treeMatches.add(treeMatch);
+
+					AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
+							compilationUnitPath, aimPatternTemplate.getTemplatePath(), treeMatch);
+					result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
 				}
 			}
 		}
 
-		return treeMatches;
+		return result;
 	}
 
 	private TreeMatch match(ParseTree compilationUnitParseTree, List<ParseTree> aimPatternParseTrees,

@@ -49,7 +49,7 @@ public class ParseTreeMatcher {
 	private Stack<String> listPlaceholderCollectionVariable = new Stack<>();
 	private Stack<String> listPlaceholderIterationVariable = new Stack<>();
 
-	private final static boolean PRINT_EXCEPTION_STACKTRACE = true;
+	private final static boolean PRINT_EXCEPTION_STACKTRACE = false;
 
 	public ParseTreeMatcher(ParseTree compilationUnitParseTree, ParseTree aimPatternTemplateParseTree,
 			MetaLanguageConfiguration metaLanguageConfiguration, PlaceholderResolver placeholderResolver) {
