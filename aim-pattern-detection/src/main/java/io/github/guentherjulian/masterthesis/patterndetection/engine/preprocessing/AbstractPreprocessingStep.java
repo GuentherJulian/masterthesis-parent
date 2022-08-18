@@ -1,10 +1,9 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
 
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 abstract class AbstractPreprocessingStep implements PreprocessingStep {
@@ -21,27 +20,17 @@ abstract class AbstractPreprocessingStep implements PreprocessingStep {
 
 	abstract String process(String lineToProcess);
 
-	public Path process() throws IOException {
+	public byte[] process() throws IOException {
 		List<String> lines = Files.readAllLines(inputPath);
 
-		Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
-		String fileName = this.inputPath.getFileName().toString();
-		String extension = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-		fileName = fileName.substring(0, fileName.lastIndexOf("."));
-		Path tempFile = Files.createTempFile(tempDir, fileName, extension);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		for (String line : lines) {
+			String processedLine = line;
 
-		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFile)) {
-			for (String line : lines) {
-				String processedLine = line;
-
-				processedLine = this.process(processedLine);
-				bufferedWriter.append(processedLine);
-				bufferedWriter.append(System.lineSeparator());
-			}
-
-			bufferedWriter.close();
+			processedLine = this.process(processedLine);
+			byteArrayOutputStream.write(processedLine.getBytes());
 		}
 
-		return tempFile;
+		return byteArrayOutputStream.toByteArray();
 	}
 }

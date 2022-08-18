@@ -5,9 +5,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.antlr.parser.cfreemarkertemplate.CFreemarkerTemplateParser;
-import org.antlr.parser.csharp.CSharpLexer;
 import org.antlr.parser.csharp.CSharpParser;
+import org.antlr.parser.csharpcombined.CSharpLexerCombined;
+import org.antlr.parser.csharpcombined.CSharpParserCombined;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,19 +28,29 @@ public class CSharpFreemarkerTemplateGrammarParserTest extends AbstractParserTes
 		testResourcesPath = Paths.get(CSharpFreemarkerTemplateGrammarParserTest.class.getProtectionDomain()
 				.getCodeSource().getLocation().toURI()).getParent().getParent().resolve("src/test/resources");
 
-		parserClass = CSharpParser.class;
-		lexerClass = CSharpLexer.class;
+		parserClass = CSharpParserCombined.class;
+		lexerClass = CSharpLexerCombined.class;
 
 		grammar = Paths.get(JavaGrammarParserTest.class.getProtectionDomain().getCodeSource().getLocation().toURI())
 				.getParent().resolve("classes").resolve("grammars/csharp/CSharpParser.g4");
 	}
 
 	@Test
+	void csharpWithoutMetalanguageTest() throws Exception {
+		Path inputFile = testResourcesPath.resolve("compilation-units/csharp/HelloWorld.cs");
+
+		TemplateParser<CSharpParser> templateParser = getTemplateParser("compilation_unit", inputFile, grammar);
+		List<ParserRuleContext> trees = templateParser.parseAmbiguties(PredictionMode.LL);
+		for (ParserRuleContext tree : trees) {
+			templateParser.showTree(tree);
+		}
+	}
+
+	@Test
 	void csharpFreeMarkerSimpleTest() throws Exception {
 		Path inputFile = testResourcesPath.resolve("compilation-units/csharp/HelloWorld.cs");
 
-		TemplateParser<CFreemarkerTemplateParser> templateParser = getTemplateParser("compilation_unit", inputFile,
-				grammar);
+		TemplateParser<CSharpParserCombined> templateParser = getTemplateParser("compilation_unit", inputFile, grammar);
 		List<ParserRuleContext> trees = templateParser.parseAmbiguties(PredictionMode.LL);
 		for (ParserRuleContext tree : trees) {
 			templateParser.showTree(tree);

@@ -2,10 +2,8 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocess
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.antlr.parser.java8freemarkertemplate.Java8FreemarkerTemplateLexer;
@@ -76,10 +74,9 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 
 		PreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(invalidPrefixFilePath);
 
-		Path preprocessedFilePath = javaFreeMarkerPreprocessingStep.process();
-		assertTrue(Files.exists(preprocessedFilePath));
+		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process();
 
-		parser = this.createParser(preprocessedFilePath);
+		parser = this.createParser(preprocessedFileByteArray);
 		tree = null;
 		try {
 			tree = parse(parser, parserStartRule);
@@ -89,8 +86,6 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 
 		assertNotNull(tree);
 		assertNull(tree.exception);
-
-		Files.delete(preprocessedFilePath);
 	}
 
 	@Test
@@ -111,10 +106,10 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 		JavaFreeMarkerPreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(
 				invalidPrefixFilePath);
 
-		Path preprocessedFilePath = javaFreeMarkerPreprocessingStep.process();
-		assertTrue(Files.exists(preprocessedFilePath));
+		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process();
 
-		parser = this.createParser(preprocessedFilePath);
+		parser = this.createParser(preprocessedFileByteArray);
+
 		tree = null;
 		try {
 			tree = parse(parser, parserStartRule);
@@ -124,7 +119,5 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 
 		assertNotNull(tree);
 		assertNull(tree.exception);
-
-		Files.delete(preprocessedFilePath);
 	}
 }

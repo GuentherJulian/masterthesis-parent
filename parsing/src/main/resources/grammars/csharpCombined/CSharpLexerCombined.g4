@@ -1,8 +1,4 @@
-// Eclipse Public License - v 1.0, http://www.eclipse.org/legal/epl-v10.html
-// Copyright (c) 2013, Christian Wulf (chwchw@gmx.de)
-// Copyright (c) 2016-2017, Ivan Kochurkin (kvanttt@gmail.com), Positive Technologies.
-
-lexer grammar CSharpLexer;
+lexer grammar CSharpLexerCombined;
 
 channels { COMMENTS_CHANNEL, DIRECTIVE }
 
@@ -1056,3 +1052,53 @@ fragment UnicodeClassND
 	| '\uabf0'..'\uabf9'
 	| '\uff10'..'\uff19'
 	;
+FM_PLACEHOLDER: '${' ~'}'+? '}';
+FM_IF: '<#if' ~'>'+? '>';
+FM_IF_CLOSE: '</#if>';
+FM_ELSE_IF: '<#elseif' ~'>'+? '>';
+FM_ELSE: '<#else>';
+FM_LIST: '<#list' .+? 'as' ~'>'+? '>';
+FM_LIST_CLOSE: '</#list>';
+FM_ImplicitToken1:'.';
+FM_ImplicitToken2:'?';
+FM_ImplicitToken3:'*';
+FM_ImplicitToken4:'(';
+FM_ImplicitToken5:',';
+FM_ImplicitToken6:')';
+FM_ImplicitToken7:'<';
+FM_ImplicitToken8:'>';
+FM_ImplicitToken9:':';
+FM_ImplicitToken10:'??=';
+FM_ImplicitToken11:'=';
+FM_ImplicitToken12:'+=';
+FM_ImplicitToken13:'-=';
+FM_ImplicitToken14:'*=';
+FM_ImplicitToken15:'/=';
+FM_ImplicitToken16:'%=';
+FM_ImplicitToken17:'&=';
+FM_ImplicitToken18:'|=';
+FM_ImplicitToken19:'^=';
+FM_ImplicitToken20:'<<=';
+FM_ImplicitToken21:'??';
+FM_ImplicitToken22:'|';
+FM_ImplicitToken23:'^';
+FM_ImplicitToken24:'&';
+FM_ImplicitToken25:'<=';
+FM_ImplicitToken26:'>=';
+FM_ImplicitToken27:'<<';
+FM_ImplicitToken28:'+';
+FM_ImplicitToken29:'-';
+FM_ImplicitToken30:'/';
+FM_ImplicitToken31:'%';
+FM_ImplicitToken32:'switch';
+FM_ImplicitToken33:'{';
+FM_ImplicitToken34:'}';
+FM_ImplicitToken35:'~';
+FM_ImplicitToken36:'++';
+FM_ImplicitToken37:'--';
+FM_ImplicitToken38:'!';
+FM_ImplicitToken39:'->';
+FM_ImplicitToken40:'[';
+FM_ImplicitToken41:']';
+FM_ImplicitToken42:'::';
+FM_ImplicitToken43:';';

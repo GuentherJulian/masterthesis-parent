@@ -1,65 +1,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.github.guentherjulian.masterthesis</groupId>
-    <artifactId>masterthesis-parent</artifactId>
-    <version>dev-SNAPSHOT</version>
-  </parent>
-  <artifactId>grammar-generation</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
-  <dependencies>
-  
-  <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-      <version>2.3.23</version>
-    </dependency>
-    
-    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-<dependency>
-    <groupId>org.antlr</groupId>
-    <artifactId>antlr4</artifactId>
-    <version>4.7</version>
-</dependency>
-    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-<dependency>
-    <groupId>org.antlr</groupId>
-    <artifactId>antlr4-runtime</artifactId>
-    <version>4.7</version>
-</dependency>
-    
-  </dependencies>
-  
-  <build>
-    <plugins>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.github.guentherjulian.masterthesis</groupId>
+		<artifactId>masterthesis-parent</artifactId>
+		<version>dev-SNAPSHOT</version>
+	</parent>
+	<artifactId>grammar-generation</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 
-      <plugin>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-maven-plugin</artifactId>
-        <version>4.7</version>
-        <executions>
-          <execution>
-            <id>antlr4-parser</id>
-            <goals>
-              <goal>antlr4</goal>
-            </goals>
-            <configuration>
-              <sourceDirectory>${basedir}/src/main/resources/grammars/antlr4</sourceDirectory>
-              <includes>
-                <include>LexBasic.g4</include>
-                <include>ANTLRv4Lexer.g4</include>
-                <include>ANTLRv4Parser.g4</include>
-              </includes>
-              <arguments>
-                <argument>-package</argument>
-                <argument>org.antlr.parser.antlr4</argument>
-              </arguments>
-              <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/antlr4</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+	<dependencies>
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.23</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>${antlr4.version}</version>
+				<executions>
+					<execution>
+						<id>antlr4-parser</id>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>${basedir}/src/main/resources/grammars/antlr4</sourceDirectory>
+							<includes>
+								<include>LexBasic.g4</include>
+								<include>ANTLRv4Lexer.g4</include>
+								<include>ANTLRv4Parser.g4</include>
+							</includes>
+							<arguments>
+								<argument>-package</argument>
+								<argument>org.antlr.parser.antlr4</argument>
+							</arguments>
+							<outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/antlr4</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

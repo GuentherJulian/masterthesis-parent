@@ -20,24 +20,19 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 
 /**
  * The core of the template transformation tool.
  */
 public class GrammarExtenderCore {
 
-	public static Path extendGrammarAndGenerateParser(Path objectGrammarPath, Path destinationPath,
-			Tactics extensionTactic, Path metalanguageGrammarPath, String newGrammarName, String metaLangPrefix,
-			String placeHolderName, String targetPackage, String anyTokenName) throws IOException, TemplateException {
+	public static Path extendGrammar(Path objectGrammarPath, Path destinationPath, Tactics extensionTactic,
+			Path metalanguageGrammarPath, String newGrammarName, String metaLangPrefix, String placeHolderName,
+			String targetPackage, String anyTokenName) throws IOException, TemplateException {
 
 		// parse metalanguage
-		InputStream metalanguageGrammarInputStream = new FileInputStream(metalanguageGrammarPath.toFile());
-		CharStream metalanguageCharStream = CharStreams.fromStream(metalanguageGrammarInputStream);
-		ANTLRv4Lexer metalanguageGrammarLexer = new ANTLRv4Lexer(metalanguageCharStream);
+		ANTLRv4Lexer metalanguageGrammarLexer = getLexer(metalanguageGrammarPath);
 		CommonTokenStream metaTokens = new CommonTokenStream(metalanguageGrammarLexer);
 		ANTLRv4Parser metaParser = new ANTLRv4Parser(metaTokens);
 		GrammarSpecContext metaTree = metaParser.grammarSpec();
@@ -54,9 +49,7 @@ public class GrammarExtenderCore {
 				metaCollector.getParserRules(), metaCollector.getLexerRules(), anyTokenName);
 
 		// parse object Language
-		InputStream objectLanguageGrammarInputStream = new FileInputStream(objectGrammarPath.toFile());
-		CharStream objectLanguageCharStream = CharStreams.fromStream(objectLanguageGrammarInputStream);
-		ANTLRv4Lexer objectLexer = new ANTLRv4Lexer(objectLanguageCharStream);
+		ANTLRv4Lexer objectLexer = getLexer(objectGrammarPath);
 		CommonTokenStream objectTokens = new CommonTokenStream(objectLexer);
 		ANTLRv4Parser objectParser = new ANTLRv4Parser(objectTokens);
 		GrammarSpecContext objectTree = objectParser.grammarSpec();
@@ -82,11 +75,10 @@ public class GrammarExtenderCore {
 		printToFile(newGrammarPath, transformedParserGrammar);
 
 		InputStream targetStream = new ByteArrayInputStream(transformedParserGrammar.getBytes());
-		CharStream c = CharStreams.fromStream(targetStream);
-		objectLexer = new ANTLRv4Lexer(c);
-		CommonTokenStream tokenStream = new CommonTokenStream(objectLexer);
-		objectParser = new ANTLRv4Parser(tokenStream);
-		objectTree = objectParser.grammarSpec();
+		ANTLRv4Lexer objectLanguageLexer = getLexer(targetStream);
+		CommonTokenStream tokenStream = new CommonTokenStream(objectLanguageLexer);
+		ANTLRv4Parser objectLanguageParser = new ANTLRv4Parser(tokenStream);
+		objectTree = objectLanguageParser.grammarSpec();
 		LeftRecursiveRuleRewriter recRuleRewriter = new LeftRecursiveRuleRewriter(tokenStream,
 				ruleRewriter.getUsedPlaceholderRules(), grammarSpec);
 		objectWalker.walk(recRuleRewriter, objectTree); // walk parse tree
@@ -102,68 +94,85 @@ public class GrammarExtenderCore {
 		return new File(newGrammarPath.toString()).getAbsoluteFile().toPath();
 	}
 
-	/**
-	 * @param destinationPath
-	 * @param metaLangPrefix
-	 * @param placeHolderName
-	 * @param targetPackage
-	 * @param grammarSpec
-	 * @param destinationFilePath
-	 * @throws IOException
-	 */
-	/*
-	 * private static void generateParser(String destinationPath, String
-	 * metaLangPrefix, String placeHolderName, String targetPackage, GrammarSpec
-	 * grammarSpec, String destinationFilePath) throws IOException { // generate
-	 * parser based on new grammar File newGrammarFile = new
-	 * File(destinationFilePath); generateParserWithANTLR(newGrammarFile,
-	 * targetPackage, metaLangPrefix.toUpperCase() + placeHolderName);
-	 * 
-	 * // generate PlaceholderDetectorListener using Freemarker try {
-	 * generatePlaceholderDetectorListenerWithFreemarker(destinationPath,
-	 * grammarSpec, targetPackage); } catch (TemplateException e) {
-	 * e.printStackTrace(); } }
-	 */
+	public static Path extendGrammar(Path objectGrammarPathLexer, Path objectGrammarPathParser, Path destinationPath,
+			Tactics extensionTactic, Path metalanguageGrammarPath, String newGrammarName, String metaLangPrefix,
+			String placeHolderName, String targetPackage, String anyTokenName) throws IOException, TemplateException {
 
-	private static void generatePlaceholderDetectorListenerWithFreemarker(String destinationPath,
-			GrammarSpec grammarSpec, String targetPackage) throws IOException, TemplateException {
+		// parse metalanguage
+		ANTLRv4Lexer metalanguageGrammarLexer = getLexer(metalanguageGrammarPath);
+		CommonTokenStream metaTokens = new CommonTokenStream(metalanguageGrammarLexer);
+		ANTLRv4Parser metaParser = new ANTLRv4Parser(metaTokens);
+		GrammarSpecContext metaTree = metaParser.grammarSpec();
 
-		/* Create and adjust the configuration singleton */
-		Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-		cfg.setDirectoryForTemplateLoading(new File("src/main/resources"));
-		cfg.setDefaultEncoding("UTF-8");
-		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-		cfg.setSharedVariable("package", targetPackage);
+		// create a standard ANTLR parse tree walker
+		ParseTreeWalker metaWalker = new ParseTreeWalker();
 
-		/* Create a data-model */
-		// just reuse grammarSpec
+		// collect information about meta grammar
+		MetaLanguageListener metaCollector = new MetaLanguageListener(metaTokens, metaLangPrefix, anyTokenName);
+		metaWalker.walk(metaCollector, metaTree); // walk parse tree
 
-		/* Get the template (uses cache internally) */
-		Template temp = cfg.getTemplate("PlaceholderDetectorListenerTemplate.ftl");
+		// create grammarspec using metagrammar infos
+		GrammarSpec grammarSpec = new GrammarSpec(newGrammarName, metaLangPrefix, placeHolderName,
+				metaCollector.getParserRules(), metaCollector.getLexerRules(), anyTokenName);
 
-		/* Merge data-model with template */
-		Writer out = new FileWriter(
-				new File(destinationPath + grammarSpec.getNewGrammarName() + "PlaceholderDetectorListener.java"));
-		temp.process(grammarSpec, out);
-		out.close();
+		// =================
+		// =================
+		// parse object language lexer
+		ANTLRv4Lexer objectLanguageLexerLexer = getLexer(objectGrammarPathLexer);
+		CommonTokenStream objectlanguageTokensLexer = new CommonTokenStream(objectLanguageLexerLexer);
+		ANTLRv4Parser objectParser = new ANTLRv4Parser(objectlanguageTokensLexer);
+		GrammarSpecContext objectTreeLexer = objectParser.grammarSpec();
 
+		ParseTreeWalker objectWalker = new ParseTreeWalker();
+
+		// collect information about object grammar lexer
+		ObjectLanguageListener objectCollector = new ObjectLanguageListener(extensionTactic);
+		objectWalker.walk(objectCollector, objectTreeLexer); // walk parse tree
+		List<String> multiLexerRules = objectCollector.getMultiLexerRules();
+		Map<String, String> tokenNames = objectCollector.getTokenNames();
+		HashSet<String> selectedRules = objectCollector.getSelectedRules();
+
+		// extend rules
+		RulePlaceholderRewriter ruleRewriter = new RulePlaceholderRewriter(objectlanguageTokensLexer, tokenNames,
+				selectedRules, multiLexerRules, grammarSpec);
+		objectWalker.walk(ruleRewriter, objectTreeLexer); // walk parse tree
+		String transformedParserGrammar = ruleRewriter.getRewriter().getText();
+
+		// write down to detect left recursions and unfold them if they are starting
+		// with an alt-block
+		Path newGrammarPath = destinationPath.resolve(grammarSpec.getNewGrammarName() + ".g4");
+		printToFile(newGrammarPath, transformedParserGrammar);
+
+		InputStream targetStream = new ByteArrayInputStream(transformedParserGrammar.getBytes());
+		ANTLRv4Lexer objectLanguageLexer = getLexer(targetStream);
+		CommonTokenStream tokenStream = new CommonTokenStream(objectLanguageLexer);
+		ANTLRv4Parser objectLanguageParser = new ANTLRv4Parser(tokenStream);
+		objectTreeLexer = objectLanguageParser.grammarSpec();
+		LeftRecursiveRuleRewriter recRuleRewriter = new LeftRecursiveRuleRewriter(tokenStream,
+				ruleRewriter.getUsedPlaceholderRules(), grammarSpec);
+		objectWalker.walk(recRuleRewriter, objectTreeLexer); // walk parse tree
+
+		PlaceholderRulesCreator rulesCreator = new PlaceholderRulesCreator(recRuleRewriter.getRewriter(), selectedRules,
+				grammarSpec, ruleRewriter.getCreatedLexerRuleList(), ruleRewriter.getUsedPlaceholderRules());
+		objectWalker.walk(rulesCreator, objectTreeLexer); // walk parse tree
+
+		// print manipulated grammar to file
+		newGrammarPath = destinationPath.resolve(grammarSpec.getNewGrammarName() + ".g4");
+		printToFile(newGrammarPath, rulesCreator.getRewriter().getText());
+
+		return new File(newGrammarPath.toString()).getAbsoluteFile().toPath();
 	}
 
-	/*
-	 * private static void generateParserWithANTLR(File grammarFile, String
-	 * targetPackage, String placeholderName) throws IOException { String[] args = {
-	 * grammarFile.getCanonicalPath(), "-listener", "-o",
-	 * grammarFile.getParentFile().getCanonicalPath(), "-package", targetPackage,
-	 * "-long-messages", "-metalang-placeholder", placeholderName }; Tool antlr =
-	 * new Tool(args); if (args.length == 0) { antlr.help(); }
-	 * 
-	 * try { antlr.processGrammarsOnCommandLine(); } finally { if (antlr.log) { try
-	 * { String logname = antlr.logMgr.save(); System.out.println("wrote " +
-	 * logname); } catch (IOException ioe) {
-	 * antlr.errMgr.toolError(ErrorType.INTERNAL_ERROR, ioe); } } }
-	 * 
-	 * if (antlr.errMgr.getNumErrors() > 0) { antlr.exit(1); } }
-	 */
+	private static ANTLRv4Lexer getLexer(Path languageGrammarPath) throws IOException {
+		InputStream languageGrammarInputStream = new FileInputStream(languageGrammarPath.toFile());
+		return getLexer(languageGrammarInputStream);
+	}
+
+	private static ANTLRv4Lexer getLexer(InputStream languageGrammarInputStream) throws IOException {
+		CharStream languageGrammarCharStream = CharStreams.fromStream(languageGrammarInputStream);
+		ANTLRv4Lexer lexer = new ANTLRv4Lexer(languageGrammarCharStream);
+		return lexer;
+	}
 
 	private static void printToFile(Path filePath, String data) throws IOException {
 		Writer fw = null;

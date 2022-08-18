@@ -331,6 +331,24 @@
               <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/csharp</outputDirectory>
             </configuration>
           </execution>
+          <execution>
+            <id>antlr4-csharp-combined-freemarker-template-parser</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${basedir}/src/main/resources/grammars/csharpCombined</sourceDirectory>
+              <includes>
+                <include>CSharpParserCombined.g4</include>
+                <include>CSharpLexerCombined.g4</include>
+              </includes>
+              <arguments>
+                <argument>-package</argument>
+                <argument>org.antlr.parser.csharpcombined</argument>
+              </arguments>
+              <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/csharpcombined</outputDirectory>
+            </configuration>
+          </execution>
 
         </executions>
       </plugin>

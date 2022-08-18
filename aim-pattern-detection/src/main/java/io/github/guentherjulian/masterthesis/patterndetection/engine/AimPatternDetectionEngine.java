@@ -1,5 +1,6 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,7 +138,12 @@ public class AimPatternDetectionEngine {
 					startTime = System.nanoTime();
 
 					// TODO only parse template once, not for every compilation unit
-					Parser parser = createParser(aimPatternTemplate.getTemplatePath());
+					Parser parser = null;
+					if (!aimPatternTemplate.isPreprocessed()) {
+						parser = createParser(aimPatternTemplate.getTemplatePath());
+					} else {
+						parser = createParser(aimPatternTemplate.getPreprocessedTemplateByteArray());
+					}
 					templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
 							grammarInputStream);
 
@@ -190,6 +196,23 @@ public class AimPatternDetectionEngine {
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		InputStream inputStream = new FileInputStream(inputPath.toFile());
+		CharStream charStream = CharStreams.fromStream(inputStream);
+
+		Constructor<? extends Lexer> lexerConstructor = this.lexerClass.getConstructor(CharStream.class);
+		Lexer lexer = lexerConstructor.newInstance(charStream);
+
+		TokenStream tokenStream = new CommonTokenStream(lexer);
+		Constructor<? extends Parser> parserConstructor = this.parserClass.getConstructor(TokenStream.class);
+		Parser parser = parserConstructor.newInstance(tokenStream);
+
+		return parser;
+	}
+
+	private Parser createParser(byte[] preprocessedTemplateByteArray)
+			throws IOException, NoSuchMethodException, SecurityException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		InputStream inputStream = new ByteArrayInputStream(preprocessedTemplateByteArray);
 		CharStream charStream = CharStreams.fromStream(inputStream);
 
 		Constructor<? extends Lexer> lexerConstructor = this.lexerClass.getConstructor(CharStream.class);

@@ -148,9 +148,11 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 
 		Path template = templatesPath.resolve("SimpleClassWithIfElseTemplate.java");
 		PreprocessingStep preprocessingStep = new JavaStringTemplatePreprocessingStep(template);
-		Path processedTemplatePath = preprocessingStep.process();
 
-		aimPatternTemplates.add(new AimPatternTemplate(processedTemplatePath, "SimpleClassWithIfElseTemplate.java"));
+		byte[] preprocessedFileByteArray = preprocessingStep.process();
+
+		aimPatternTemplates
+				.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java", preprocessedFileByteArray));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -180,10 +182,11 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 
 		Path template = templatesPath.resolve("SimpleListTemplate.java");
 		PreprocessingStep preprocessingStep = new JavaStringTemplatePreprocessingStep(template);
-		Path processedTemplatePath = preprocessingStep.process();
+
+		byte[] preprocessedFileByteArray = preprocessingStep.process();
 
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(processedTemplatePath, "SimpleListTemplate.java"));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java", preprocessedFileByteArray));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);

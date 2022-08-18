@@ -1,5 +1,6 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,22 @@ public abstract class AbstractPreprocessingTest {
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		InputStream inputStream = new FileInputStream(inputPath.toFile());
+		CharStream charStream = CharStreams.fromStream(inputStream);
+
+		Constructor<? extends Lexer> lexerConstructor = lexerClass.getConstructor(CharStream.class);
+		Lexer lexer = lexerConstructor.newInstance(charStream);
+
+		TokenStream tokenStream = new CommonTokenStream(lexer);
+		Constructor<? extends Parser> parserConstructor = parserClass.getConstructor(TokenStream.class);
+		Parser parser = parserConstructor.newInstance(tokenStream);
+
+		return parser;
+	}
+
+	protected Parser createParser(byte[] byteInput) throws IOException, NoSuchMethodException, SecurityException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		InputStream inputStream = new ByteArrayInputStream(byteInput);
 		CharStream charStream = CharStreams.fromStream(inputStream);
 
 		Constructor<? extends Lexer> lexerConstructor = lexerClass.getConstructor(CharStream.class);
