@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-	#if (anything)
+	#if ($anything)
 	int i;
 	#else
 	int j;

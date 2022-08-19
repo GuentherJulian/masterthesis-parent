@@ -1,4 +1,4 @@
-#if (anything)
+#if ($anything)
 class A {
 	private int i;
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-    int ${var};
+    int $var;
 
     return 0;
 }

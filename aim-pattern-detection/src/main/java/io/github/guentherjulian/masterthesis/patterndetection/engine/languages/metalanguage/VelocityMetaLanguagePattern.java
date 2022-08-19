@@ -6,7 +6,7 @@ public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	private static final String META_LANG_PLACEHOLDER = "\\$\\{(.+)\\}";
 
-	private static final String META_LANG_IF = "#if[ \\t]*[(](.+)[)]";
+	private static final String META_LANG_IF = "#if[ \\t]*[(]\\$(.+)[)]";
 
 	private static final String META_LANG_ELSE = "#else";
 
@@ -16,9 +16,9 @@ public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	private static final String META_LANG_LIST = "#foreach[ \\t]*[(](.+)in(.+)[)]";
 
-	private static final String META_LANG_LIST_COLLECTION_VAR = "#foreach[ \\t]*[(].+in(.+)[)]";
+	private static final String META_LANG_LIST_COLLECTION_VAR = "#foreach[ \\t]*[(].+in \\$(.+)[)]";
 
-	private static final String META_LANG_LIST_ITERATION_VAR = "#foreach[ \\t]*[(](.+)in.+[)]";
+	private static final String META_LANG_LIST_ITERATION_VAR = "#foreach[ \\t]*[(]\\$(.+)in.+[)]";
 
 	private static final String META_LANG_LIST_CLOSE = "#end";
 

@@ -25,6 +25,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.o
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.JavaVelocityPreprocessingStep;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.PreprocessingStep;
 import io.github.guentherjulian.masterthesis.patterndetection.exception.NoMatchException;
 
 public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
@@ -50,9 +52,14 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	@Test
 	void javaVelocitySimplePackageDeclarationTest() throws Exception {
 
+		Path template = templatesPath.resolve("SimplePackageDeclTemplate.java");
+
+		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
+		byte[] preprocessedFileByteArray = preprocessingStep.process();
+
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimplePackageDeclTemplate.java"),
-				"SimplePackageDeclTemplate.java"));
+		aimPatternTemplates
+				.add(new AimPatternTemplate(template, "SimplePackageDeclTemplate.java", preprocessedFileByteArray));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -78,9 +85,14 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	@Test
 	void javaVelocityComplexPackageDeclarationTest() throws Exception {
 
+		Path template = templatesPath.resolve("ComplexPackageDeclTemplate.java");
+
+		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
+		byte[] preprocessedFileByteArray = preprocessingStep.process();
+
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("ComplexPackageDeclTemplate.java"),
-				"ComplexPackageDeclTemplate.java"));
+		aimPatternTemplates
+				.add(new AimPatternTemplate(template, "ComplexPackageDeclTemplate.java", preprocessedFileByteArray));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -114,10 +126,14 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	@Test
 	void javaVelocityCopyConstructorTest() throws Exception {
 
+		Path template = templatesPath.resolve("SimpleClassWithCopyConstructorTemplate.java");
+
+		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
+		byte[] preprocessedFileByteArray = preprocessingStep.process();
+
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates
-				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithCopyConstructorTemplate.java"),
-						"SimpleClassWithCopyConstructorTemplate.java"));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithCopyConstructorTemplate.java",
+				preprocessedFileByteArray));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -145,9 +161,14 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	@Test
 	void javaVelocitySimpleIfElseCondition() throws Exception {
 
+		Path template = templatesPath.resolve("SimpleClassWithIfElseTemplate.java");
+
+		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
+		byte[] preprocessedFileByteArray = preprocessingStep.process();
+
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseTemplate.java"),
-				"SimpleClassWithIfElseTemplate.java"));
+		aimPatternTemplates
+				.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java", preprocessedFileByteArray));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -176,9 +197,13 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	@Test
 	void javaVelocitySimpleList() throws Exception {
 
+		Path template = templatesPath.resolve("SimpleListTemplate.java");
+
+		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
+		byte[] preprocessedFileByteArray = preprocessingStep.process();
+
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(
-				new AimPatternTemplate(templatesPath.resolve("SimpleListTemplate.java"), "SimpleListTemplate.java"));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java", preprocessedFileByteArray));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);

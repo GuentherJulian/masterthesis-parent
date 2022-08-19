@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-    #foreach (field in fields)
+    #foreach ($field in $fields)
     int i;
     #end
 
