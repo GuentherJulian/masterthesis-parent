@@ -6,24 +6,24 @@ import java.util.regex.Pattern;
 
 public class JavaVelocityPreprocessingStep extends AbstractPreprocessingStep {
 
-	private static String regexPlaceholder = "\\$(.+)";
-	private Pattern patternPlaceholder;
+	private static String regexContainsPlaceholder = "\\$(.+)";
+	private static String regexPlaceholder = ".*(\\$(.+))";
+	private static Pattern patternContainsPlaceholder;
+	private static Pattern patternPlaceholder;
 
 	public JavaVelocityPreprocessingStep(Path input) throws Exception {
 		super(input);
 
-		this.patternPlaceholder = Pattern.compile(regexPlaceholder);
+		patternContainsPlaceholder = Pattern.compile(regexContainsPlaceholder);
+		patternPlaceholder = Pattern.compile(regexPlaceholder);
 	}
 
 	@Override
 	public String process(String lineToProcess) {
 		String returnValue = lineToProcess;
 
-		boolean patternFound = true;
-		Matcher matcher = this.patternPlaceholder.matcher(returnValue);
-		patternFound = matcher.find();
-
-		if (patternFound) {
+		Matcher matcher = patternContainsPlaceholder.matcher(returnValue);
+		if (matcher.find()) {
 			returnValue = replacePlaceholder(returnValue);
 		}
 
@@ -31,9 +31,6 @@ public class JavaVelocityPreprocessingStep extends AbstractPreprocessingStep {
 	}
 
 	private String replacePlaceholder(String str) {
-		String regexSinlgePlaceholder = ".*(\\$(.+))";
-		Pattern patternPlaceholder = Pattern.compile(regexSinlgePlaceholder);
-
 		String replacedString = str;
 		String[] arr = replacedString.split(" ");
 		boolean isIfStatement = false;
@@ -88,29 +85,5 @@ public class JavaVelocityPreprocessingStep extends AbstractPreprocessingStep {
 
 	private boolean isListPattern(String str) {
 		return str.chars().filter(c -> c == '$').count() > 1;
-	}
-
-	private class PlaceholderReplacement {
-		private String match;
-		private String placeholder;
-		private String innterPlaceholder;
-
-		public PlaceholderReplacement(String match, String placeholder, String innterPlaceholder) {
-			this.match = match;
-			this.placeholder = placeholder;
-			this.innterPlaceholder = innterPlaceholder;
-		}
-
-		public String getMatch() {
-			return match;
-		}
-
-		public String getPlaceholder() {
-			return placeholder;
-		}
-
-		public String getInnterPlaceholder() {
-			return innterPlaceholder;
-		}
 	}
 }
