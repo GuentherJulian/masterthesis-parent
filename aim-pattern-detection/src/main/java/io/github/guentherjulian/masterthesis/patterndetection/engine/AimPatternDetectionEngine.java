@@ -36,6 +36,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.In
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.ParseTreeMatcher;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocesor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTree;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreeTransformer;
 
@@ -51,13 +53,14 @@ public class AimPatternDetectionEngine {
 	private MetaLanguageConfiguration metaLanguageConfiguration;
 	private ObjectLanguageProperties objectLanguageProperties;
 	private PlaceholderResolver placeholderResolver;
+	private TemplatePreprocessor templatePreprocessor;
 
 	private PredictionMode predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION;
 
 	public AimPatternDetectionEngine(List<AimPattern> aimpattern, List<Path> compilationUnits,
 			Class<? extends Parser> parserClass, Class<? extends Lexer> lexerClass, Path templateGrammarPath,
 			MetaLanguageConfiguration metaLanguageConfiguration, ObjectLanguageProperties objectLanguageProperties,
-			PlaceholderResolver placeholderResolver) {
+			PlaceholderResolver placeholderResolver, TemplatePreprocessor templatePreprocessor) {
 		this.aimpattern = aimpattern;
 		this.compilationUnits = compilationUnits;
 		this.parserClass = parserClass;
@@ -66,6 +69,7 @@ public class AimPatternDetectionEngine {
 		this.metaLanguageConfiguration = metaLanguageConfiguration;
 		this.objectLanguageProperties = objectLanguageProperties;
 		this.placeholderResolver = placeholderResolver;
+		this.templatePreprocessor = templatePreprocessor;
 	}
 
 	public AimPatternDetectionResult detect() throws Exception {
@@ -139,12 +143,8 @@ public class AimPatternDetectionEngine {
 					startTime = System.nanoTime();
 
 					// TODO only parse template once, not for every compilation unit
-					Parser parser = null;
-					if (!aimPatternTemplate.isPreprocessed()) {
-						parser = createParser(aimPatternTemplate.getTemplatePath());
-					} else {
-						parser = createParser(aimPatternTemplate.getPreprocessedTemplateByteArray());
-					}
+					Parser parser = createParser(TemplatePreprocesor.applyPreprocessing(this.templatePreprocessor,
+							aimPatternTemplate.getTemplatePath()));
 					templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
 							grammarInputStream);
 

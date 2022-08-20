@@ -25,6 +25,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.o
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.FreeMarkerTemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.exception.InvalidMetalanguageConfigurationException;
 
 public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
@@ -34,6 +36,7 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 	private PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
 	private static MetaLanguageConfiguration metaLanguageConfiguration;
 	private static Path configurationPath;
+	private TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
 
 	@BeforeAll
 	public static void setupTests() throws URISyntaxException, InvalidMetalanguageConfigurationException {
@@ -94,7 +97,8 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
-				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver);
+				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver,
+				this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();

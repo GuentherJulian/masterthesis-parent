@@ -25,6 +25,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.o
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.FreeMarkerTemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
 
 public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
 
@@ -35,6 +37,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 			this.metaLanguageLexerRules, this.metaLanguagePattern);
 	private ObjectLanguageProperties objectLanguageProperties = new CProperties(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
+	private TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
 
 	@BeforeAll
 	public static void setupTests() throws URISyntaxException {
@@ -61,7 +64,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -90,7 +93,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();

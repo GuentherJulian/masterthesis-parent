@@ -1,23 +1,15 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
 
-import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JavaFreeMarkerPreprocessingStep extends AbstractPreprocessingStep {
+public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
-	private static final String REGEX_PREFIX = ".*[ ]((\\w+)\\$\\{(.+)\\}).*";
-	private static final String REGEX_SUFFIX = ".*((\\$\\{(.+)\\})(\\w+))[ ].*";
+	private final String regexPrefix = ".*[ ]((\\w+)\\$\\{(.+)\\}).*";
+	private final String regexSuffix = ".*((\\$\\{(.+)\\})(\\w+))[ ].*";
 
-	private Pattern prefixPattern;
-	private Pattern suffixPattern;
-
-	public JavaFreeMarkerPreprocessingStep(Path input) throws Exception {
-		super(input);
-
-		this.prefixPattern = Pattern.compile(REGEX_PREFIX);
-		this.suffixPattern = Pattern.compile(REGEX_SUFFIX);
-	}
+	private final Pattern prefixPattern = Pattern.compile(regexPrefix);
+	private final Pattern suffixPattern = Pattern.compile(regexSuffix);
 
 	@Override
 	public String process(String lineToProcess) {
@@ -45,7 +37,6 @@ public class JavaFreeMarkerPreprocessingStep extends AbstractPreprocessingStep {
 
 			if (suffixFound) {
 				String combinedPlaceholder = matcher.group(1);
-				String placeholder = matcher.group(2);
 				String innerPlaceholder = matcher.group(3);
 				String suffix = matcher.group(4);
 

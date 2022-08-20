@@ -72,9 +72,9 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 		assertNotNull(tree);
 		assertNotNull(tree.exception);
 
-		PreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(invalidPrefixFilePath);
+		TemplatePreprocessor javaFreeMarkerPreprocessingStep = new FreeMarkerTemplatePreprocessor();
 
-		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process();
+		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process(invalidPrefixFilePath);
 
 		parser = this.createParser(preprocessedFileByteArray);
 		tree = null;
@@ -103,10 +103,9 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 		assertNotNull(tree);
 		// assertNotNull(tree.exception);
 
-		JavaFreeMarkerPreprocessingStep javaFreeMarkerPreprocessingStep = new JavaFreeMarkerPreprocessingStep(
-				invalidPrefixFilePath);
+		FreeMarkerTemplatePreprocessor javaFreeMarkerPreprocessingStep = new FreeMarkerTemplatePreprocessor();
 
-		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process();
+		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process(invalidPrefixFilePath);
 
 		parser = this.createParser(preprocessedFileByteArray);
 

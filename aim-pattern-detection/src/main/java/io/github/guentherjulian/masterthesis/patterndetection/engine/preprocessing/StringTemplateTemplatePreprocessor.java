@@ -1,32 +1,21 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
 
-import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JavaStringTemplatePreprocessingStep extends AbstractPreprocessingStep {
+public class StringTemplateTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
-	private static final String REGEX_TOKEN_IF = ".*<if[ ]*\\((.+)\\)[ ]*\\>.*";
-	private static final String REGEX_TOKEN_IF_ELSE = ".*<elseif[ ]*\\((.+)\\)[ ]*\\>.*";
-	private static final String REGEX_TOKEN_ELSE = ".*<else>.*";
-	private static final String REGEX_TOKEN_IF_CLOSE = ".*<endif>.*";
-	private static final String REGEX_TOKEN_LIST = ".*(<(.+):[ ]*\\{[ ]*(.+)[ ]*\\|).*";
+	private final String regexTokenIf = ".*<if[ ]*\\((.+)\\)[ ]*\\>.*";
+	private final String regexTokenIfElse = ".*<elseif[ ]*\\((.+)\\)[ ]*\\>.*";
+	private final String regexTokenElse = ".*<else>.*";
+	private final String regexTokenIfClose = ".*<endif>.*";
+	private final String regexTokenList = ".*(<(.+):[ ]*\\{[ ]*(.+)[ ]*\\|).*";
 
-	private Pattern ifTokenPattern;
-	private Pattern ifelseTokenPattern;
-	private Pattern elseTokenPattern;
-	private Pattern ifCloseTokenPattern;
-	private Pattern listTokenPattern;
-
-	public JavaStringTemplatePreprocessingStep(Path input) throws Exception {
-		super(input);
-
-		this.ifTokenPattern = Pattern.compile(REGEX_TOKEN_IF);
-		this.ifelseTokenPattern = Pattern.compile(REGEX_TOKEN_IF_ELSE);
-		this.elseTokenPattern = Pattern.compile(REGEX_TOKEN_ELSE);
-		this.ifCloseTokenPattern = Pattern.compile(REGEX_TOKEN_IF_CLOSE);
-		this.listTokenPattern = Pattern.compile(REGEX_TOKEN_LIST);
-	}
+	private final Pattern ifTokenPattern = Pattern.compile(regexTokenIf);
+	private final Pattern ifelseTokenPattern = Pattern.compile(regexTokenIfElse);
+	private final Pattern elseTokenPattern = Pattern.compile(regexTokenElse);
+	private final Pattern ifCloseTokenPattern = Pattern.compile(regexTokenIfClose);
+	private final Pattern listTokenPattern = Pattern.compile(regexTokenList);
 
 	@Override
 	public String process(String lineToProcess) {

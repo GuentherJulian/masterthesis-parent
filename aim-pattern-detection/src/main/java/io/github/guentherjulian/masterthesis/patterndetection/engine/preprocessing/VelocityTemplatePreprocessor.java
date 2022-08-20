@@ -1,22 +1,14 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
 
-import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JavaVelocityPreprocessingStep extends AbstractPreprocessingStep {
+public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
-	private static String regexContainsPlaceholder = "\\$(.+)";
-	private static String regexPlaceholder = ".*(\\$(.+))";
-	private static Pattern patternContainsPlaceholder;
-	private static Pattern patternPlaceholder;
-
-	public JavaVelocityPreprocessingStep(Path input) throws Exception {
-		super(input);
-
-		patternContainsPlaceholder = Pattern.compile(regexContainsPlaceholder);
-		patternPlaceholder = Pattern.compile(regexPlaceholder);
-	}
+	private final String regexContainsPlaceholder = "\\$(.+)";
+	private final String regexPlaceholder = ".*(\\$(.+))";
+	private final Pattern patternContainsPlaceholder = Pattern.compile(regexContainsPlaceholder);
+	private final Pattern patternPlaceholder = Pattern.compile(regexPlaceholder);
 
 	@Override
 	public String process(String lineToProcess) {

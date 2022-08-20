@@ -25,8 +25,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.o
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.JavaVelocityPreprocessingStep;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.PreprocessingStep;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.VelocityTemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.exception.NoMatchException;
 
 public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
@@ -38,6 +38,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 			this.metaLanguageLexerRules, this.metaLanguagePattern);
 	private ObjectLanguageProperties objectLanguageProperties = new JavaProperties(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = null;
+	private TemplatePreprocessor templatePreprocessor = new VelocityTemplatePreprocessor();
 
 	@BeforeAll
 	public static void setupTests() throws URISyntaxException {
@@ -53,13 +54,8 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	void javaVelocitySimplePackageDeclarationTest() throws Exception {
 
 		Path template = templatesPath.resolve("SimplePackageDeclTemplate.java");
-
-		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
-		byte[] preprocessedFileByteArray = preprocessingStep.process();
-
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates
-				.add(new AimPatternTemplate(template, "SimplePackageDeclTemplate.java", preprocessedFileByteArray));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimplePackageDeclTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -69,7 +65,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -86,13 +82,8 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	void javaVelocityComplexPackageDeclarationTest() throws Exception {
 
 		Path template = templatesPath.resolve("ComplexPackageDeclTemplate.java");
-
-		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
-		byte[] preprocessedFileByteArray = preprocessingStep.process();
-
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates
-				.add(new AimPatternTemplate(template, "ComplexPackageDeclTemplate.java", preprocessedFileByteArray));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "ComplexPackageDeclTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -102,7 +93,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -127,13 +118,8 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	void javaVelocityCopyConstructorTest() throws Exception {
 
 		Path template = templatesPath.resolve("SimpleClassWithCopyConstructorTemplate.java");
-
-		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
-		byte[] preprocessedFileByteArray = preprocessingStep.process();
-
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithCopyConstructorTemplate.java",
-				preprocessedFileByteArray));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithCopyConstructorTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -144,7 +130,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -162,13 +148,8 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	void javaVelocitySimpleIfElseCondition() throws Exception {
 
 		Path template = templatesPath.resolve("SimpleClassWithIfElseTemplate.java");
-
-		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
-		byte[] preprocessedFileByteArray = preprocessingStep.process();
-
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates
-				.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java", preprocessedFileByteArray));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -180,7 +161,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -198,12 +179,8 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	void javaVelocitySimpleList() throws Exception {
 
 		Path template = templatesPath.resolve("SimpleListTemplate.java");
-
-		PreprocessingStep preprocessingStep = new JavaVelocityPreprocessingStep(template);
-		byte[] preprocessedFileByteArray = preprocessingStep.process();
-
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java", preprocessedFileByteArray));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -213,7 +190,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();

@@ -25,6 +25,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.o
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.FreeMarkerTemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.utils.PathUtil;
 
 public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEngineTest {
@@ -48,6 +50,7 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 				metaLanguagePattern);
 		ObjectLanguageProperties objectLanguageProperties = new JavaProperties(metaLangPrefix);
 		PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
+		TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
 
 		// the actual test
 		List<AimPatternTemplate> aimPatternTemplates = PathUtil.getAimPatternTemplates(templatesPath);
@@ -59,7 +62,7 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, placeholderResolver);
+				objectLanguageProperties, placeholderResolver, templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		long processingTime = patternDetectionResult.getProcessingTime();

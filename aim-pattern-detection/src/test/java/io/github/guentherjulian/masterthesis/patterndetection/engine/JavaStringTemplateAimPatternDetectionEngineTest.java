@@ -25,8 +25,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.o
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.JavaStringTemplatePreprocessingStep;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.PreprocessingStep;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.StringTemplateTemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.exception.NoMatchException;
 
 public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
@@ -38,6 +38,7 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 			this.metaLanguageLexerRules, this.metaLanguagePattern);
 	private ObjectLanguageProperties objectLanguageProperties = new JavaProperties(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = null;
+	private TemplatePreprocessor templatePreprocessor = new StringTemplateTemplatePreprocessor();
 
 	@BeforeAll
 	public static void setupTests() throws URISyntaxException {
@@ -64,7 +65,7 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -92,7 +93,7 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -130,7 +131,7 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -150,12 +151,7 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 
 		Path template = templatesPath.resolve("SimpleClassWithIfElseTemplate.java");
-		PreprocessingStep preprocessingStep = new JavaStringTemplatePreprocessingStep(template);
-
-		byte[] preprocessedFileByteArray = preprocessingStep.process();
-
-		aimPatternTemplates
-				.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java", preprocessedFileByteArray));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -167,7 +163,7 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -185,12 +181,8 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 	void javaStringTemplateSimpleList() throws Exception {
 
 		Path template = templatesPath.resolve("SimpleListTemplate.java");
-		PreprocessingStep preprocessingStep = new JavaStringTemplatePreprocessingStep(template);
-
-		byte[] preprocessedFileByteArray = preprocessingStep.process();
-
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
-		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java", preprocessedFileByteArray));
+		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java"));
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
@@ -200,7 +192,7 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
-				objectLanguageProperties, this.placeholderResolver);
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
