@@ -6,11 +6,11 @@
     <version>dev-SNAPSHOT</version>
   </parent>
   <artifactId>parsing</artifactId>
+  <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
@@ -349,7 +349,6 @@
               <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/csharpcombined</outputDirectory>
             </configuration>
           </execution>
-
         </executions>
       </plugin>
     </plugins>
