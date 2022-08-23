@@ -47,7 +47,7 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 		MetaLanguagePattern metaLanguagePattern = new FreeMarkerMetaLanguagePattern();
 		MetaLanguageLexerRules metaLanguageLexerRules = new FreeMarkerLexerRuleNames();
 		MetaLanguageConfiguration metaLanguageConfiguration = new MetaLanguageConfiguration(metaLanguageLexerRules,
-				metaLanguagePattern);
+				metaLanguagePattern, metaLangPrefix);
 		ObjectLanguageProperties objectLanguageProperties = new JavaProperties(metaLangPrefix);
 		PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
 		TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();

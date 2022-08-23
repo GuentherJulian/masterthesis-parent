@@ -34,8 +34,8 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 	private final String metaLangPrefix = "fm_";
 	private ObjectLanguageProperties objectLanguageProperties = new JavaProperties(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
-	private static MetaLanguageConfiguration metaLanguageConfiguration;
-	private static Path configurationPath;
+	private MetaLanguageConfiguration metaLanguageConfiguration;
+	private Path configurationPath;
 	private TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
 
 	@BeforeAll

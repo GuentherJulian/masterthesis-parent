@@ -37,7 +37,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 	private MetaLanguagePattern metaLanguagePattern = new FreeMarkerMetaLanguagePattern();
 	private MetaLanguageLexerRules metaLanguageLexerRules = new FreeMarkerLexerRuleNames();
 	private MetaLanguageConfiguration metaLanguageConfiguration = new MetaLanguageConfiguration(
-			this.metaLanguageLexerRules, this.metaLanguagePattern);
+			this.metaLanguageLexerRules, this.metaLanguagePattern, this.metaLangPrefix);
 	private ObjectLanguageProperties objectLanguageProperties = new JavaProperties(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
 	private TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();

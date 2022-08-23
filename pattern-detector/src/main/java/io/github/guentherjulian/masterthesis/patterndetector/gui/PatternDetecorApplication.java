@@ -15,9 +15,8 @@ public class PatternDetecorApplication extends Application {
 	public void start(Stage stage) throws IOException {
 		URL urlFxmlResource = getClass().getClassLoader().getResource("pattern-detector.fxml");
 		Parent root = FXMLLoader.load(urlFxmlResource);
-
 		Scene scene = new Scene(root);
-
+		stage.setResizable(false);
 		stage.setTitle("Pattern Detector");
 		stage.setScene(scene);
 		stage.show();

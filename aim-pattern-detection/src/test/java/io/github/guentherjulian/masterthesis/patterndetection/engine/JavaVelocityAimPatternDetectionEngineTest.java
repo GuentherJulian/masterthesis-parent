@@ -35,7 +35,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	private MetaLanguagePattern metaLanguagePattern = new VelocityMetaLanguagePattern();
 	private MetaLanguageLexerRules metaLanguageLexerRules = new VelocityLexerRuleNames();
 	private MetaLanguageConfiguration metaLanguageConfiguration = new MetaLanguageConfiguration(
-			this.metaLanguageLexerRules, this.metaLanguagePattern);
+			this.metaLanguageLexerRules, this.metaLanguagePattern, this.metaLangPrefix);
 	private ObjectLanguageProperties objectLanguageProperties = new JavaProperties(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = null;
 	private TemplatePreprocessor templatePreprocessor = new VelocityTemplatePreprocessor();

@@ -1,5 +1,8 @@
 package io.github.guentherjulian.masterthesis.patterndetector.detection.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerLexerRuleNames;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerMetaLanguagePattern;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
@@ -13,6 +16,18 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.m
 public enum MetaLanguage {
 
 	FREEMARKER, VELOCITY, STRINGTEMPLATE;
+
+	public static String[] getSupportedMetaLanguages() {
+		return new String[] { "FreeMarker", "Velocity", "StringTemplate" };
+	}
+
+	public static Map<String, String> getMetalanguagePrefixes() {
+		Map<String, String> map = new HashMap<>();
+		map.put("FreeMarker", "fm_");
+		map.put("Velocity", "vm_");
+		map.put("StringTemplate", "stg_");
+		return map;
+	}
 
 	public static MetaLanguage getMetaLanguage(String metaLanguageString) {
 		MetaLanguage metaLanguage = null;
@@ -28,7 +43,8 @@ public enum MetaLanguage {
 		return metaLanguage;
 	}
 
-	public static MetaLanguageConfiguration getMetaLanguageConfiguration(MetaLanguage metaLanguage) {
+	public static MetaLanguageConfiguration getMetaLanguageConfiguration(MetaLanguage metaLanguage,
+			String metaLanguagePrefix) {
 		MetaLanguageLexerRules metaLanguageLexerRules = null;
 		MetaLanguagePattern metaLanguagePattern = null;
 		if (metaLanguage == MetaLanguage.FREEMARKER) {
@@ -43,7 +59,7 @@ public enum MetaLanguage {
 			metaLanguageLexerRules = new StringTemplateLexerRuleNames();
 			metaLanguagePattern = new StringTemplateMetaLanguagePattern();
 		}
-		return new MetaLanguageConfiguration(metaLanguageLexerRules, metaLanguagePattern);
+		return new MetaLanguageConfiguration(metaLanguageLexerRules, metaLanguagePattern, metaLanguagePrefix);
 	}
 
 }

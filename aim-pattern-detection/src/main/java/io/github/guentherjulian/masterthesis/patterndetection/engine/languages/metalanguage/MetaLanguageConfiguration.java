@@ -12,11 +12,13 @@ public class MetaLanguageConfiguration {
 
 	private MetaLanguageLexerRules metaLanguageLexerRules;
 	private MetaLanguagePattern metaLanguagePattern;
+	private String metaLanguagePrefix;
 
 	public MetaLanguageConfiguration(MetaLanguageLexerRules metaLanguageLexerRules,
-			MetaLanguagePattern metaLanguagePattern) {
+			MetaLanguagePattern metaLanguagePattern, String metaLanguagePrefix) {
 		this.metaLanguageLexerRules = metaLanguageLexerRules;
 		this.metaLanguagePattern = metaLanguagePattern;
+		this.setMetaLanguagePrefix(metaLanguagePrefix);
 	}
 
 	public MetaLanguageConfiguration(Path configPath) throws InvalidMetalanguageConfigurationException {
@@ -37,6 +39,14 @@ public class MetaLanguageConfiguration {
 
 	public void setMetaLanguagePattern(MetaLanguagePattern metaLanguagePattern) {
 		this.metaLanguagePattern = metaLanguagePattern;
+	}
+
+	public String getMetaLanguagePrefix() {
+		return metaLanguagePrefix;
+	}
+
+	public void setMetaLanguagePrefix(String metaLanguagePrefix) {
+		this.metaLanguagePrefix = metaLanguagePrefix;
 	}
 
 	public void readMetaLanguageConfiguration(Path configFile) throws InvalidMetalanguageConfigurationException {

@@ -8,6 +8,10 @@ public enum ObjectLanguage {
 
 	JAVA, C;
 
+	public static String[] getSupportedObjectLanguages() {
+		return new String[] { "Java", "C" };
+	}
+
 	public static ObjectLanguage getObjectLanguage(String objectLanguageString) {
 		ObjectLanguage objectLanguage = null;
 		if (objectLanguageString.equals("Java")) {

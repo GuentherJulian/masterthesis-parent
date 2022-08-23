@@ -9,10 +9,10 @@ abstract class AbstractObjectLanguageProperties implements ObjectLanguagePropert
 	private static final Set<String> nonOrderingNodesPostfixes = new HashSet<>(
 			Arrays.asList("Context", "OptContext", "StarContext", "PlusContext"));
 
-	private String placeholderPrefix;
+	private String metaLanguagePrefix;
 
-	public AbstractObjectLanguageProperties(String placeholderPrefix) {
-		this.placeholderPrefix = placeholderPrefix.toLowerCase();
+	public AbstractObjectLanguageProperties(String metaLanguagePrefix) {
+		this.metaLanguagePrefix = metaLanguagePrefix.toLowerCase();
 	}
 
 	protected Set<String> enrichNonOrderingNodes(Set<String> nonOrderingNodes) {
@@ -20,7 +20,7 @@ abstract class AbstractObjectLanguageProperties implements ObjectLanguagePropert
 		for (String nonOrderingNode : nonOrderingNodes) {
 			nonOrderedNodes.add(nonOrderingNode + "Context");
 			for (String nonOrderingNodesPostfix : nonOrderingNodesPostfixes) {
-				nonOrderedNodes.add(this.placeholderPrefix + Character.toLowerCase(nonOrderingNode.charAt(0))
+				nonOrderedNodes.add(this.metaLanguagePrefix + Character.toLowerCase(nonOrderingNode.charAt(0))
 						+ nonOrderingNode.substring(1) + nonOrderingNodesPostfix);
 			}
 		}

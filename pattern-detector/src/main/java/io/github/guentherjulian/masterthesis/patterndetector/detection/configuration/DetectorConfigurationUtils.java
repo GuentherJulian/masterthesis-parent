@@ -13,6 +13,13 @@ import org.antlr.parser.java8velocitytemplate.Java8VelocityTemplateParser;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 
+import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.FreeMarkerTemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.StringTemplateTemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.VelocityTemplatePreprocessor;
+
 public class DetectorConfigurationUtils {
 	public static Class<? extends Parser> getParserClass(ObjectLanguage objectLanguage, MetaLanguage metaLanguage) {
 		if (objectLanguage == ObjectLanguage.JAVA) {
@@ -56,6 +63,26 @@ public class DetectorConfigurationUtils {
 			if (metaLanguage == MetaLanguage.VELOCITY) {
 				return CVelocityTemplateLexer.class;
 			}
+		}
+		return null;
+	}
+
+	public static PlaceholderResolver getPlaceholderResolver(MetaLanguage metaLanguage) {
+		if (metaLanguage == MetaLanguage.FREEMARKER) {
+			return new FreeMarkerPlaceholderResolver();
+		}
+		return null;
+	}
+
+	public static TemplatePreprocessor getTemplatePreprocessor(MetaLanguage metaLanguage) {
+		if (metaLanguage == MetaLanguage.FREEMARKER) {
+			return new FreeMarkerTemplatePreprocessor();
+		}
+		if (metaLanguage == MetaLanguage.VELOCITY) {
+			return new VelocityTemplatePreprocessor();
+		}
+		if (metaLanguage == MetaLanguage.STRINGTEMPLATE) {
+			return new StringTemplateTemplatePreprocessor();
 		}
 		return null;
 	}

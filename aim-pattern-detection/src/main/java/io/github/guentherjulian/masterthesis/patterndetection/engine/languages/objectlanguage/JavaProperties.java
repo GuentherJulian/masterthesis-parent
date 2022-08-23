@@ -9,8 +9,8 @@ public class JavaProperties extends AbstractObjectLanguageProperties {
 	private static final Set<String> nonOrderingNodes = new HashSet<>(Arrays.asList("ImportDeclaration",
 			"InterfaceMemberDeclaration", "ClassMemberDeclaration", "TypeDeclaration", "ClassBodyDeclaration"));
 
-	public JavaProperties(String placeholderPrefix) {
-		super(placeholderPrefix);
+	public JavaProperties(String metaLanguagePrefix) {
+		super(metaLanguagePrefix);
 	}
 
 	@Override

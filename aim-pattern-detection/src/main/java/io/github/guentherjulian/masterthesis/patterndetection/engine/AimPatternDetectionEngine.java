@@ -78,6 +78,9 @@ public class AimPatternDetectionEngine {
 
 	public AimPatternDetectionResult detect(String startRuleName) throws Exception {
 		AimPatternDetectionResult result = new AimPatternDetectionResult();
+		int numParsedTemplates = 0;
+		int numParsedCompilationUnits = 0;
+		int numComparedFiles = 0;
 		long processingTimeStart = System.nanoTime();
 
 		// Each path only has one parse tree
@@ -112,6 +115,7 @@ public class AimPatternDetectionEngine {
 						this.objectLanguageProperties);
 			}
 
+			numParsedCompilationUnits++;
 			compilationUnitParseTrees.put(compilationUnit, parseTreeTransformer.transform(parseTree));
 		}
 		long endTime = System.nanoTime();
@@ -154,6 +158,7 @@ public class AimPatternDetectionEngine {
 						// templateParser.showTree(parseTree);
 						transformedParseTrees.add(parseTreeTransformer.transform(parseTree));
 					}
+					numParsedTemplates++;
 					endTime = System.nanoTime();
 					LOGGER.info("Finished parsing template (took {} ns, {} ms)", (endTime - startTime),
 							((endTime - startTime) / 1e6));
@@ -162,6 +167,7 @@ public class AimPatternDetectionEngine {
 							compilationUnitPath.getFileName());
 					TreeMatch treeMatch = this.match(compilationUnitParseTree, transformedParseTrees,
 							placeholderSubstitutions);
+					numComparedFiles++;
 
 					AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
 							compilationUnitPath, aimPatternTemplate.getTemplatePath(), treeMatch);
@@ -171,6 +177,9 @@ public class AimPatternDetectionEngine {
 		}
 		long processingTimeEnd = System.nanoTime();
 		result.setProcessingTime(processingTimeEnd - processingTimeStart);
+		result.setNumParsedTemplates(numParsedTemplates);
+		result.setNumParsedCompilationUnits(numParsedCompilationUnits);
+		result.setNumComparedFiles(numComparedFiles);
 
 		return result;
 	}

@@ -34,7 +34,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 	private MetaLanguagePattern metaLanguagePattern = new FreeMarkerMetaLanguagePattern();
 	private MetaLanguageLexerRules metaLanguageLexerRules = new FreeMarkerLexerRuleNames();
 	private MetaLanguageConfiguration metaLanguageConfiguration = new MetaLanguageConfiguration(
-			this.metaLanguageLexerRules, this.metaLanguagePattern);
+			this.metaLanguageLexerRules, this.metaLanguagePattern, metaLangPrefix);
 	private ObjectLanguageProperties objectLanguageProperties = new CProperties(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
 	private TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();

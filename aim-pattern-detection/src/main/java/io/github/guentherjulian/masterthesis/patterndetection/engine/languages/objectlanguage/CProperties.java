@@ -8,8 +8,8 @@ public class CProperties extends AbstractObjectLanguageProperties {
 
 	private static final Set<String> nonOrderingNodes = new HashSet<>(Arrays.asList("BlockItem"));
 
-	public CProperties(String placeholderPrefix) {
-		super(placeholderPrefix);
+	public CProperties(String metaLanguagePrefix) {
+		super(metaLanguagePrefix);
 	}
 
 	@Override
