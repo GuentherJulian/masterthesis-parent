@@ -27,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
@@ -234,24 +235,26 @@ public class PatternDetectorController implements Initializable {
 
 		Accordion accordion = new Accordion();
 		for (AimPatternDetectionResultEntry aimPatternDetectionResultEntry : result.getResults()) {
-			String templateFileName = aimPatternDetectionResultEntry.getTemplatePath().getFileName().toString();
-			String compilationUnitFileName = aimPatternDetectionResultEntry.getCompilationUnitPath().getFileName()
-					.toString();
-
 			VBox vBoxResultEntry = new VBox();
-			vBoxResultEntry.getChildren()
-					.add(new Label("Template path: " + aimPatternDetectionResultEntry.getTemplatePath()));
-			vBoxResultEntry.getChildren().add(
-					new Label("Compilation unit path: " + aimPatternDetectionResultEntry.getCompilationUnitPath()));
-			vBoxResultEntry.getChildren()
-					.add(new Label("Is match: " + (aimPatternDetectionResultEntry.isMatch() ? "Yes" : "No")));
+
+			TextArea textArea = new TextArea();
+			textArea.setMinHeight(100);
+			textArea.appendText("Template path: " + aimPatternDetectionResultEntry.getTemplatePath() + "\n");
+			textArea.appendText(
+					"Compilation unit path: " + aimPatternDetectionResultEntry.getCompilationUnitPath() + "\n");
+			vBoxResultEntry.getChildren().add(textArea);
+			textArea.appendText("Is match: " + (aimPatternDetectionResultEntry.isMatch() ? "Yes" : "No") + "\n");
 			if (aimPatternDetectionResultEntry.isMatch()) {
 				Map<String, Set<String>> placeholderSubstitutions = aimPatternDetectionResultEntry
 						.getPlaceholderSubstitutions();
-				vBoxResultEntry.getChildren()
-						.add(new Label("Placeholder substitutions: " + placeholderSubstitutions.toString()));
+				textArea.appendText("Placeholder substitutions: " + placeholderSubstitutions.toString());
 			}
-			TitledPane pane = new TitledPane(templateFileName + " <-> " + compilationUnitFileName, vBoxResultEntry);
+
+			String templateFileName = aimPatternDetectionResultEntry.getTemplatePath().getFileName().toString();
+			String compilationUnitFileName = aimPatternDetectionResultEntry.getCompilationUnitPath().getFileName()
+					.toString();
+			TitledPane pane = new TitledPane(templateFileName + " <-> " + compilationUnitFileName + " ("
+					+ (aimPatternDetectionResultEntry.isMatch() ? "Match" : "No match") + ")", vBoxResultEntry);
 			accordion.getPanes().add(pane);
 		}
 
