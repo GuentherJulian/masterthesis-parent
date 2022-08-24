@@ -105,7 +105,7 @@ public class PatternDetectorController implements Initializable {
 		btnDetect.setOnMouseClicked(event -> detect(event));
 
 		this.textfieldTemplatePath.setText(
-				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\completePatternDetectionTest\\templates");
+				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\completePatternDetectionTest\\templates\\java_freemarker");
 		this.textfieldCompilationUnitPath.setText(
 				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\completePatternDetectionTest\\applicationCode");
 		this.textfieldTemplateGrammarPath.setText(
