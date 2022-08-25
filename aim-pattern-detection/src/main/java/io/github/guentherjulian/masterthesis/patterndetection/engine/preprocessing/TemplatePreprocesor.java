@@ -11,7 +11,7 @@ public class TemplatePreprocesor {
 			throws IOException {
 		byte[] templateByteArray;
 		if (templatePreprocessor != null) {
-			templateByteArray = templatePreprocessor.process(templatePath);
+			templateByteArray = templatePreprocessor.processTemplate(templatePath);
 		} else {
 			InputStream inputStream = new FileInputStream(templatePath.toFile());
 			templateByteArray = inputStream.readAllBytes();

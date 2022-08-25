@@ -1,14 +1,14 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CProperties extends AbstractObjectLanguageProperties {
+public class CLanguageConfiguration extends AbstractObjectLanguageConfiguration {
 
 	private static final Set<String> nonOrderingNodes = new HashSet<>(Arrays.asList("BlockItem"));
 
-	public CProperties(String metaLanguagePrefix) {
+	public CLanguageConfiguration(String metaLanguagePrefix) {
 		super(metaLanguagePrefix);
 	}
 

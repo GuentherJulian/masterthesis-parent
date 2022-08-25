@@ -11,11 +11,9 @@ import io.github.guentherjulian.masterthesis.patterndetection.exception.Placehol
 
 public abstract class AbstractPlaceholderResolver implements PlaceholderResolver {
 
-	abstract List<TransformationFunction> getTransformationFunctions(String placeholderExpression);
+	protected abstract List<TransformationFunction> getTransformationFunctions(String placeholderExpression);
 
-	abstract String getPlaceholderName(String placeholderExpression);
-
-	abstract TransformationFunctionProcessor getTransformationFunctionProcessor();
+	protected abstract String getPlaceholderName(String placeholderExpression);
 
 	@Override
 	public PlaceholderResolutionResult resolvePlaceholder(String placeholderExpression, String substitution)
@@ -32,7 +30,8 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 			// call transformation functions
 			substitutions.add(substitution);
 			for (TransformationFunction transformationFunction : transformationFunctions) {
-				TransformationFunctionProcessor transformationFunctionProcessor = getTransformationFunctionProcessor();
+				TransformationFunctionProcessor transformationFunctionProcessor = new TransformationFunctionProcessor(
+						this);
 
 				Set<String> newSubstitutions = new HashSet<>();
 				for (String sub : substitutions) {

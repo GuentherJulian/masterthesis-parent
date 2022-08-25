@@ -1,4 +1,4 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage;
 
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -30,8 +30,8 @@ import org.apache.logging.log4j.Logger;
 import io.github.guentherjulian.masterthesis.antlr4.parser.TemplateParser;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.InstantiationPathMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.InstantiationPathMatcher;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.ParseTreeMatcher;
@@ -52,15 +52,18 @@ public class AimPatternDetectionEngine {
 	private Class<? extends Lexer> lexerClass;
 	private Path templateGrammarPath;
 	private MetaLanguageConfiguration metaLanguageConfiguration;
-	private ObjectLanguageProperties objectLanguageProperties;
+	private ObjectLanguageConfiguration objectLanguageProperties;
 	private PlaceholderResolver placeholderResolver;
 	private TemplatePreprocessor templatePreprocessor;
+
+	private Map<String, List<String>> listPatterns = null;
+	private ParseTreeTransformer parseTreeTransformer = null;
 
 	private PredictionMode predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION;
 
 	public AimPatternDetectionEngine(List<AimPattern> aimpattern, List<Path> compilationUnits,
 			Class<? extends Parser> parserClass, Class<? extends Lexer> lexerClass, Path templateGrammarPath,
-			MetaLanguageConfiguration metaLanguageConfiguration, ObjectLanguageProperties objectLanguageProperties,
+			MetaLanguageConfiguration metaLanguageConfiguration, ObjectLanguageConfiguration objectLanguageProperties,
 			PlaceholderResolver placeholderResolver, TemplatePreprocessor templatePreprocessor) {
 		this.aimpattern = aimpattern;
 		this.compilationUnits = compilationUnits;
@@ -86,9 +89,6 @@ public class AimPatternDetectionEngine {
 
 		Map<Path, ParseTree> compilationUnitParseTrees = new HashMap<>();
 		Map<Path, List<ParseTree>> templateParseTrees = new HashMap<>();
-
-		Map<String, List<String>> listPatterns = null;
-		ParseTreeTransformer parseTreeTransformer = null;
 
 		InputStream grammarInputStream = Files.newInputStream(templateGrammarPath);
 		TemplateParser<? extends Parser> templateParser;

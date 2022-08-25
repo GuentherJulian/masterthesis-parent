@@ -6,4 +6,8 @@ public interface PlaceholderResolver {
 
 	PlaceholderResolutionResult resolvePlaceholder(String placeholder, String substitution)
 			throws PlaceholderResolutionException;
+
+	String getTransformationFunctionPackageName();
+
+	String getTransformationFunctionJavaClassName(String transformationFunction);
 }

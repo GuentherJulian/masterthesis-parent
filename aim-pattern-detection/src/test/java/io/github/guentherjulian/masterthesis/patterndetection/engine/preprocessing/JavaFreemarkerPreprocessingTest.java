@@ -74,7 +74,7 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 
 		TemplatePreprocessor javaFreeMarkerPreprocessingStep = new FreeMarkerTemplatePreprocessor();
 
-		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process(invalidPrefixFilePath);
+		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.processTemplate(invalidPrefixFilePath);
 
 		parser = this.createParser(preprocessedFileByteArray);
 		tree = null;
@@ -105,7 +105,7 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 
 		FreeMarkerTemplatePreprocessor javaFreeMarkerPreprocessingStep = new FreeMarkerTemplatePreprocessor();
 
-		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.process(invalidPrefixFilePath);
+		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.processTemplate(invalidPrefixFilePath);
 
 		parser = this.createParser(preprocessedFileByteArray);
 

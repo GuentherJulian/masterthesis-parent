@@ -11,7 +11,7 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 	private final Pattern patternPlaceholder = Pattern.compile(regexPlaceholder);
 
 	@Override
-	public String process(String lineToProcess) {
+	public String processTemplateLine(String lineToProcess) {
 		String returnValue = lineToProcess;
 
 		Matcher matcher = patternContainsPlaceholder.matcher(returnValue);

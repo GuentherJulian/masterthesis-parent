@@ -1,28 +1,28 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage;
 
 import java.util.regex.Pattern;
 
-public class VelocityMetaLanguagePattern extends AbstractMetaLanguagePattern {
+public class FreeMarkerMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
 	private static final String META_LANG_PLACEHOLDER = "\\$\\{(.+)\\}";
 
-	private static final String META_LANG_IF = "#if[ \\t]*[(]\\$(.+)[)]";
+	private static final String META_LANG_IF = "<#if(.+)>";
 
-	private static final String META_LANG_ELSE = "#else";
+	private static final String META_LANG_ELSE = "<#else>";
 
-	private static final String META_LANG_IFELSE = "#elseif[ \\t]*[(](.+)[)]";
+	private static final String META_LANG_IFELSE = "<#elseif(.+)>";
 
-	private static final String META_LANG_IF_CLOSE = "#end";
+	private static final String META_LANG_IF_CLOSE = "</#if>";
 
-	private static final String META_LANG_LIST = "#foreach[ \\t]*[(](.+)in(.+)[)]";
+	private static final String META_LANG_LIST = "<#list(.+) as (.+)>";
 
-	private static final String META_LANG_LIST_COLLECTION_VAR = "#foreach[ \\t]*[(].+in \\$(.+)[)]";
+	private static final String META_LANG_LIST_COLLECTION_VAR = "<#list (.+) as .+>";
 
-	private static final String META_LANG_LIST_ITERATION_VAR = "#foreach[ \\t]*[(]\\$(.+)in.+[)]";
+	private static final String META_LANG_LIST_ITERATION_VAR = "<#list .+ as (.+)>";
 
-	private static final String META_LANG_LIST_CLOSE = "#end";
+	private static final String META_LANG_LIST_CLOSE = "</#list>";
 
-	private static final String META_LANG_FILE_EXTENSION = "vm";
+	private static final String META_LANG_FILE_EXTENSION = "ftl";
 
 	@Override
 	public Pattern getMetaLangPatternIf() {

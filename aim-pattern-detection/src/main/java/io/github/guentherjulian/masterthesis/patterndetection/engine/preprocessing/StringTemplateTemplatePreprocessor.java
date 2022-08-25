@@ -18,7 +18,7 @@ public class StringTemplateTemplatePreprocessor extends AbstractTemplatePreproce
 	private final Pattern listTokenPattern = Pattern.compile(regexTokenList);
 
 	@Override
-	public String process(String lineToProcess) {
+	public String processTemplateLine(String lineToProcess) {
 		String returnValue = lineToProcess;
 
 		Matcher matcher = this.ifTokenPattern.matcher(returnValue);

@@ -7,18 +7,18 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageLexerRules;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 
 public class ParseTreeTransformer {
 
 	private Vocabulary parserVocabulary;
 	private Map<String, List<String>> listPatterns;
 	private MetaLanguageLexerRules metaLanguageLexerRules;
-	private ObjectLanguageProperties objectLanguageProperties;
+	private ObjectLanguageConfiguration objectLanguageProperties;
 
 	public ParseTreeTransformer(Vocabulary parserVocabulary, Map<String, List<String>> listPatterns,
-			MetaLanguageLexerRules metaLanguageLexerRules, ObjectLanguageProperties objectLanguageProperties) {
+			MetaLanguageLexerRules metaLanguageLexerRules, ObjectLanguageConfiguration objectLanguageProperties) {
 		this.parserVocabulary = parserVocabulary;
 		this.listPatterns = listPatterns;
 		this.metaLanguageLexerRules = metaLanguageLexerRules;

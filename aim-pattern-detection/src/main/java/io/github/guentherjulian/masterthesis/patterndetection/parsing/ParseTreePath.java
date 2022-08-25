@@ -45,6 +45,14 @@ public class ParseTreePath implements ParseTreeElement {
 		return containsMetaLanguage;
 	}
 
+	public boolean isNonOrderingNode() {
+		return isNonOrderingNode;
+	}
+
+	public void setNonOrderingNode(boolean isNonOrderingNode) {
+		this.isNonOrderingNode = isNonOrderingNode;
+	}
+
 	@Override
 	public String toString() {
 		return getText();
@@ -87,13 +95,5 @@ public class ParseTreePath implements ParseTreeElement {
 	public Object getPureObjLangPath() {
 		return getPathElements().stream().filter(e -> !e.isMetaLanguageElement).map(ParseTreePath::getName)
 				.collect(Collectors.joining("/"));
-	}
-
-	public boolean isNonOrderingNode() {
-		return isNonOrderingNode;
-	}
-
-	public void setNonOrderingNode(boolean isNonOrderingNode) {
-		this.isNonOrderingNode = isNonOrderingNode;
 	}
 }

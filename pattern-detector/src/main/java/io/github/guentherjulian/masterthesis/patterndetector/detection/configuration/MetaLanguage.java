@@ -3,15 +3,15 @@ package io.github.guentherjulian.masterthesis.patterndetector.detection.configur
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerLexerRuleNames;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerMetaLanguagePattern;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.StringTemplateLexerRuleNames;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.StringTemplateMetaLanguagePattern;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.VelocityLexerRuleNames;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.VelocityMetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.FreeMarkerLexerRuleNames;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.FreeMarkerMetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageLexerRules;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.StringTemplateLexerRuleNames;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.StringTemplateMetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.VelocityLexerRuleNames;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.VelocityMetaLanguagePattern;
 
 public enum MetaLanguage {
 

@@ -16,13 +16,13 @@ import org.junit.jupiter.api.Test;
 
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.VelocityLexerRuleNames;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.VelocityMetaLanguagePattern;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.JavaProperties;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageLexerRules;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.VelocityLexerRuleNames;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.VelocityMetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.JavaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
@@ -36,7 +36,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 	private MetaLanguageLexerRules metaLanguageLexerRules = new VelocityLexerRuleNames();
 	private MetaLanguageConfiguration metaLanguageConfiguration = new MetaLanguageConfiguration(
 			this.metaLanguageLexerRules, this.metaLanguagePattern, this.metaLangPrefix);
-	private ObjectLanguageProperties objectLanguageProperties = new JavaProperties(this.metaLangPrefix);
+	private ObjectLanguageConfiguration objectLanguageProperties = new JavaLanguageConfiguration(this.metaLangPrefix);
 	private PlaceholderResolver placeholderResolver = null;
 	private TemplatePreprocessor templatePreprocessor = new VelocityTemplatePreprocessor();
 

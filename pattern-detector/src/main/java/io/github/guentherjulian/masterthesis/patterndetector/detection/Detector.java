@@ -12,8 +12,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatt
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.AimPatternDetectionEngine;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.AimPatternDetectionResult;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.utils.PathUtil;
@@ -67,7 +67,7 @@ public class Detector {
 
 			MetaLanguageConfiguration metaLanguageConfiguration = MetaLanguage
 					.getMetaLanguageConfiguration(this.metalanguage, this.metaLanguagePrefix);
-			ObjectLanguageProperties objectLanguageProperties = ObjectLanguage
+			ObjectLanguageConfiguration objectLanguageProperties = ObjectLanguage
 					.getObjectLanguageProperties(this.objectLanguage, this.metaLanguagePrefix);
 			PlaceholderResolver placeholderResolver = DetectorConfigurationUtils
 					.getPlaceholderResolver(this.metalanguage);

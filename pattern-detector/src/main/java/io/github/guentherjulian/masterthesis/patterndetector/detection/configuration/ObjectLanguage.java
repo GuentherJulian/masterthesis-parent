@@ -1,8 +1,8 @@
 package io.github.guentherjulian.masterthesis.patterndetector.detection.configuration;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.CProperties;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.JavaProperties;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.CLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.JavaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 
 public enum ObjectLanguage {
 
@@ -23,14 +23,14 @@ public enum ObjectLanguage {
 		return objectLanguage;
 	}
 
-	public static ObjectLanguageProperties getObjectLanguageProperties(ObjectLanguage objectLanguage,
+	public static ObjectLanguageConfiguration getObjectLanguageProperties(ObjectLanguage objectLanguage,
 			String metalanguagePrefix) {
-		ObjectLanguageProperties objectLanguageProperties = null;
+		ObjectLanguageConfiguration objectLanguageProperties = null;
 		if (objectLanguage == ObjectLanguage.JAVA) {
-			objectLanguageProperties = new JavaProperties(metalanguagePrefix);
+			objectLanguageProperties = new JavaLanguageConfiguration(metalanguagePrefix);
 		}
 		if (objectLanguage == ObjectLanguage.C) {
-			objectLanguageProperties = new CProperties(metalanguagePrefix);
+			objectLanguageProperties = new CLanguageConfiguration(metalanguagePrefix);
 		}
 		return objectLanguageProperties;
 	}

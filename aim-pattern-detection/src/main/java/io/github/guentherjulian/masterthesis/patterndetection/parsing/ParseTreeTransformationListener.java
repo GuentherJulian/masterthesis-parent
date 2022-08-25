@@ -12,8 +12,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageLexerRules;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 
 public class ParseTreeTransformationListener implements ParseTreeListener {
 
@@ -23,7 +23,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 	private Vocabulary parserVocabulary;
 	private Map<String, List<String>> listPatterns;
 	private MetaLanguageLexerRules metaLanguageLexerRules;
-	private ObjectLanguageProperties objectLanguageProperties;
+	private ObjectLanguageConfiguration objectLanguageProperties;
 	// TODO Initialize non ordering nodes only once
 
 	private ParseTreePathList parseTreePaths;
@@ -34,7 +34,7 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 	private Stack<MetaLanguageElement> openMetalanguageElements = new Stack<>();
 
 	public ParseTreeTransformationListener(Vocabulary parserVocabulary, Map<String, List<String>> listPatterns,
-			MetaLanguageLexerRules metaLanguageLexerRules, ObjectLanguageProperties objectLanguageProperties) {
+			MetaLanguageLexerRules metaLanguageLexerRules, ObjectLanguageConfiguration objectLanguageProperties) {
 		this.parserVocabulary = parserVocabulary;
 		this.listPatterns = listPatterns;
 		this.metaLanguageLexerRules = metaLanguageLexerRules;

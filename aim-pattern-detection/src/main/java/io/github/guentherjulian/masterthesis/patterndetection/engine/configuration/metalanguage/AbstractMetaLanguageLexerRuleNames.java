@@ -1,4 +1,4 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage;
 
 abstract class AbstractMetaLanguageLexerRuleNames implements MetaLanguageLexerRules {
 

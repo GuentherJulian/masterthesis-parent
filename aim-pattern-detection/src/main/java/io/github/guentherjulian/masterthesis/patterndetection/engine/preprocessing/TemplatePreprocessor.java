@@ -5,5 +5,5 @@ import java.nio.file.Path;
 
 public interface TemplatePreprocessor {
 
-	public byte[] process(Path templatePath) throws IOException;
+	public byte[] processTemplate(Path templatePath) throws IOException;
 }

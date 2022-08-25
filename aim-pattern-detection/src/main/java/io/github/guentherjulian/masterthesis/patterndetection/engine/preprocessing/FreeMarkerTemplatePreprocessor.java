@@ -12,7 +12,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 	private final Pattern suffixPattern = Pattern.compile(regexSuffix);
 
 	@Override
-	public String process(String lineToProcess) {
+	public String processTemplateLine(String lineToProcess) {
 		String returnValue = lineToProcess;
 
 		boolean prefixFound = true;

@@ -1,17 +1,17 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-abstract class AbstractObjectLanguageProperties implements ObjectLanguageProperties {
+abstract class AbstractObjectLanguageConfiguration implements ObjectLanguageConfiguration {
 
 	private static final Set<String> nonOrderingNodesPostfixes = new HashSet<>(
 			Arrays.asList("Context", "OptContext", "StarContext", "PlusContext"));
 
 	private String metaLanguagePrefix;
 
-	public AbstractObjectLanguageProperties(String metaLanguagePrefix) {
+	public AbstractObjectLanguageConfiguration(String metaLanguagePrefix) {
 		this.metaLanguagePrefix = metaLanguagePrefix.toLowerCase();
 	}
 

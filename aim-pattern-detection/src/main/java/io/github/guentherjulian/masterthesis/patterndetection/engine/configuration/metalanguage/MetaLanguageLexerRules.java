@@ -1,4 +1,4 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage;
 
 public interface MetaLanguageLexerRules {
 

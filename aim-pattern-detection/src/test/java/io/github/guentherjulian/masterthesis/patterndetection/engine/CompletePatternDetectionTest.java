@@ -1,7 +1,6 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -15,13 +14,13 @@ import org.junit.jupiter.api.Test;
 
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPattern;
 import io.github.guentherjulian.masterthesis.patterndetection.aimpattern.AimPatternTemplate;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerLexerRuleNames;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.FreeMarkerMetaLanguagePattern;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageConfiguration;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguageLexerRules;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.metalanguage.MetaLanguagePattern;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.JavaProperties;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.languages.objectlanguage.ObjectLanguageProperties;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.FreeMarkerLexerRuleNames;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.FreeMarkerMetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageLexerRules;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguagePattern;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.JavaLanguageConfiguration;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.FreeMarkerPlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
@@ -48,7 +47,7 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 		MetaLanguageLexerRules metaLanguageLexerRules = new FreeMarkerLexerRuleNames();
 		MetaLanguageConfiguration metaLanguageConfiguration = new MetaLanguageConfiguration(metaLanguageLexerRules,
 				metaLanguagePattern, metaLangPrefix);
-		ObjectLanguageProperties objectLanguageProperties = new JavaProperties(metaLangPrefix);
+		ObjectLanguageConfiguration objectLanguageProperties = new JavaLanguageConfiguration(metaLangPrefix);
 		PlaceholderResolver placeholderResolver = new FreeMarkerPlaceholderResolver();
 		TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
 
@@ -70,7 +69,6 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 				.println(String.format("Pattern detection took %s ns, %s ms", processingTime, (processingTime / 1e6)));
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 
-		assertEquals(treeMatches.size(), 9);
-		assertTrue(false);
+		assertEquals(patternDetectionResult.getSuccessfullyMatchedResults().size(), 3);
 	}
 }
