@@ -39,6 +39,7 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.Tr
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocesor;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.utils.ParseTreeUtil;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTree;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreeTransformer;
 
@@ -118,7 +119,8 @@ public class AimPatternDetectionEngine {
 
 						List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
 						ParserRuleContext parseTree = parseTrees.get(0);
-						// templateParser.showTree(parseTree);
+						templateParser.showTree(parseTree);
+						int nodes = ParseTreeUtil.countTreeNodes(parseTree);
 
 						if (listPatterns == null) {
 							listPatterns = templateParser.getListPatterns();
