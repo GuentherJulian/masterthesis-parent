@@ -1,4 +1,4 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.freemarker;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,11 +7,16 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.AbstractPreprocessingTest;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.FreeMarkerTemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
+
 public class FreeMarkerMacroPreprocessingTest extends AbstractPreprocessingTest {
 
 	@Test
 	void preprocessingMacroWithParamsTest() throws Exception {
-		Path templatePath = resourcesPath.resolve("preprocessing").resolve("macro").resolve("MacroWithParams.java");
+		Path templatePath = resourcesPath.resolve("preprocessing").resolve("freemarker").resolve("macro")
+				.resolve("MacroWithParams.java");
 
 		TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
 
@@ -27,7 +32,8 @@ public class FreeMarkerMacroPreprocessingTest extends AbstractPreprocessingTest 
 
 	@Test
 	void preprocessingMacroWithoutParamsTest() throws Exception {
-		Path templatePath = resourcesPath.resolve("preprocessing").resolve("macro").resolve("MacroWithoutParams.java");
+		Path templatePath = resourcesPath.resolve("preprocessing").resolve("freemarker").resolve("macro")
+				.resolve("MacroWithoutParams.java");
 
 		TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
 
@@ -43,10 +49,12 @@ public class FreeMarkerMacroPreprocessingTest extends AbstractPreprocessingTest 
 
 	@Test
 	void preprocessingMacroFromIncludeTest() throws Exception {
-		Path templatePath = resourcesPath.resolve("preprocessing").resolve("macro").resolve("MacroFromInclude.java");
+		Path templatePath = resourcesPath.resolve("preprocessing").resolve("freemarker").resolve("macro")
+				.resolve("MacroFromInclude.java");
 
 		TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
-		templatePreprocessor.setTemplatesRootPath(resourcesPath.resolve("preprocessing").resolve("macro"));
+		templatePreprocessor
+				.setTemplatesRootPath(resourcesPath.resolve("preprocessing").resolve("freemarker").resolve("macro"));
 
 		byte[] preprocessedFileByteArray = templatePreprocessor.processTemplate(templatePath);
 

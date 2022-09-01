@@ -1,7 +1,14 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.guentherjulian.masterthesis.patterndetection.exception.PreprocessingException;
 
 public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
@@ -20,6 +27,62 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 		}
 
 		return returnValue;
+	}
+
+	@Override
+	protected byte[] preprocess(Path templatePath, byte[] templateByteArray)
+			throws PreprocessingException, IOException {
+		byte[] preprocessedByteArray = resolveIncludes(templatePath, templateByteArray);
+		return preprocessedByteArray;
+	}
+
+	private byte[] resolveIncludes(Path templatePath, byte[] templateByteArray)
+			throws PreprocessingException, IOException {
+		String regexInclude = ".*#include\\((.+)\\).*";
+		Pattern includePattern = Pattern.compile(regexInclude);
+
+		String[] lines = new String(templateByteArray).split(System.lineSeparator());
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		for (String line : lines) {
+			Matcher matcher = includePattern.matcher(line);
+			if (matcher.find()) {
+				String includeFiles = matcher.group(1);
+				if (includeFiles != null && !includeFiles.trim().isEmpty()) {
+					String[] files = includeFiles.trim().split(",");
+					for (int i = 0; i < files.length; i++) {
+						files[i] = files[i].trim();
+						if ((files[i].startsWith("\"") && files[i].endsWith("\""))
+								|| (files[i].startsWith("'") && files[i].endsWith("'"))) {
+							files[i] = files[i].substring(1, files[i].length() - 1);
+						}
+
+						Path referencedFile = getReferencedFile(templatePath, files[i]);
+						if (!Files.exists(referencedFile)) {
+							throw new PreprocessingException(
+									String.format("Error while including external file! File %s could not be found.",
+											referencedFile.toString()));
+						}
+						byte[] referencedFileByteArray = getFileBytes(referencedFile);
+						referencedFileByteArray = resolveIncludes(templatePath, referencedFileByteArray);
+						String[] referencedFileLines = new String(referencedFileByteArray)
+								.split(System.lineSeparator());
+						for (String referencedFileLine : referencedFileLines) {
+							byteArrayOutputStream.write(referencedFileLine.getBytes());
+							byteArrayOutputStream.write(System.lineSeparator().getBytes());
+						}
+					}
+				}
+			} else {
+				byteArrayOutputStream.write(line.getBytes());
+			}
+			byteArrayOutputStream.write(System.lineSeparator().getBytes());
+		}
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	@Override
+	protected Path getReferencedFile(Path templatePath, String includeFile) {
+		return Paths.get(this.templatesRootPath.resolve(includeFile).toUri());
 	}
 
 	private String replacePlaceholder(String str) {
