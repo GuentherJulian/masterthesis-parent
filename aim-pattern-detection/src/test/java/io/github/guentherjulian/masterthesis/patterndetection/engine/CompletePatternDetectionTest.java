@@ -53,7 +53,7 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 
 		// the actual test
 		List<AimPatternTemplate> aimPatternTemplates = PathUtil.getAimPatternTemplates(templatesPath);
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 

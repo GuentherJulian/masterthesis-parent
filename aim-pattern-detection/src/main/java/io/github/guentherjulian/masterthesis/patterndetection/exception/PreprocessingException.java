@@ -1,10 +1,10 @@
 package io.github.guentherjulian.masterthesis.patterndetection.exception;
 
-public class NoMatchException extends Exception {
+public class PreprocessingException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public NoMatchException(String message) {
+	public PreprocessingException(String message) {
 		super(message);
 	}
 }

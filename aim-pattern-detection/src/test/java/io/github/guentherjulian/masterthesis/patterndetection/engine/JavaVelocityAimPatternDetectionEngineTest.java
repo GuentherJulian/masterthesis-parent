@@ -56,7 +56,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimplePackageDeclTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimplePackageDeclTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -84,7 +84,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("ComplexPackageDeclTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "ComplexPackageDeclTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -120,7 +120,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimpleClassWithCopyConstructorTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithCopyConstructorTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -150,7 +150,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimpleClassWithIfElseTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -181,7 +181,7 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimpleListTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 

@@ -37,8 +37,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.In
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.ParseTreeMatcher;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.TreeMatch;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocesor;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessorUtil;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.utils.ParseTreeUtil;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTree;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreeTransformer;
@@ -94,6 +94,8 @@ public class AimPatternDetectionEngine {
 		InputStream grammarInputStream = Files.newInputStream(templateGrammarPath);
 		TemplateParser<? extends Parser> templateParser;
 
+		// TODO change
+		this.templatePreprocessor.setTemplatesRootPath(this.aimpattern.get(0).getTemplatesRootPath());
 		for (Path compilationUnitPath : this.compilationUnits) {
 			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.get(0).getAimPatternTemplates()) {
 
@@ -119,8 +121,7 @@ public class AimPatternDetectionEngine {
 
 						List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
 						ParserRuleContext parseTree = parseTrees.get(0);
-						templateParser.showTree(parseTree);
-						int nodes = ParseTreeUtil.countTreeNodes(parseTree);
+						// templateParser.showTree(parseTree);
 
 						if (listPatterns == null) {
 							listPatterns = templateParser.getListPatterns();
@@ -140,8 +141,8 @@ public class AimPatternDetectionEngine {
 					// parse template
 					if (!templateParseTrees.containsKey(aimPatternTemplate.getTemplatePath())) {
 						LOGGER.info("Parse template: {}", aimPatternTemplate.getTemplatePath());
-						Parser parser = createParser(TemplatePreprocesor.applyPreprocessing(this.templatePreprocessor,
-								aimPatternTemplate.getTemplatePath()));
+						Parser parser = createParser(TemplatePreprocessorUtil
+								.applyPreprocessing(this.templatePreprocessor, aimPatternTemplate.getTemplatePath()));
 						templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
 								grammarInputStream);
 
@@ -149,6 +150,8 @@ public class AimPatternDetectionEngine {
 						List<ParseTree> transformedTemplateParseTrees = new ArrayList<>();
 						for (ParserRuleContext parseTree : parseTrees) {
 							// templateParser.showTree(parseTree);
+							int nodes = ParseTreeUtil.countTreeNodes(parseTree);
+							int terminalNodes = ParseTreeUtil.countTerminalNodes(parseTree);
 							transformedTemplateParseTrees.add(parseTreeTransformer.transform(parseTree));
 						}
 						templateParseTrees.put(aimPatternTemplate.getTemplatePath(), transformedTemplateParseTrees);
@@ -251,7 +254,7 @@ public class AimPatternDetectionEngine {
 					startTime = System.nanoTime();
 
 					// TODO only parse template once, not for every compilation unit
-					Parser parser = createParser(TemplatePreprocesor.applyPreprocessing(this.templatePreprocessor,
+					Parser parser = createParser(TemplatePreprocessorUtil.applyPreprocessing(this.templatePreprocessor,
 							aimPatternTemplate.getTemplatePath()));
 					templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
 							grammarInputStream);

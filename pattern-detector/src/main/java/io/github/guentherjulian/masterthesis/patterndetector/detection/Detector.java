@@ -48,7 +48,7 @@ public class Detector {
 				throw new RuntimeException("No templates found in the given path.");
 			}
 			List<AimPattern> aimPatterns = new ArrayList<>();
-			AimPattern aimPattern = new AimPattern();
+			AimPattern aimPattern = new AimPattern(templatesPath);
 			aimPattern.setAimPatternTemplates(templates);
 			aimPatterns.add(aimPattern);
 

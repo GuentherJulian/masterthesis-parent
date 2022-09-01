@@ -58,7 +58,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimplePackageDeclTemplate.java"),
 				"SimplePackageDeclTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -86,7 +86,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("ComplexPackageDeclTemplate.java"),
 				"ComplexPackageDeclTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -123,7 +123,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimplePlaceholderTransformationTemplate.java"),
 						"SimplePlaceholderTransformationTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -154,7 +154,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithCopyConstructorTemplate.java"),
 						"SimpleClassWithCopyConstructorTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -184,7 +184,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("ImportOrderingTemplate.java"),
 				"ImportOrderingTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -213,7 +213,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("ImportOrderingWithPlaceholdersTemplate.java"), "ImportOrderingTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -250,7 +250,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithFieldDeclPlaceholderTemplate.java"),
 						"SimpleClassWithFieldDeclPlaceholderTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -275,7 +275,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseTemplate.java"),
 				"SimpleClassWithIfElseTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -306,7 +306,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseifTemplate.java"),
 				"SimpleClassWithIfElseifTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -341,7 +341,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseifElseTemplate.java"),
 						"SimpleClassWithIfElseifElseTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -375,7 +375,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(
 				new AimPatternTemplate(templatesPath.resolve("SimpleListTemplate.java"), "SimpleListTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -403,7 +403,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("ComplexTemplate.java"), "ComplexTemplate.java"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 

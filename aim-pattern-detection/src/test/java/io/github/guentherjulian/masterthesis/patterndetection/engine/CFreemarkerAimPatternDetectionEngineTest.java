@@ -55,7 +55,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimplePlaceholder.c"), "SimplePlaceholder.c"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
@@ -84,7 +84,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleIfCondition.c"), "SimpleIfCondition.c"));
-		AimPattern aimPattern = new AimPattern(aimPatternTemplates);
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
 		List<AimPattern> aimPatterns = new ArrayList<>();
 		aimPatterns.add(aimPattern);
 
