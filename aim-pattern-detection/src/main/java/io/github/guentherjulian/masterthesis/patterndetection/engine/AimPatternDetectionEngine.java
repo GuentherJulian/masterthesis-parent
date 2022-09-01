@@ -143,6 +143,13 @@ public class AimPatternDetectionEngine {
 						LOGGER.info("Parse template: {}", aimPatternTemplate.getTemplatePath());
 						Parser parser = createParser(TemplatePreprocessorUtil
 								.applyPreprocessing(this.templatePreprocessor, aimPatternTemplate.getTemplatePath()));
+						if (this.templatePreprocessor.getVariables() != null) {
+							for (Entry<String, Set<String>> variable : this.templatePreprocessor.getVariables()
+									.entrySet()) {
+								placeholderSubstitutions.put(variable.getKey(), variable.getValue());
+							}
+						}
+
 						templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
 								grammarInputStream);
 

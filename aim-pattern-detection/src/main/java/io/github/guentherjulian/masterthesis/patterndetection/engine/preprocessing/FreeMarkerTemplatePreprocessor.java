@@ -65,17 +65,19 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 	@Override
 	protected byte[] preprocess(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
-		byte[] preprocessedByteArray = resolveIncludes(templatePath, templateByteArray);
-		String s = new String(preprocessedByteArray);
+		byte[] preprocessedByteArray = resolveIncludesAndAssigns(templatePath, templateByteArray);
 		this.macros = findMacros(preprocessedByteArray);
 		preprocessedByteArray = replaceMacros(preprocessedByteArray, this.macros);
 		return preprocessedByteArray;
 	}
 
-	private byte[] resolveIncludes(Path templatePath, byte[] templateByteArray)
+	private byte[] resolveIncludesAndAssigns(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
 		String regexInclude = ".*<#include (.+)>.*";
 		Pattern includePattern = Pattern.compile(regexInclude);
+
+		String regexAssign = ".*<#assign( .+)*>.*";
+		Pattern assignPattern = Pattern.compile(regexAssign);
 
 		String[] lines = new String(templateByteArray).split(System.lineSeparator());
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -90,14 +92,30 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 									referencedFile.toString()));
 				}
 				byte[] referencedFileByteArray = getFileBytes(referencedFile);
-				referencedFileByteArray = resolveIncludes(templatePath, referencedFileByteArray);
+				referencedFileByteArray = resolveIncludesAndAssigns(templatePath, referencedFileByteArray);
 				String[] referencedFileLines = new String(referencedFileByteArray).split(System.lineSeparator());
 				for (String referencedFileLine : referencedFileLines) {
 					byteArrayOutputStream.write(referencedFileLine.getBytes());
 					byteArrayOutputStream.write(System.lineSeparator().getBytes());
 				}
 			} else {
-				byteArrayOutputStream.write(line.getBytes());
+				matcher = assignPattern.matcher(line);
+				if (matcher.find()) {
+					String variablesString = matcher.group(1);
+					// TODO fix, would cause an error if an whitespace is in variable value
+					String[] variables = variablesString.trim().split(" ");
+					for (String variable : variables) {
+						String varName = variable.split("=")[0];
+						String varValue = variable.split("=")[1];
+						if ((varValue.startsWith("\"") && varValue.endsWith("\""))
+								|| (varValue.startsWith("'") && varValue.endsWith("'"))) {
+							varValue = varValue.substring(1, varValue.length() - 1);
+						}
+						this.addVariable(varName, varValue);
+					}
+				} else {
+					byteArrayOutputStream.write(line.getBytes());
+				}
 			}
 			byteArrayOutputStream.write(System.lineSeparator().getBytes());
 		}
@@ -122,6 +140,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 
 				String macroParamString = matcher.group(2);
 				if (macroParamString != null) {
+					// TODO fix, would cause an error if an whitespace is in variable value
 					String[] macroParams = macroParamString.trim().split(" ");
 					for (String param : macroParams) {
 						String[] paramSplitted = param.split("=");
@@ -176,6 +195,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 				if (foundMacros.size() == 1) {
 					String macroParamString = matcher.group(3);
 					if (macroParamString != null) {
+						// TODO fix, would cause an error if an whitespace is in variable value
 						String[] params = macroParamString.trim().split(" ");
 						for (String param : params) {
 							String key = param.split("=")[0];

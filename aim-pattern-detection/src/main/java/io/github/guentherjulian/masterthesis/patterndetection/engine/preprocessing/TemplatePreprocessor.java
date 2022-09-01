@@ -2,6 +2,8 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocess
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.Set;
 
 import io.github.guentherjulian.masterthesis.patterndetection.exception.PreprocessingException;
 
@@ -10,4 +12,6 @@ public interface TemplatePreprocessor {
 	public byte[] processTemplate(Path templatePath) throws IOException, PreprocessingException;
 
 	public void setTemplatesRootPath(Path templatesRootPath);
+
+	public Map<String, Set<String>> getVariables();
 }

@@ -7,12 +7,18 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import io.github.guentherjulian.masterthesis.patterndetection.exception.PreprocessingException;
 
 abstract class AbstractTemplatePreprocessor implements TemplatePreprocessor {
 
-	private Path templatesRootPath;
+	protected Path templatesRootPath;
+	protected Map<String, Set<String>> variables;
 
 	protected abstract String processTemplateLine(String lineToProcess) throws PreprocessingException;
 
@@ -66,5 +72,16 @@ abstract class AbstractTemplatePreprocessor implements TemplatePreprocessor {
 
 	public void setTemplatesRootPath(Path templatesRootPath) {
 		this.templatesRootPath = templatesRootPath;
+	}
+
+	public Map<String, Set<String>> getVariables() {
+		return this.variables;
+	}
+
+	protected void addVariable(String variableName, String variableValue) {
+		if (this.variables == null) {
+			this.variables = new HashMap<>();
+		}
+		this.variables.put(variableName, new HashSet<>(Arrays.asList(variableValue)));
 	}
 }
