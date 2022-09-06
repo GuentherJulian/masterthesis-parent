@@ -427,4 +427,25 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("anything"));
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("anything").contains("false"));
 	}
+
+	@Test
+	void javaFreeMarkerIfTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("If.java"), "If.java"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
+
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+	}
 }
