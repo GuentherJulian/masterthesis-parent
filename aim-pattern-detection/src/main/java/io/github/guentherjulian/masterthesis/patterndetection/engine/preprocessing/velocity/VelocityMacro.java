@@ -1,13 +1,13 @@
-package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.freemarker;
+package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.velocity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Macro {
-
+public class VelocityMacro {
 	private String macroName;
 	private Map<String, String> parameters;
-	private String macroText;
+	private String macroBody;
+	private String macroContent;
 
 	public String getMacroName() {
 		return macroName;
@@ -28,11 +28,19 @@ public class Macro {
 		this.parameters = parameters;
 	}
 
-	public String getMacroText() {
-		return macroText;
+	public String getMacroBody() {
+		return macroBody;
 	}
 
-	public void setMacroText(String macroText) {
-		this.macroText = macroText;
+	public void setMacroBody(String macroBody) {
+		this.macroBody = macroBody;
+	}
+
+	public String getMacroContent() {
+		return macroContent;
+	}
+
+	public void setMacroContent(String macroContent) {
+		this.macroContent = macroContent;
 	}
 }

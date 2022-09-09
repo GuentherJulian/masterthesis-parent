@@ -1,0 +1,5 @@
+#if ($anything)
+	private int i;
+#else
+	private int j;
+#end

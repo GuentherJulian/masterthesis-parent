@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.velocity.VelocityMacro;
 import io.github.guentherjulian.masterthesis.patterndetection.exception.PreprocessingException;
 
 public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
@@ -16,6 +21,8 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 	private final String regexPlaceholder = ".*(\\$(.+))";
 	private final Pattern patternContainsPlaceholder = Pattern.compile(regexContainsPlaceholder);
 	private final Pattern patternPlaceholder = Pattern.compile(regexPlaceholder);
+
+	private List<VelocityMacro> macros;
 
 	@Override
 	public String processTemplateLine(String lineToProcess) {
@@ -32,21 +39,167 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 	@Override
 	protected byte[] preprocess(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
-		byte[] preprocessedByteArray = resolveIncludes(templatePath, templateByteArray);
+		byte[] preprocessedByteArray = resolveIncludesAndAssignments(templatePath, templateByteArray);
+		this.macros = findMacros(preprocessedByteArray);
+		preprocessedByteArray = replaceMacros(preprocessedByteArray, this.macros);
 		return preprocessedByteArray;
 	}
 
-	private byte[] resolveIncludes(Path templatePath, byte[] templateByteArray)
+	private List<VelocityMacro> findMacros(byte[] templateByteArray) throws IOException {
+		String regexMacroStart = ".*#macro\\((.+?)( .+)*\\).*";
+		String regexMacroEnd = ".*#end.*";
+		Pattern macroStartPattern = Pattern.compile(regexMacroStart);
+		Pattern macroEndPattern = Pattern.compile(regexMacroEnd);
+
+		ByteArrayOutputStream writer = null;
+		Stack<VelocityMacro> macros = new Stack<>();
+		Stack<Boolean> isMacroTerminalSymbol = new Stack<>();
+		String[] lines = new String(templateByteArray).split(System.lineSeparator());
+		for (String line : lines) {
+			Matcher matcher = macroStartPattern.matcher(line);
+			if (matcher.find()) {
+				macros.push(new VelocityMacro());
+				isMacroTerminalSymbol.push(true);
+				String macroName = matcher.group(1);
+				macros.peek().setMacroName(macroName.trim());
+
+				String macroParamString = matcher.group(2);
+				if (macroParamString != null) {
+					// TODO fix, would cause an error if an whitespace is in variable value
+					String[] macroParams = macroParamString.trim().split(" ");
+					for (String param : macroParams) {
+						String[] paramSplitted = param.split("=");
+						if (paramSplitted.length == 1) {
+							macros.peek().getParameters().put(paramSplitted[0], null);
+						} else {
+							if (paramSplitted[1].endsWith(",")) {
+								paramSplitted[1] = paramSplitted[1].substring(0, paramSplitted[1].length() - 2);
+							}
+							paramSplitted[1] = paramSplitted[1].replace("\"", "").replace("'", "");
+							macros.peek().getParameters().put(paramSplitted[0], paramSplitted[1]);
+						}
+					}
+				}
+
+				writer = new ByteArrayOutputStream();
+			} else {
+				matcher = macroEndPattern.matcher(line);
+				if (matcher.find()) {
+					if (isMacroTerminalSymbol.pop()) {
+						macros.peek().setMacroContent(new String(writer.toByteArray()));
+						writer = null;
+					}
+				} else {
+					if (line.trim().startsWith("#if") || line.trim().startsWith("#foreach")) {
+						isMacroTerminalSymbol.push(false);
+					}
+					if (writer != null) {
+						writer.write(line.getBytes());
+						writer.write(System.lineSeparator().getBytes());
+					}
+				}
+			}
+		}
+		return new ArrayList<>(macros);
+	}
+
+	private byte[] replaceMacros(byte[] preprocessedByteArray, List<VelocityMacro> macros)
+			throws IOException, PreprocessingException {
+		String regexMacroStart = ".*#macro\\((.+?)( .+)*\\).*";
+		String regexMacroEnd = ".*#end.*";
+		Pattern macroStartPattern = Pattern.compile(regexMacroStart);
+		Pattern macroEndPattern = Pattern.compile(regexMacroEnd);
+		boolean isMacro = false;
+
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		String[] lines = new String(preprocessedByteArray).split(System.lineSeparator());
+		for (String line : lines) {
+			VelocityMacro macroFound = null;
+			Matcher matcherMacroFound = null;
+			for (VelocityMacro macro : macros) {
+				String regexMacroWithoutBody = ".*#" + macro.getMacroName() + "\\((.*)\\)";
+				Pattern patternMacroWithoutBody = Pattern.compile(regexMacroWithoutBody);
+
+				Matcher matcher = patternMacroWithoutBody.matcher(line);
+				if (matcher.find()) {
+					macroFound = macro;
+					matcherMacroFound = matcher;
+					break;
+				}
+			}
+
+			if (macroFound != null) {
+				String macroParamString = matcherMacroFound.group(1).trim();
+				if (macroParamString != null) {
+					// TODO fix, would cause an error if an whitespace is in variable value
+					String[] params = macroParamString.trim().split(" ");
+					int i = 0;
+					for (Entry<String, String> parameterEntry : macroFound.getParameters().entrySet()) {
+						String value = params[i++].replace("\"", "").replace("'", "");
+						parameterEntry.setValue(value);
+					}
+				}
+
+				String macroText = macroFound.getMacroContent();
+				String[] macroLines = macroText.split(System.lineSeparator());
+				for (String macroLine : macroLines) {
+					String processedLine = macroLine;
+					for (Entry<String, String> parameter : macroFound.getParameters().entrySet()) {
+						String param = parameter.getKey();
+						if (param.startsWith("$")) {
+							param = param.substring(1);
+						}
+						processedLine = processedLine.replaceAll("\\$\\{" + param + "\\}", parameter.getValue());
+						processedLine = processedLine.replaceAll("\\$" + param, parameter.getValue());
+					}
+					byteArrayOutputStream.write(processedLine.getBytes());
+					byteArrayOutputStream.write(System.lineSeparator().getBytes());
+				}
+			} else {
+				Matcher matcher = macroStartPattern.matcher(line);
+				if (matcher.find()) {
+					isMacro = true;
+				}
+
+				if (!isMacro) {
+					byteArrayOutputStream.write(line.getBytes());
+				}
+
+				matcher = macroEndPattern.matcher(line);
+				if (matcher.find()) {
+					isMacro = false;
+				}
+			}
+			byteArrayOutputStream.write(System.lineSeparator().getBytes());
+		}
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	private byte[] resolveIncludesAndAssignments(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
 		String regexInclude = ".*#include\\((.+)\\).*";
 		Pattern includePattern = Pattern.compile(regexInclude);
+		String regexParse = ".*#parse\\((.+)\\).*";
+		Pattern parsePattern = Pattern.compile(regexParse);
+
+		String regexSet = ".*#set\\((.+)\\).*";
+		Pattern setPattern = Pattern.compile(regexSet);
 
 		String[] lines = new String(templateByteArray).split(System.lineSeparator());
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		for (String line : lines) {
+			String includeFiles = "";
 			Matcher matcher = includePattern.matcher(line);
 			if (matcher.find()) {
-				String includeFiles = matcher.group(1);
+				includeFiles = matcher.group(1);
+			} else {
+				matcher = parsePattern.matcher(line);
+				if (matcher.find()) {
+					includeFiles = matcher.group(1);
+				}
+			}
+
+			if (!includeFiles.isEmpty()) {
 				if (includeFiles != null && !includeFiles.trim().isEmpty()) {
 					String[] files = includeFiles.trim().split(",");
 					for (int i = 0; i < files.length; i++) {
@@ -63,7 +216,7 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 											referencedFile.toString()));
 						}
 						byte[] referencedFileByteArray = getFileBytes(referencedFile);
-						referencedFileByteArray = resolveIncludes(templatePath, referencedFileByteArray);
+						referencedFileByteArray = resolveIncludesAndAssignments(templatePath, referencedFileByteArray);
 						String[] referencedFileLines = new String(referencedFileByteArray)
 								.split(System.lineSeparator());
 						for (String referencedFileLine : referencedFileLines) {
@@ -73,8 +226,26 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 					}
 				}
 			} else {
-				byteArrayOutputStream.write(line.getBytes());
+				matcher = setPattern.matcher(line);
+				if (matcher.find()) {
+					String variablesString = matcher.group(1);
+					// TODO fix, would cause an error if an whitespace is in variable value
+					String[] variables = variablesString.trim().split(" ");
+					for (String variable : variables) {
+						String varName = variable.split("=")[0];
+						String varValue = variable.split("=")[1];
+						if ((varValue.startsWith("\"") && varValue.endsWith("\""))
+								|| (varValue.startsWith("'") && varValue.endsWith("'"))) {
+							varValue = varValue.substring(1, varValue.length() - 1);
+						}
+						varName = varName.replaceAll("\\$", "").replaceAll("\\{", "").replaceAll("\\}", "");
+						this.addVariable(varName, varValue);
+					}
+				} else {
+					byteArrayOutputStream.write(line.getBytes());
+				}
 			}
+
 			byteArrayOutputStream.write(System.lineSeparator().getBytes());
 		}
 		return byteArrayOutputStream.toByteArray();

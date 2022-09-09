@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.freemarker.Macro;
+import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.freemarker.FreeMarkerMacro;
 import io.github.guentherjulian.masterthesis.patterndetection.exception.PreprocessingException;
 
 public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor {
@@ -23,7 +23,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 	private final Pattern prefixPattern = Pattern.compile(regexPrefix);
 	private final Pattern suffixPattern = Pattern.compile(regexSuffix);
 
-	private List<Macro> macros;
+	private List<FreeMarkerMacro> macros;
 
 	@Override
 	public String processTemplateLine(String lineToProcess) throws PreprocessingException {
@@ -65,13 +65,13 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 	@Override
 	protected byte[] preprocess(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
-		byte[] preprocessedByteArray = resolveIncludesAndAssigns(templatePath, templateByteArray);
+		byte[] preprocessedByteArray = resolveIncludesAndAssignments(templatePath, templateByteArray);
 		this.macros = findMacros(preprocessedByteArray);
 		preprocessedByteArray = replaceMacros(preprocessedByteArray, this.macros);
 		return preprocessedByteArray;
 	}
 
-	private byte[] resolveIncludesAndAssigns(Path templatePath, byte[] templateByteArray)
+	private byte[] resolveIncludesAndAssignments(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
 		String regexInclude = ".*<#include (.+)>.*";
 		Pattern includePattern = Pattern.compile(regexInclude);
@@ -92,7 +92,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 									referencedFile.toString()));
 				}
 				byte[] referencedFileByteArray = getFileBytes(referencedFile);
-				referencedFileByteArray = resolveIncludesAndAssigns(templatePath, referencedFileByteArray);
+				referencedFileByteArray = resolveIncludesAndAssignments(templatePath, referencedFileByteArray);
 				String[] referencedFileLines = new String(referencedFileByteArray).split(System.lineSeparator());
 				for (String referencedFileLine : referencedFileLines) {
 					byteArrayOutputStream.write(referencedFileLine.getBytes());
@@ -122,19 +122,19 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 		return byteArrayOutputStream.toByteArray();
 	}
 
-	private List<Macro> findMacros(byte[] templateByteArray) throws IOException {
+	private List<FreeMarkerMacro> findMacros(byte[] templateByteArray) throws IOException {
 		String regexMacroStart = ".*<#macro (.+?)( .+)*>.*";
 		String regexMacroEnd = ".*</#macro>.*";
 		Pattern macroStartPattern = Pattern.compile(regexMacroStart);
 		Pattern macroEndPattern = Pattern.compile(regexMacroEnd);
 
 		ByteArrayOutputStream writer = null;
-		Stack<Macro> macros = new Stack<>();
+		Stack<FreeMarkerMacro> macros = new Stack<>();
 		String[] lines = new String(templateByteArray).split(System.lineSeparator());
 		for (String line : lines) {
 			Matcher matcher = macroStartPattern.matcher(line);
 			if (matcher.find()) {
-				macros.push(new Macro());
+				macros.push(new FreeMarkerMacro());
 				String macroName = matcher.group(1);
 				macros.peek().setMacroName(macroName.trim());
 
@@ -160,7 +160,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 			} else {
 				matcher = macroEndPattern.matcher(line);
 				if (matcher.find()) {
-					macros.peek().setMacroText(new String(writer.toByteArray()));
+					macros.peek().setMacroContent(new String(writer.toByteArray()));
 					writer = null;
 				} else {
 					if (writer != null) {
@@ -173,7 +173,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 		return new ArrayList<>(macros);
 	}
 
-	private byte[] replaceMacros(byte[] preprocessedByteArray, List<Macro> macros)
+	private byte[] replaceMacros(byte[] preprocessedByteArray, List<FreeMarkerMacro> macros)
 			throws IOException, PreprocessingException {
 		String regexMacro = ".*(<@(.+?)( .+)*\\/>).*";
 		Pattern macroPattern = Pattern.compile(regexMacro);
@@ -190,7 +190,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 			Matcher matcher = macroPattern.matcher(line);
 			if (matcher.find()) {
 				String macroName = matcher.group(2).trim();
-				List<Macro> foundMacros = macros.stream().filter(m -> m.getMacroName().equals(macroName))
+				List<FreeMarkerMacro> foundMacros = macros.stream().filter(m -> m.getMacroName().equals(macroName))
 						.collect(Collectors.toList());
 				if (foundMacros.size() == 1) {
 					String macroParamString = matcher.group(3);
@@ -208,7 +208,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 						}
 					}
 
-					String macroText = foundMacros.get(0).getMacroText();
+					String macroText = foundMacros.get(0).getMacroContent();
 					String[] macroLines = macroText.split(System.lineSeparator());
 					for (String macroLine : macroLines) {
 						String processedLine = macroLine;
