@@ -123,4 +123,38 @@ public class JavaFreemarkerPreprocessingTest extends AbstractPreprocessingTest {
 		assertNotNull(tree);
 		assertNull(tree.exception);
 	}
+
+	@Test
+	void processRealTemplate() throws Exception {
+		Path invalidPrefixFilePath = resourcesPath.resolve("preprocessing").resolve("freemarker")
+				.resolve("ServiceConfig.java");
+		Parser parser = this.createParser(invalidPrefixFilePath);
+
+		ParserRuleContext tree = null;
+		try {
+			tree = parse(parser, parserStartRule);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		assertNotNull(tree);
+		// assertNotNull(tree.exception);
+
+		FreeMarkerTemplatePreprocessor javaFreeMarkerPreprocessingStep = new FreeMarkerTemplatePreprocessor();
+
+		byte[] preprocessedFileByteArray = javaFreeMarkerPreprocessingStep.processTemplate(invalidPrefixFilePath);
+		System.out.println(new String(preprocessedFileByteArray));
+
+		parser = this.createParser(preprocessedFileByteArray);
+
+		tree = null;
+		try {
+			tree = parse(parser, parserStartRule);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		assertNotNull(tree);
+		assertNull(tree.exception);
+	}
 }

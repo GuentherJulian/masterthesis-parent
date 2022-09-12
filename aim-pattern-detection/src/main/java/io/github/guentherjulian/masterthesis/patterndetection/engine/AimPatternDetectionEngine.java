@@ -99,11 +99,16 @@ public class AimPatternDetectionEngine {
 		for (Path compilationUnitPath : this.compilationUnits) {
 			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.get(0).getAimPatternTemplates()) {
 
+				if (compilationUnitPath.toString().contains("Eto")
+						&& aimPatternTemplate.getTemplatePath().toString().contains("Eto")) {
+					System.out.println("");
+				}
+
 				// match instantiation path
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
 						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
 						this.metaLanguageConfiguration.getMetaLanguagePattern(), this.placeholderResolver);
-				instantiationPathMatch.setMatch(true);
+				// instantiationPathMatch.setMatch(true);
 
 				if (instantiationPathMatch.isMatch()) {
 					LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,

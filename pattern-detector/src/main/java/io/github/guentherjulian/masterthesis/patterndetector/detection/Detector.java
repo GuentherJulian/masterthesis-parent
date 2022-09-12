@@ -43,7 +43,8 @@ public class Detector {
 	public AimPatternDetectionResult detect() throws Exception {
 		AimPatternDetectionResult detectionResult = null;
 		try {
-			List<AimPatternTemplate> templates = PathUtil.getAimPatternTemplates(this.templatesPath);
+			// TODO change regex depending on language
+			List<AimPatternTemplate> templates = PathUtil.getAimPatternTemplates(this.templatesPath, ".*\\.ftl");
 			if (templates.size() == 0) {
 				throw new RuntimeException("No templates found in the given path.");
 			}
@@ -73,6 +74,7 @@ public class Detector {
 					.getPlaceholderResolver(this.metalanguage);
 			TemplatePreprocessor templatePreprocessor = DetectorConfigurationUtils
 					.getTemplatePreprocessor(this.metalanguage);
+			templatePreprocessor.setTemplatesRootPath(templatesPath);
 
 			AimPatternDetectionEngine patternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 					compilationUnits, parserClass, lexerClass, this.templateGrammarPath, metaLanguageConfiguration,

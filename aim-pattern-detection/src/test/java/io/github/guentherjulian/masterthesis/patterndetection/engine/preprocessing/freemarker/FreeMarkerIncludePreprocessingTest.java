@@ -50,4 +50,20 @@ public class FreeMarkerIncludePreprocessingTest extends AbstractPreprocessingTes
 		assertTrue(templateString.contains("private int bar;"));
 		assertFalse(templateString.contains("<#include"));
 	}
+
+	@Test
+	void preprocessingIncludeFunctions() throws Exception {
+		Path templatePath = resourcesPath.resolve("preprocessing").resolve("freemarker").resolve("include")
+				.resolve("IncludeFunctions.java");
+
+		TemplatePreprocessor templatePreprocessor = new FreeMarkerTemplatePreprocessor();
+		templatePreprocessor
+				.setTemplatesRootPath(resourcesPath.resolve("preprocessing").resolve("freemarker").resolve("include"));
+
+		byte[] preprocessedFileByteArray = templatePreprocessor.processTemplate(templatePath);
+
+		String templateString = new String(preprocessedFileByteArray);
+
+		System.out.println(templateString);
+	}
 }

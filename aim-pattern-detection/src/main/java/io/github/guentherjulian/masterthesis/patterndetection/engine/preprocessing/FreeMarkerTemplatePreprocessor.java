@@ -66,6 +66,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 	protected byte[] preprocess(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
 		byte[] preprocessedByteArray = resolveIncludesAndAssignments(templatePath, templateByteArray);
+		preprocessedByteArray = removeComments(preprocessedByteArray);
 		this.macros = findMacros(preprocessedByteArray);
 		preprocessedByteArray = replaceMacros(preprocessedByteArray, this.macros);
 		return preprocessedByteArray;
@@ -104,9 +105,18 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 					String variablesString = matcher.group(1);
 					// TODO fix, would cause an error if an whitespace is in variable value
 					String[] variables = variablesString.trim().split(" ");
-					for (String variable : variables) {
-						String varName = variable.split("=")[0];
-						String varValue = variable.split("=")[1];
+					for (int i = 0; i < variables.length; i++) {
+						String varName = "";
+						String varValue = "";
+						if (variables[i].contains("=")) {
+							varName = variables[i].split("=")[0];
+							varValue = variables[i].split("=")[1];
+						} else {
+							varName = variables[i];
+							varValue = variables[i + 2];
+							i = i + 2;
+						}
+
 						if ((varValue.startsWith("\"") && varValue.endsWith("\""))
 								|| (varValue.startsWith("'") && varValue.endsWith("'"))) {
 							varValue = varValue.substring(1, varValue.length() - 1);
@@ -118,6 +128,32 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 				}
 			}
 			byteArrayOutputStream.write(System.lineSeparator().getBytes());
+		}
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	private byte[] removeComments(byte[] templateByteArray) throws PreprocessingException, IOException {
+		String[] lines = new String(templateByteArray).split(System.lineSeparator());
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		boolean isComment = false;
+		for (String line : lines) {
+			if (line.startsWith("<#--")) {
+				isComment = true;
+			}
+
+			if (!isComment) {
+				// Check if there is a comment in the line
+				String lineWithoutComment = line;
+				if (line.contains("<#--") && line.contains("-->")) {
+					lineWithoutComment = line.replaceAll("<#\\-\\-.+\\-\\->", "");
+				}
+				byteArrayOutputStream.write(lineWithoutComment.getBytes());
+				byteArrayOutputStream.write(System.lineSeparator().getBytes());
+			}
+
+			if (line.startsWith("-->") || line.endsWith("-->")) {
+				isComment = false;
+			}
 		}
 		return byteArrayOutputStream.toByteArray();
 	}
@@ -230,6 +266,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 
 				if (!isMacro) {
 					byteArrayOutputStream.write(line.getBytes());
+					byteArrayOutputStream.write(System.lineSeparator().getBytes());
 				}
 
 				matcher = macroEndPattern.matcher(line);
@@ -237,7 +274,6 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 					isMacro = false;
 				}
 			}
-			byteArrayOutputStream.write(System.lineSeparator().getBytes());
 		}
 		return byteArrayOutputStream.toByteArray();
 	}

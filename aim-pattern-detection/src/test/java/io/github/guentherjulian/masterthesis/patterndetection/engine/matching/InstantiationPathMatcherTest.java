@@ -235,4 +235,15 @@ public class InstantiationPathMatcherTest {
 		assertTrue(
 				instantiationPathMatch.getPlaceholderSubstitutions().get("etoName#test_function").contains("employee"));
 	}
+
+	@Test
+	void testInstantiationPathWithLongSuffix() {
+		String templateInstantiationPath = "crud-java-server-app\\src\\main\\resources\\templates\\java\\${variables.rootPackage}\\${variables.component}\\logic\\api\\to\\${variables.entityName}SearchCriteriaTo.java.ftl";
+		String compilationUnitPath = "com\\devonfw\\application\\jtqj\\accesscodemanagement\\common\\api\\AccessCode.java";
+
+		InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(compilationUnitPath,
+				templateInstantiationPath, this.metaLanguagePattern, this.placeholderResolver);
+
+		assertFalse(instantiationPathMatch.isMatch());
+	}
 }

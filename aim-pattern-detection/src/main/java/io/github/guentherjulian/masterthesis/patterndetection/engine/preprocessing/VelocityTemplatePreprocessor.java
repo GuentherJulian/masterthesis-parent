@@ -163,6 +163,7 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
 				if (!isMacro) {
 					byteArrayOutputStream.write(line.getBytes());
+					byteArrayOutputStream.write(System.lineSeparator().getBytes());
 				}
 
 				matcher = macroEndPattern.matcher(line);
@@ -170,7 +171,6 @@ public class VelocityTemplatePreprocessor extends AbstractTemplatePreprocessor {
 					isMacro = false;
 				}
 			}
-			byteArrayOutputStream.write(System.lineSeparator().getBytes());
 		}
 		return byteArrayOutputStream.toByteArray();
 	}

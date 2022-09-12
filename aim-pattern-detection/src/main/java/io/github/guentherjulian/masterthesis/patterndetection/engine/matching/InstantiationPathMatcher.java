@@ -54,7 +54,10 @@ public class InstantiationPathMatcher {
 						substitution = substitution.substring(placeholderPrefix.length());
 					}
 					if (!placeholderPostfix.isBlank()) {
-						substitution = substitution.substring(0, substitution.length() - placeholderPostfix.length());
+						if (substitution.length() > placeholderPostfix.length()) {
+							substitution = substitution.substring(0,
+									substitution.length() - placeholderPostfix.length());
+						}
 					}
 
 					PlaceholderResolutionResult placeholderResolutionResult;
