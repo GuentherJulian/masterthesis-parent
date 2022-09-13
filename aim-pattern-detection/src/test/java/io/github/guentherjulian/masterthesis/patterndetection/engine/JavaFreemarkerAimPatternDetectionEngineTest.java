@@ -448,4 +448,126 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
 	}
+
+	// Tests with real templates
+
+	@Test
+	void javaFreeMarkerEntityInterfaceTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("${variables.entityName}.java.ftl"),
+				"${variables.entityName}.java.ftl"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Queue.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+	}
+
+	@Test
+	void javaFreeMarkerEntityImplementationTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("${variables.entityName}Entity.java.ftl"),
+				"${variables.entityName}Entity.java.ftl"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEntity.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+	}
+
+	@Test
+	void javaFreeMarkerEtoTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("${variables.entityName}Eto.java.ftl"),
+				"${variables.entityName}Eto.java.ftl"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEto.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+	}
+
+	@Test
+	void javaFreeMarkerRepositoryTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("${variables.entityName}Repository.java.ftl"),
+				"${variables.entityName}Repository.java.ftl"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueRepository.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+	}
+
+	@Test
+	void javaFreeMarkerRestServiceTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("${variables.component#cap_first}RestService.java.ftl"),
+				"${variables.component#cap_first}RestService.java.ftl"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueRestService.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+	}
 }

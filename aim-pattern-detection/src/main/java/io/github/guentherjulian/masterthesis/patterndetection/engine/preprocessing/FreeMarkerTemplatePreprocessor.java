@@ -184,7 +184,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 							macros.peek().getParameters().put(paramSplitted[0], null);
 						} else {
 							if (paramSplitted[1].endsWith(",")) {
-								paramSplitted[1] = paramSplitted[1].substring(0, paramSplitted[1].length() - 2);
+								paramSplitted[1] = paramSplitted[1].substring(0, paramSplitted[1].length() - 1);
 							}
 							paramSplitted[1] = paramSplitted[1].replace("\"", "").replace("'", "");
 							macros.peek().getParameters().put(paramSplitted[0], paramSplitted[1]);
@@ -233,9 +233,17 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 					if (macroParamString != null) {
 						// TODO fix, would cause an error if an whitespace is in variable value
 						String[] params = macroParamString.trim().split(" ");
-						for (String param : params) {
-							String key = param.split("=")[0];
-							String value = param.split("=")[1];
+						for (int i = 0; i < params.length; i++) {
+							String key = "";
+							String value = "";
+							if (params[i].contains("=")) {
+								key = params[i].split("=")[0];
+								value = params[i].split("=")[1];
+							} else {
+								key = (String) foundMacros.get(0).getParameters().keySet().toArray()[i];
+								value = params[i];
+							}
+
 							if (value.endsWith(",")) {
 								value = value.substring(0, value.length() - 2);
 							}

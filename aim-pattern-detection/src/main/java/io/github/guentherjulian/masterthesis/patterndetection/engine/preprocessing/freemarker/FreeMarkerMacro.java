@@ -1,6 +1,6 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.freemarker;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FreeMarkerMacro {
@@ -19,7 +19,7 @@ public class FreeMarkerMacro {
 
 	public Map<String, String> getParameters() {
 		if (parameters == null) {
-			parameters = new HashMap<>();
+			parameters = new LinkedHashMap<>();
 		}
 		return parameters;
 	}

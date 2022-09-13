@@ -40,9 +40,14 @@ public class InstantiationPathMatcher {
 		if (!m.find()) {
 			// find first element matches the path
 			String firstInstantiationPathElement = instantiationPathElements[0];
+			if (firstInstantiationPathElement.endsWith(metaLanguagePattern.getMetaLangFileExtension())) {
+				firstInstantiationPathElement = firstInstantiationPathElement.substring(0,
+						firstInstantiationPathElement.lastIndexOf(metaLanguagePattern.getMetaLangFileExtension()) - 1);
+			}
+
 			for (int i = 0; i < compilationUnitPathElements.length; i++) {
 				boolean isMatch = matchPathElement(firstInstantiationPathElement, compilationUnitPathElements[i],
-						placeholderResolver, null);
+						placeholderResolver, instantiationPathMatch.getPlaceholderSubstitutions());
 				if (isMatch) {
 					compilationUnitPathElements = Arrays.copyOfRange(compilationUnitPathElements, i,
 							compilationUnitPathElements.length);
@@ -261,9 +266,15 @@ public class InstantiationPathMatcher {
 
 				String substitution = compilationUnitPathElement;
 				if (!placeholderPrefix.isBlank()) {
+					if (!substitution.contains(placeholderPrefix)) {
+						return false;
+					}
 					substitution = substitution.substring(placeholderPrefix.length());
 				}
 				if (!placeholderPostfix.isBlank()) {
+					if (!substitution.contains(placeholderPostfix)) {
+						return false;
+					}
 					if (substitution.length() > placeholderPostfix.length()) {
 						substitution = substitution.substring(0, substitution.length() - placeholderPostfix.length());
 					}

@@ -63,7 +63,7 @@ public class ParseTreeMatcher {
 		long startTime = System.nanoTime();
 
 		this.matches = new ArrayList<>();
-		if (placeholderSubstitutions != null && placeholderSubstitutions.isEmpty()) {
+		if (placeholderSubstitutions != null && !placeholderSubstitutions.isEmpty()) {
 			this.placeholderSubstitutions = placeholderSubstitutions;
 		} else {
 			this.placeholderSubstitutions = new HashMap<>();
