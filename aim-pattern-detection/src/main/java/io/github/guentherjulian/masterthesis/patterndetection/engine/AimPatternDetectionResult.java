@@ -12,6 +12,8 @@ public class AimPatternDetectionResult {
 	private int numParsedTemplates;
 	private int numParsedCompilationUnits;
 	private int numComparedFiles;
+	private int numInstantiationPathMatches;
+	private int numFileMatches;
 	private long processingTime;
 
 	public AimPatternDetectionResult() {
@@ -66,5 +68,21 @@ public class AimPatternDetectionResult {
 
 	public void setProcessingTime(long processingTime) {
 		this.processingTime = processingTime;
+	}
+
+	public int getNumInstantiationPathMatches() {
+		return numInstantiationPathMatches;
+	}
+
+	public void setNumInstantiationPathMatches(int numInstantiationPathMatches) {
+		this.numInstantiationPathMatches = numInstantiationPathMatches;
+	}
+
+	public int getNumFileMatches() {
+		return numFileMatches;
+	}
+
+	public void setNumFileMatches(int numFileMatches) {
+		this.numFileMatches = numFileMatches;
 	}
 }

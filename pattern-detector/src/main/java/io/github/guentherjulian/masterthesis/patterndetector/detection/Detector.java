@@ -24,27 +24,32 @@ import io.github.guentherjulian.masterthesis.patterndetector.detection.configura
 public class Detector {
 
 	private Path templatesPath;
+	private Path templatesRootPath;
 	private Path compilationUnitPath;
 	private Path templateGrammarPath;
 	private ObjectLanguage objectLanguage;
 	private MetaLanguage metalanguage;
 	private String metaLanguagePrefix;
+	private String metaLanguageFileExtension;
 
-	public Detector(Path templatesPath, Path compilationUnitPath, Path templateGrammarPath, String objectLanguageString,
-			String metalanguageString, String metaLanguagePrefix) {
+	public Detector(Path templatesPath, Path templatesRootPath, Path compilationUnitPath, Path templateGrammarPath,
+			String objectLanguageString, String metalanguageString, String metaLanguagePrefix,
+			String metaLanguageFileExtension) {
 		this.templatesPath = templatesPath;
+		this.templatesRootPath = templatesRootPath;
 		this.compilationUnitPath = compilationUnitPath;
 		this.templateGrammarPath = templateGrammarPath;
 		this.objectLanguage = ObjectLanguage.getObjectLanguage(objectLanguageString);
 		this.metalanguage = MetaLanguage.getMetaLanguage(metalanguageString);
 		this.metaLanguagePrefix = metaLanguagePrefix;
+		this.metaLanguageFileExtension = metaLanguageFileExtension;
 	}
 
 	public AimPatternDetectionResult detect() throws Exception {
 		AimPatternDetectionResult detectionResult = null;
 		try {
-			// TODO change regex depending on language
-			List<AimPatternTemplate> templates = PathUtil.getAimPatternTemplates(this.templatesPath, ".*\\.ftl");
+			List<AimPatternTemplate> templates = PathUtil.getAimPatternTemplates(this.templatesPath,
+					".*" + this.metaLanguageFileExtension.replace(".", "\\."));
 			if (templates.size() == 0) {
 				throw new RuntimeException("No templates found in the given path.");
 			}
@@ -74,7 +79,7 @@ public class Detector {
 					.getPlaceholderResolver(this.metalanguage);
 			TemplatePreprocessor templatePreprocessor = DetectorConfigurationUtils
 					.getTemplatePreprocessor(this.metalanguage);
-			templatePreprocessor.setTemplatesRootPath(templatesPath);
+			templatePreprocessor.setTemplatesRootPath(this.templatesRootPath);
 
 			AimPatternDetectionEngine patternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
 					compilationUnits, parserClass, lexerClass, this.templateGrammarPath, metaLanguageConfiguration,

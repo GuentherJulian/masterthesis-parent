@@ -86,6 +86,8 @@ public class AimPatternDetectionEngine {
 		int numParsedTemplates = 0;
 		int numParsedCompilationUnits = 0;
 		int numComparedFiles = 0;
+		int numInstantiationPathMatches = 0;
+		int numFileMatches = 0;
 		long processingTimeStart = System.nanoTime();
 
 		Map<Path, ParseTree> compilationUnitParseTrees = new HashMap<>();
@@ -94,15 +96,11 @@ public class AimPatternDetectionEngine {
 		InputStream grammarInputStream = Files.newInputStream(templateGrammarPath);
 		TemplateParser<? extends Parser> templateParser;
 
-		// TODO change
-		this.templatePreprocessor.setTemplatesRootPath(this.aimpattern.get(0).getTemplatesRootPath());
+		if (this.templatePreprocessor.getTemplatesRootPath() == null) {
+			this.templatePreprocessor.setTemplatesRootPath(this.aimpattern.get(0).getTemplatesRootPath());
+		}
 		for (Path compilationUnitPath : this.compilationUnits) {
 			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.get(0).getAimPatternTemplates()) {
-
-				if (compilationUnitPath.toString().contains("Eto")
-						&& aimPatternTemplate.getTemplatePath().toString().contains("Eto")) {
-					System.out.println("");
-				}
 
 				// match instantiation path
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
@@ -113,6 +111,7 @@ public class AimPatternDetectionEngine {
 				if (instantiationPathMatch.isMatch()) {
 					LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,
 							aimPatternTemplate.getTemplatePath());
+					numInstantiationPathMatches++;
 
 					Map<String, Set<String>> placeholderSubstitutions = instantiationPathMatch
 							.getPlaceholderSubstitutions();
@@ -177,6 +176,9 @@ public class AimPatternDetectionEngine {
 					TreeMatch treeMatch = this.match(compilationUnitParseTrees.get(compilationUnitPath),
 							templateParseTrees.get(aimPatternTemplate.getTemplatePath()), placeholderSubstitutions);
 					numComparedFiles++;
+					if (treeMatch.isMatch()) {
+						numFileMatches++;
+					}
 
 					AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
 							compilationUnitPath, aimPatternTemplate.getTemplatePath(), treeMatch);
@@ -191,7 +193,8 @@ public class AimPatternDetectionEngine {
 		result.setNumParsedTemplates(numParsedTemplates);
 		result.setNumParsedCompilationUnits(numParsedCompilationUnits);
 		result.setNumComparedFiles(numComparedFiles);
-
+		result.setNumInstantiationPathMatches(numInstantiationPathMatches);
+		result.setNumFileMatches(numFileMatches);
 		return result;
 	}
 
@@ -299,7 +302,6 @@ public class AimPatternDetectionEngine {
 		result.setNumParsedTemplates(numParsedTemplates);
 		result.setNumParsedCompilationUnits(numParsedCompilationUnits);
 		result.setNumComparedFiles(numComparedFiles);
-
 		return result;
 	}
 

@@ -29,6 +29,14 @@ public enum MetaLanguage {
 		return map;
 	}
 
+	public static Map<String, String> getMetalanguageFileExtensions() {
+		Map<String, String> map = new HashMap<>();
+		map.put("FreeMarker", ".ftl");
+		map.put("Velocity", ".vm");
+		map.put("StringTemplate", ".stg");
+		return map;
+	}
+
 	public static MetaLanguage getMetaLanguage(String metaLanguageString) {
 		MetaLanguage metaLanguage = null;
 		if (metaLanguageString.equals("FreeMarker")) {

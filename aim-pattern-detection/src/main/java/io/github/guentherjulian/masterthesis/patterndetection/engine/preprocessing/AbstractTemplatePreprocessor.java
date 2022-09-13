@@ -67,7 +67,7 @@ abstract class AbstractTemplatePreprocessor implements TemplatePreprocessor {
 	}
 
 	public Path getTemplatesRootPath() {
-		return templatesRootPath;
+		return this.templatesRootPath;
 	}
 
 	public void setTemplatesRootPath(Path templatesRootPath) {

@@ -48,6 +48,9 @@ public class PatternDetectorController implements Initializable {
 	TextField textfieldTemplatePath;
 
 	@FXML
+	TextField textfieldTemplatesRootPath;
+
+	@FXML
 	TextField textfieldCompilationUnitPath;
 
 	@FXML
@@ -55,6 +58,9 @@ public class PatternDetectorController implements Initializable {
 
 	@FXML
 	Button btnSelectPathTemplate;
+
+	@FXML
+	Button btnSelectPathTemplatesRoot;
 
 	@FXML
 	Button btnSelectPathCompilationUnit;
@@ -70,6 +76,9 @@ public class PatternDetectorController implements Initializable {
 
 	@FXML
 	TextField textfieldMetalanguagePrefix;
+
+	@FXML
+	TextField textfieldMetalanguageFileExtension;
 
 	@FXML
 	Button btnCancel;
@@ -93,21 +102,26 @@ public class PatternDetectorController implements Initializable {
 		comboBoxMetaLang.setValue(metaLanguages[0]);
 		comboBoxMetaLang.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			textfieldMetalanguagePrefix.setText(MetaLanguage.getMetalanguagePrefixes().get(newValue));
+			textfieldMetalanguageFileExtension.setText(MetaLanguage.getMetalanguageFileExtensions().get(newValue));
 		});
 
 		textfieldMetalanguagePrefix.setText(MetaLanguage.getMetalanguagePrefixes().get(comboBoxMetaLang.getValue()));
+		textfieldMetalanguageFileExtension
+				.setText(MetaLanguage.getMetalanguageFileExtensions().get(comboBoxMetaLang.getValue()));
 
 		btnCancel.setOnMouseClicked(event -> Platform.exit());
 
 		btnSelectPathTemplate.setOnMouseClicked(event -> selectDirectory(event, textfieldTemplatePath));
+		btnSelectPathTemplatesRoot.setOnMouseClicked(event -> selectDirectory(event, textfieldTemplatesRootPath));
 		btnSelectPathCompilationUnit.setOnMouseClicked(event -> selectDirectory(event, textfieldCompilationUnitPath));
 		btnSelectTemplateGrammarPath.setOnMouseClicked(event -> selectFile(event, textfieldTemplateGrammarPath));
 		btnDetect.setOnMouseClicked(event -> detect(event));
 
 		this.textfieldTemplatePath.setText(
-				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\completePatternDetectionTest\\templates\\java_freemarker");
-		this.textfieldCompilationUnitPath.setText(
-				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\completePatternDetectionTest\\applicationCode");
+				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app\\src\\main\\resources\\templates");
+		this.textfieldTemplatesRootPath.setText(
+				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app\\src\\main\\resources");
+		this.textfieldCompilationUnitPath.setText("C:\\devonfw\\workspaces\\main\\devonfw\\jump-the-queue\\java\\jtqj");
 		this.textfieldTemplateGrammarPath.setText(
 				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\grammars\\java8FreemarkerTemplate\\Java8FreemarkerTemplate.g4");
 	}
@@ -134,14 +148,16 @@ public class PatternDetectorController implements Initializable {
 	private Object detect(MouseEvent event) {
 		if (validateInputs()) {
 			Path templatesPath = Paths.get(this.textfieldTemplatePath.getText());
+			Path templatesRootPath = Paths.get(this.textfieldTemplatesRootPath.getText());
 			Path compilationUnitPath = Paths.get(this.textfieldCompilationUnitPath.getText());
 			Path templateGrammarPath = Paths.get(this.textfieldTemplateGrammarPath.getText());
 
 			String objectLanguage = this.comboBoxObjectLang.getValue();
 			String metaLanguage = this.comboBoxMetaLang.getValue();
 			String metaLanguagePrefix = this.textfieldMetalanguagePrefix.getText();
-			Detector detector = new Detector(templatesPath, compilationUnitPath, templateGrammarPath, objectLanguage,
-					metaLanguage, metaLanguagePrefix);
+			String metaLanguageFileExtension = this.textfieldMetalanguageFileExtension.getText();
+			Detector detector = new Detector(templatesPath, templatesRootPath, compilationUnitPath, templateGrammarPath,
+					objectLanguage, metaLanguage, metaLanguagePrefix, metaLanguageFileExtension);
 
 			AimPatternDetectionResult result = null;
 			try {
@@ -227,10 +243,13 @@ public class PatternDetectorController implements Initializable {
 		Label labelParsedCompilationUnits = new Label(
 				"Number of parsed compilation units: " + result.getNumParsedCompilationUnits());
 		Label labelComparedFiles = new Label("Number of compared files: " + result.getNumComparedFiles());
-		Label labelProcessingTime = new Label("Processing time: " + result.getProcessingTime() + " ns, "
-				+ (result.getProcessingTime() / 1e6) + " ms");
+		Label labelInstantiationPathMatches = new Label(
+				"Number of instantiation path matches: " + result.getNumInstantiationPathMatches());
+		Label labelFileMatches = new Label("Number of file matches: " + result.getNumFileMatches());
+		Label labelProcessingTime = new Label(String.format("Processing time: %.2f ms, %.2f s",
+				(result.getProcessingTime() / 1e6), (result.getProcessingTime() / 1e9)));
 		VBox vboxLabel = new VBox(labelParsedTemplates, labelParsedCompilationUnits, labelComparedFiles,
-				labelProcessingTime);
+				labelInstantiationPathMatches, labelFileMatches, labelProcessingTime);
 		vboxLabel.setPadding(new Insets(10, 0, 10, 10));
 
 		Accordion accordion = new Accordion();

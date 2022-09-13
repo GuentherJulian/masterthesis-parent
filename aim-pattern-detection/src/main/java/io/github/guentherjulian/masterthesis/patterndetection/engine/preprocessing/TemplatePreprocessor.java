@@ -13,5 +13,7 @@ public interface TemplatePreprocessor {
 
 	public void setTemplatesRootPath(Path templatesRootPath);
 
+	public Path getTemplatesRootPath();
+
 	public Map<String, Set<String>> getVariables();
 }

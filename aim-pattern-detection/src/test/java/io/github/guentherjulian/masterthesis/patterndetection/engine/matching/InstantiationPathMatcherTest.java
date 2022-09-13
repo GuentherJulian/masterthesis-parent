@@ -41,9 +41,20 @@ public class InstantiationPathMatcherTest {
 	}
 
 	@Test
-	void testInstantiationPathWithoutPlaceholderIncorrect() {
+	void testInstantiationPathWithoutPlaceholderIncorrect1() {
 		String templateInstantiationPath = "src\\main\\java\\org\\domain\\package\\anotherpackage\\Foo.java";
 		String compilationUnitPath = "directory\\project\\subproject\\src\\main\\java\\org\\domain\\package\\Foo.java";
+
+		InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(compilationUnitPath,
+				templateInstantiationPath, this.metaLanguagePattern, this.placeholderResolver);
+
+		assertFalse(instantiationPathMatch.isMatch());
+	}
+
+	@Test
+	void testInstantiationPathWithoutPlaceholderIncorrect2() {
+		String templateInstantiationPath = "src\\main\\java\\org\\domain\\package\\anotherpackage\\Foo.java";
+		String compilationUnitPath = "src\\main\\java\\org\\domain\\package\\package\\Foo.java";
 
 		InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(compilationUnitPath,
 				templateInstantiationPath, this.metaLanguagePattern, this.placeholderResolver);
@@ -245,5 +256,25 @@ public class InstantiationPathMatcherTest {
 				templateInstantiationPath, this.metaLanguagePattern, this.placeholderResolver);
 
 		assertFalse(instantiationPathMatch.isMatch());
+	}
+
+	@Test
+	void testInstantiationPathWithMultipleSegmentsForOnePlaceholder() {
+		String templateInstantiationPath = "java\\${variables.rootPackage}\\${variables.component}\\logic\\api\\to\\${variables.entityName}SearchCriteriaTo.java.ftl";
+		String compilationUnitPath = "core\\src\\main\\java\\com\\devonfw\\application\\jtqj\\accesscodemanagement\\logic\\api\\to\\AccessCodeSearchCriteriaTo.java";
+
+		InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(compilationUnitPath,
+				templateInstantiationPath, this.metaLanguagePattern, this.placeholderResolver);
+
+		assertTrue(instantiationPathMatch.isMatch());
+		assertTrue(instantiationPathMatch.getPlaceholderSubstitutions().containsKey("variables.rootPackage"));
+		assertTrue(instantiationPathMatch.getPlaceholderSubstitutions().containsKey("variables.component"));
+		assertTrue(instantiationPathMatch.getPlaceholderSubstitutions().containsKey("variables.entityName"));
+		assertTrue(instantiationPathMatch.getPlaceholderSubstitutions().get("variables.rootPackage")
+				.contains("com.devonfw.application.jtqj"));
+		assertTrue(instantiationPathMatch.getPlaceholderSubstitutions().get("variables.component")
+				.contains("accesscodemanagement"));
+		assertTrue(instantiationPathMatch.getPlaceholderSubstitutions().get("variables.entityName")
+				.contains("AccessCode"));
 	}
 }
