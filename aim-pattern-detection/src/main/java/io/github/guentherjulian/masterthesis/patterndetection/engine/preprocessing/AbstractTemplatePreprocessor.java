@@ -1,15 +1,14 @@
 package io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,12 +40,18 @@ abstract class AbstractTemplatePreprocessor implements TemplatePreprocessor {
 			byteArrayOutputStream.write(System.lineSeparator().getBytes());
 		}
 
+		System.out.println(new String(byteArrayOutputStream.toByteArray()));
 		return byteArrayOutputStream.toByteArray();
 	}
 
 	protected byte[] getFileBytes(Path filepath) throws IOException {
-		InputStream inputStream = new FileInputStream(filepath.toFile());
-		return inputStream.readAllBytes();
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		List<String> lines = Files.readAllLines(filepath);
+		for (int i = 0; i < lines.size(); i++) {
+			byteArrayOutputStream.write(lines.get(i).getBytes());
+			byteArrayOutputStream.write(System.lineSeparator().getBytes());
+		}
+		return byteArrayOutputStream.toByteArray();
 	}
 
 	protected byte[] preprocess(Path templatePath, byte[] templateByteArray)

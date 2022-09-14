@@ -473,6 +473,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
 	}
 
 	@Test
@@ -497,6 +498,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
 	}
 
 	@Test
@@ -521,6 +523,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
 	}
 
 	@Test
@@ -545,6 +548,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
 	}
 
 	@Test
@@ -569,5 +573,6 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
 	}
 }

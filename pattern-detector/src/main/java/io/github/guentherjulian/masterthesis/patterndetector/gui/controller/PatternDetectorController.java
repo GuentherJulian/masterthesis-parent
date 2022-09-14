@@ -240,6 +240,10 @@ public class PatternDetectorController implements Initializable {
 		stage.setResizable(false);
 
 		Label labelParsedTemplates = new Label("Number of parsed templates: " + result.getNumParsedTemplates());
+		Label labelSuccessfullyParsedTemplates = new Label(
+				"Number of successful parsed templates: " + result.getNumParseableTemplates());
+		Label labelUnsuccessfullyParsedTemplates = new Label(
+				"Number of unsuccessful parsed templates: " + result.getNumUnparseableTemplates());
 		Label labelParsedCompilationUnits = new Label(
 				"Number of parsed compilation units: " + result.getNumParsedCompilationUnits());
 		Label labelComparedFiles = new Label("Number of compared files: " + result.getNumComparedFiles());
@@ -248,7 +252,8 @@ public class PatternDetectorController implements Initializable {
 		Label labelFileMatches = new Label("Number of file matches: " + result.getNumFileMatches());
 		Label labelProcessingTime = new Label(String.format("Processing time: %.2f ms, %.2f s",
 				(result.getProcessingTime() / 1e6), (result.getProcessingTime() / 1e9)));
-		VBox vboxLabel = new VBox(labelParsedTemplates, labelParsedCompilationUnits, labelComparedFiles,
+		VBox vboxLabel = new VBox(labelParsedTemplates, labelSuccessfullyParsedTemplates,
+				labelUnsuccessfullyParsedTemplates, labelParsedCompilationUnits, labelComparedFiles,
 				labelInstantiationPathMatches, labelFileMatches, labelProcessingTime);
 		vboxLabel.setPadding(new Insets(10, 0, 10, 10));
 
@@ -262,11 +267,18 @@ public class PatternDetectorController implements Initializable {
 			textArea.appendText(
 					"Compilation unit path: " + aimPatternDetectionResultEntry.getCompilationUnitPath() + "\n");
 			vBoxResultEntry.getChildren().add(textArea);
-			textArea.appendText("Is match: " + (aimPatternDetectionResultEntry.isMatch() ? "Yes" : "No") + "\n");
-			if (aimPatternDetectionResultEntry.isMatch()) {
-				Map<String, Set<String>> placeholderSubstitutions = aimPatternDetectionResultEntry
-						.getPlaceholderSubstitutions();
-				textArea.appendText("Placeholder substitutions: " + placeholderSubstitutions.toString());
+
+			if (aimPatternDetectionResultEntry.getTreeMatchResult() != null) {
+				textArea.appendText("Is match: " + (aimPatternDetectionResultEntry.isMatch() ? "Yes" : "No") + "\n");
+				if (aimPatternDetectionResultEntry.isMatch()) {
+					Map<String, Set<String>> placeholderSubstitutions = aimPatternDetectionResultEntry
+							.getPlaceholderSubstitutions();
+					textArea.appendText("Placeholder substitutions: " + placeholderSubstitutions.toString());
+				}
+			}
+
+			if (aimPatternDetectionResultEntry.isTemplateUnparseable()) {
+				textArea.appendText("Template was not parseable!\n");
 			}
 
 			String templateFileName = aimPatternDetectionResultEntry.getTemplatePath().getFileName().toString();

@@ -6,14 +6,15 @@ import ${variables.rootPackage}.general.dataaccess.api.ApplicationPersistenceEnt
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.persistence.Table;
 <#assign compositeIdTypeVar = JavaUtil.getReturnTypeOfMethodAnnotatedWith(classObject,"javax.persistence.EmbeddedId")>
 
 /**
  * Data access object for ${variables.entityName} entities
  */
 @Entity
-@javax.persistence.Table(name = "${variables.entityName}")
-public class ${pojo.name} <#if compositeIdTypeVar=="null"> extends ApplicationPersistenceEntity</#if> implements ${variables.entityName} {
+@Table(name = ${'"' + variables.entityName + '"'})
+public class ${pojo.name} extends ApplicationPersistenceEntity implements ${variables.entityName} {
 
   private static final long serialVersionUID = 1L;
 

@@ -13,6 +13,8 @@ import com.devonfw.application.jtqj.queuemanagement.common.api.Queue;
 @Entity
 @Table(name = "DailyQueue")
 public class QueueEntity extends ApplicationPersistenceEntity implements Queue {
+	
+	private static final long serialVersionUID = 1L;
 
 	private String name;
 

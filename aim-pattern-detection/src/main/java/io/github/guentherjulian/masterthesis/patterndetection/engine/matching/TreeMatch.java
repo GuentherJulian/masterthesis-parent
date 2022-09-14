@@ -13,7 +13,7 @@ public class TreeMatch {
 	private Map<String, Set<String>> placeholderSubstitutions;
 	private boolean isMatch;
 	private Exception exception;
-	private List<Match> matches;
+	private List<PathMatch> matches;
 
 	public TreeMatch() {
 		this.templateParseTree = null;
@@ -62,11 +62,11 @@ public class TreeMatch {
 		this.exception = exception;
 	}
 
-	public List<Match> getMatches() {
+	public List<PathMatch> getMatches() {
 		return matches;
 	}
 
-	public void setMatches(List<Match> matches) {
+	public void setMatches(List<PathMatch> matches) {
 		this.matches = matches;
 	}
 
