@@ -52,4 +52,9 @@ public class AimPatternDetectionResultEntry {
 	public void setTemplateUnparseable(boolean isTemplateUnparseable) {
 		this.isTemplateUnparseable = isTemplateUnparseable;
 	}
+
+	@Override
+	public String toString() {
+		return "ff";
+	}
 }

@@ -54,4 +54,24 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 	public void setMetaLanguageElement(MetaLanguageElement metaLanguageElement) {
 		this.metaLanguageElement = metaLanguageElement;
 	}
+
+	public boolean isEmpty() {
+		return isEmpty(this);
+	}
+
+	private boolean isEmpty(ParseTreePathList parseTreePathList) {
+		boolean isEmpty = true;
+		for (ParseTreeElement element : parseTreePathList) {
+			if (element instanceof ParseTreePath && !((ParseTreePath) element).getText().trim().isEmpty()) {
+				isEmpty = false;
+				break;
+			} else {
+				if (!isEmpty((ParseTreePathList) element)) {
+					isEmpty = false;
+					break;
+				}
+			}
+		}
+		return isEmpty;
+	}
 }

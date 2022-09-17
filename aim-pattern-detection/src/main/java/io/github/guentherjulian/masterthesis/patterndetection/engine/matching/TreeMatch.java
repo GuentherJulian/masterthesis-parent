@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Set;
 
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTree;
+import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreeElement;
+import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreePath;
+import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreePathList;
 
 public class TreeMatch {
 
@@ -13,7 +16,8 @@ public class TreeMatch {
 	private Map<String, Set<String>> placeholderSubstitutions;
 	private boolean isMatch;
 	private Exception exception;
-	private List<PathMatch> matches;
+	private PathMatch pathMatch;
+	private List<ParseTreeElement> matchedTemplateElements;
 
 	public TreeMatch() {
 		this.templateParseTree = null;
@@ -62,12 +66,42 @@ public class TreeMatch {
 		this.exception = exception;
 	}
 
-	public List<PathMatch> getMatches() {
-		return matches;
+	public PathMatch getPathMatch() {
+		return this.pathMatch;
 	}
 
-	public void setMatches(List<PathMatch> matches) {
-		this.matches = matches;
+	public void setPathMatch(PathMatch pathMatch) {
+		this.pathMatch = pathMatch;
 	}
 
+	public List<ParseTreeElement> getMatchedTemplateElements() {
+		return matchedTemplateElements;
+	}
+
+	public void setMatchedTemplateElements(List<ParseTreeElement> matchedTemplateElements) {
+		this.matchedTemplateElements = matchedTemplateElements;
+	}
+
+	public double getMatchPercentage() {
+		if (this.templateParseTree.getParseTreePathList() == null || this.matchedTemplateElements.isEmpty()) {
+			return 0;
+		}
+
+		double numPathElements = countPathElements(this.templateParseTree.getParseTreePathList());
+		double numMatchedElements = countPathElements(this.matchedTemplateElements);
+		return (numMatchedElements / numPathElements) * 100d;
+	}
+
+	private int countPathElements(List<ParseTreeElement> parseElements) {
+		int count = 0;
+		for (ParseTreeElement parseElement : parseElements) {
+			if (parseElement instanceof ParseTreePath) {
+				count++;
+			}
+			if (parseElement instanceof ParseTreePathList) {
+				count += countPathElements((List<ParseTreeElement>) parseElement);
+			}
+		}
+		return count;
+	}
 }

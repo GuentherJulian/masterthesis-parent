@@ -284,8 +284,16 @@ public class PatternDetectorController implements Initializable {
 			String templateFileName = aimPatternDetectionResultEntry.getTemplatePath().getFileName().toString();
 			String compilationUnitFileName = aimPatternDetectionResultEntry.getCompilationUnitPath().getFileName()
 					.toString();
-			TitledPane pane = new TitledPane(templateFileName + " <-> " + compilationUnitFileName + " ("
-					+ (aimPatternDetectionResultEntry.isMatch() ? "Match" : "No match") + ")", vBoxResultEntry);
+
+			String title = String.format("%s <-> %s (%s)", templateFileName, compilationUnitFileName,
+					(aimPatternDetectionResultEntry.isMatch() ? "Match" : "No match"));
+			if (aimPatternDetectionResultEntry.getTreeMatchResult() != null
+					&& aimPatternDetectionResultEntry.getTreeMatchResult().getPathMatch() != null) {
+				double percentage = aimPatternDetectionResultEntry.getTreeMatchResult().getPathMatch()
+						.getMatchPercentage();
+				title = String.format(title + " %.2f %%", percentage);
+			}
+			TitledPane pane = new TitledPane(title, vBoxResultEntry);
 			accordion.getPanes().add(pane);
 		}
 

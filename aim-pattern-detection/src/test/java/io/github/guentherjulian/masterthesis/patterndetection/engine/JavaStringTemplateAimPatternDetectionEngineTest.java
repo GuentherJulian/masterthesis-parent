@@ -27,7 +27,6 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.Tr
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.StringTemplateTemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
-import io.github.guentherjulian.masterthesis.patterndetection.exception.NoMatchException;
 
 public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAimPatternDetectionEngineTest {
 
@@ -142,7 +141,6 @@ public class JavaStringTemplateAimPatternDetectionEngineTest extends AbstractAim
 		assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("name").contains("A"));
 
 		assertFalse(treeMatches.get(1).isMatch());
-		assertTrue(treeMatches.get(1).getException() instanceof NoMatchException);
 	}
 
 	@Test
