@@ -36,6 +36,13 @@ public class InstantiationPathMatcher {
 		String[] instantiationPathElements = templateInstantiationPath.split(separator);
 		String[] compilationUnitPathElements = compilationUnitPath.split(separator);
 
+		if (placeholderResolver != null) {
+			for (int i = 0; i < instantiationPathElements.length; i++) {
+				instantiationPathElements[i] = placeholderResolver
+						.transformPlaceholderNotation(instantiationPathElements[i]);
+			}
+		}
+
 		Matcher m = placeholderPatternWithoutPreAndSuffix.matcher(instantiationPathElements[0]);
 		if (!m.find()) {
 			// find first element matches the path

@@ -1954,7 +1954,7 @@ LINE_COMMENT
     :   '//' ~[\r\n]* -> skip
     ;
 
-FM_PLACEHOLDER: '${' ~'}'+? '}';
+FM_PLACEHOLDER: '${#' ~'#'+? '#}';
 FM_IF: '<#if' ~'>'+? '>';
 FM_IF_CLOSE: '</#if>';
 FM_ELSE_IF: '<#elseif' ~'>'+? '>';

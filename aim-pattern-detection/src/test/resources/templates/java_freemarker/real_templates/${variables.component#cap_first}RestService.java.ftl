@@ -25,7 +25,7 @@ import ${variables.rootPackage}.${variables.component}.common.api.${compositeIdT
 /**
  * The service interface for REST calls in order to execute the logic of component {@link ${variables.component?cap_first}}.
  */
-@Path(${'"/' + variables.component + '/v1"'})
+@Path("/${variables.component}/v1")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface ${variables.component?cap_first}RestService {
@@ -38,7 +38,7 @@ public interface ${variables.component?cap_first}RestService {
   */
   @GET
   @Path("/${variables.entityName?lower_case}/{id}/")
-  public ${variables.entityName}Eto get${variables.entityName}(@PathParam("id") <#if compositeIdTypeVar!="null"> ${compositeIdTypeVar} <#else> long </#if> id);
+  public ${variables.entityName}Eto get${variables.entityName}(@PathParam("id") long id);
 
   /**
    * Delegates to {@link ${variables.component?cap_first}#save${variables.entityName}}.
@@ -58,7 +58,7 @@ public interface ${variables.component?cap_first}RestService {
    */
   @DELETE
   @Path("/${variables.entityName?lower_case}/{id}/")
-  public void delete${variables.entityName}(@PathParam("id") <#if compositeIdTypeVar!="null"> ${compositeIdTypeVar} <#else> long </#if> id);
+  public void delete${variables.entityName}(@PathParam("id") long id);
 
   /**
    * Delegates to {@link ${variables.component?cap_first}#find${variables.entityName}Etos}.

@@ -324,6 +324,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		assertTrue(treeMatches.get(1).getPlaceholderSubstitutions().containsKey("somethingElse"));
 		assertTrue(treeMatches.get(1).getPlaceholderSubstitutions().get("somethingElse").contains("true"));
 
+		// True, since its optional
 		assertTrue(treeMatches.get(2).isMatch());
 	}
 
@@ -456,7 +457,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Queue.java"));
+		// compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Queue.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Test.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
@@ -481,7 +483,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEntity.java"));
+		// compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEntity.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestEntity.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
@@ -556,8 +559,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
+		// compilationUnits
+		// .add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestService.java"));
 		compilationUnits
-				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestService.java"));
+				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestmanagementRestService.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
@@ -583,8 +588,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
+		// compilationUnits.add(
+		// compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestServiceImpl.java"));
 		compilationUnits.add(
-				compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestServiceImpl.java"));
+				compilationUnitsPath.resolve("real_compilation_units").resolve("TestmanagementRestServiceImpl.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
@@ -609,8 +616,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
+		// compilationUnits
+		// .add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueSearchCriteriaTo.java"));
 		compilationUnits
-				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueSearchCriteriaTo.java"));
+				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestSearchCriteriaTo.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,

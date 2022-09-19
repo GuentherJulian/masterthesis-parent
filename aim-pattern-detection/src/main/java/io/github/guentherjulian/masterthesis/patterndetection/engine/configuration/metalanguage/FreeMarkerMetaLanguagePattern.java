@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class FreeMarkerMetaLanguagePattern extends AbstractMetaLanguagePattern {
 
-	private static final String META_LANG_PLACEHOLDER = "\\$\\{(.+)\\}";
+	private static final String META_LANG_PLACEHOLDER = "\\$\\{#(.+)#\\}";
 
 	private static final String META_LANG_IF = "<#if(.+)>";
 

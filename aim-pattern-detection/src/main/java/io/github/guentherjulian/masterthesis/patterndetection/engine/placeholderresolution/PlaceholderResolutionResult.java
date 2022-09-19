@@ -6,6 +6,11 @@ public class PlaceholderResolutionResult {
 
 	private String placeholder;
 	private Set<String> substitutions;
+	private boolean isPlaceholderAtomic;
+
+	public PlaceholderResolutionResult() {
+		this.isPlaceholderAtomic = true;
+	}
 
 	public String getPlaceholder() {
 		return placeholder;
@@ -21,5 +26,13 @@ public class PlaceholderResolutionResult {
 
 	public void setSubstitutions(Set<String> substitutions) {
 		this.substitutions = substitutions;
+	}
+
+	public boolean isPlaceholderAtomic() {
+		return isPlaceholderAtomic;
+	}
+
+	public void setPlaceholderAtomic(boolean isPlaceholderAtomic) {
+		this.isPlaceholderAtomic = isPlaceholderAtomic;
 	}
 }

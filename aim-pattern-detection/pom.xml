@@ -5,15 +5,21 @@
 		<artifactId>masterthesis-parent</artifactId>
 		<version>dev-SNAPSHOT</version>
 	</parent>
-  <artifactId>aim-pattern-detection</artifactId>
-  <packaging>jar</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+	<artifactId>aim-pattern-detection</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>io.github.guentherjulian.masterthesis</groupId>
 			<artifactId>parsing</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.12.0</version>
 		</dependency>
 	</dependencies>
 </project>

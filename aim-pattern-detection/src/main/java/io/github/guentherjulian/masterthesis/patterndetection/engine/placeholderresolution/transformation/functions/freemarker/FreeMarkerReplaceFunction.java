@@ -11,18 +11,22 @@ public class FreeMarkerReplaceFunction implements ReverseTransformationFunction 
 	@Override
 	public List<String> transform(String substitution, String... args)
 			throws PlaceholderTransformationFunctionCallException {
-		if (args.length != 2) {
+		if (args.length < 2 || args.length > 3) {
 			throw new PlaceholderTransformationFunctionCallException(
 					"FreeMarker replace function needs two arguments. Given arguments: " + args.length);
 		}
 
 		List<String> substitutions = new ArrayList<>();
 
-		// remove leading and trailing quotation marks
-		args[0] = removeQuotationMarks(args[0]);
-		args[1] = removeQuotationMarks(args[1]);
+		if (args.length == 2) {
+			// remove leading and trailing quotation marks
+			args[0] = removeQuotationMarks(args[0]);
+			args[1] = removeQuotationMarks(args[1]);
+			substitutions.add(substitution.replaceAll(args[1], args[0]));
+		} else {
+			substitutions.add(substitution);
+		}
 
-		substitutions.add(substitution.replaceAll(args[1], args[0]));
 		return substitutions;
 	}
 

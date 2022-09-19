@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.RegExUtils;
+
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.transformation.TransformationFunction;
 
 public class FreeMarkerPlaceholderResolver extends AbstractPlaceholderResolver {
@@ -55,22 +57,41 @@ public class FreeMarkerPlaceholderResolver extends AbstractPlaceholderResolver {
 		return prefix + String.join("", functionParts) + "Function";
 	}
 
-	private boolean isPlaceholderAtomic(String placeholderExpression) {
-		return !placeholderExpression.contains("?") && !placeholderExpression.contains("#");
+	@Override
+	protected boolean isPlaceholderAtomic(String placeholderName) {
+		if (placeholderName.contains("?") || placeholderName.contains("#")
+				|| isPlaceholderMethodCall(placeholderName)) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean isPlaceholderMethodCall(String placeholderName) {
+		Pattern pattern = Pattern.compile(".+\\..+\\(.*\\)");
+		Matcher matcher = pattern.matcher(placeholderName);
+		return matcher.find();
 	}
 
 	private String[] getArgs(String transformationFunction) {
-		Pattern pattern = Pattern.compile(".+(\\(('.+')+\\))");
+		Pattern pattern = Pattern.compile(".+(\\((('|\").+('|\"))+\\))");
 		Matcher matcher = pattern.matcher(transformationFunction);
 		if (!matcher.find()) {
 			return null;
 		}
 		String params = matcher.group(2);
+		String stringSymbol = matcher.group(3);
 
-		String[] args = params.split(",");
+		String splitRegex = ",(?=(?:[^" + stringSymbol + "]*" + stringSymbol + "[^" + stringSymbol + "]*" + stringSymbol
+				+ ")*[^" + stringSymbol + "]*$)";
+		String[] args = params.split(splitRegex, -1);
 		for (int i = 0; i < args.length; i++) {
 			args[i] = args[i].trim();
 		}
 		return args;
+	}
+
+	@Override
+	public String transformPlaceholderNotation(String orginialPlaceholder) {
+		return RegExUtils.replaceAll(orginialPlaceholder, "\\$\\{(.+?)\\}", "\\$\\{#$1#\\}");
 	}
 }

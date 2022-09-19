@@ -19,7 +19,10 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 	public PlaceholderResolutionResult resolvePlaceholder(String placeholderExpression, String substitution)
 			throws PlaceholderResolutionException {
 		PlaceholderResolutionResult placeholderResolutionResult = new PlaceholderResolutionResult();
-		placeholderResolutionResult.setPlaceholder(getPlaceholderName(placeholderExpression));
+
+		String placeholderName = getPlaceholderName(placeholderExpression);
+		placeholderResolutionResult.setPlaceholder(placeholderName);
+		placeholderResolutionResult.setPlaceholderAtomic(isPlaceholderAtomic(placeholderName));
 
 		Set<String> substitutions = new HashSet<>();
 		List<TransformationFunction> transformationFunctions = getTransformationFunctions(placeholderExpression);
@@ -45,6 +48,7 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 						Set<String> subs = new HashSet<String>();
 						subs.add(substitution);
 						placeholderResolutionResult.setSubstitutions(subs);
+						placeholderResolutionResult.setPlaceholderAtomic(false);
 						return placeholderResolutionResult;
 					} catch (Exception e) {
 						throw new PlaceholderResolutionException(e.getMessage());
@@ -60,5 +64,14 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 
 		placeholderResolutionResult.setSubstitutions(substitutions);
 		return placeholderResolutionResult;
+	}
+
+	protected boolean isPlaceholderAtomic(String placeholderName) {
+		return true;
+	}
+
+	@Override
+	public String transformPlaceholderNotation(String orginialPlaceholder) {
+		return orginialPlaceholder;
 	}
 }

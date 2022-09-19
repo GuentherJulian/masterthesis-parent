@@ -9,6 +9,11 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 	public Boolean isMetaLang;
 	public MetaLanguageElement metaLanguageElement;
 
+	public ParseTreePathList() {
+		this.metaLanguageElement = null;
+		this.type = ListType.ATOMIC;
+	}
+
 	public ParseTreePathList(ListType type, String hint, MetaLanguageElement metaLanguageElement) {
 		this.hint = hint;
 		this.type = type;
@@ -37,6 +42,10 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 
 	public boolean isListPattern() {
 		return type == ListType.LIST_PATTERN;
+	}
+
+	public boolean isOptional() {
+		return type == ListType.OPTIONAL;
 	}
 
 	public boolean isMetaLang() {

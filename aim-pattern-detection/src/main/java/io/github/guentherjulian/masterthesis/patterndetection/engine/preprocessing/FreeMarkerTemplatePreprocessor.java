@@ -12,22 +12,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.RegExUtils;
+
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.freemarker.FreeMarkerMacro;
 import io.github.guentherjulian.masterthesis.patterndetection.exception.PreprocessingException;
 
 public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
-	private final String regexPrefix = ".*((\\w+)\\$\\{(.+)\\}).*";
-	private final String regexSuffix = ".*((\\$\\{(.+)\\})(\\w+)).*";
+	// private final String regexPlaceholder = ".*(\\$\\{([^#].+?)\\}).*";
+	private final String regexPrefix = ".*((\\w+)\\$\\{#(.+)#\\}).*";
+	private final String regexSuffix = ".*((\\$\\{#(.+)#\\})(\\w+)).*";
+	private final String regexStringWithPlaceholder = ".*((\\\".*)\\$\\{#(.+?)#\\}(.*\\\")).*";
 
+	// private final Pattern placeholderPattern = Pattern.compile(regexPlaceholder);
 	private final Pattern prefixPattern = Pattern.compile(regexPrefix);
 	private final Pattern suffixPattern = Pattern.compile(regexSuffix);
+	private final Pattern stringWithPlaceholderPattern = Pattern.compile(regexStringWithPlaceholder);
 
 	private List<FreeMarkerMacro> macros;
 
 	@Override
 	public String processTemplateLine(String lineToProcess) throws PreprocessingException {
 		String returnValue = lineToProcess;
+
+		// boolean placeholderFound = true;
+		returnValue = RegExUtils.replaceAll(returnValue, "\\$\\{(.+?)\\}", "\\$\\{#$1#\\}");
 
 		boolean prefixFound = true;
 		do {
@@ -39,7 +48,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 				String prefix = matcher.group(2);
 				String innerPlaceholder = matcher.group(3);
 
-				String replacedValue = "${'" + prefix + "' + " + innerPlaceholder + "}";
+				String replacedValue = "${#'" + prefix + "' + " + innerPlaceholder + "#}";
 				returnValue = returnValue.replace(combinedPlaceholder, replacedValue);
 			}
 		} while (prefixFound);
@@ -54,10 +63,27 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 				String innerPlaceholder = matcher.group(3);
 				String suffix = matcher.group(4);
 
-				String replacedValue = "${" + innerPlaceholder + " + '" + suffix + "'}";
+				String replacedValue = "${#" + innerPlaceholder + " + '" + suffix + "'#}";
 				returnValue = returnValue.replace(combinedPlaceholder, replacedValue);
 			}
 		} while (suffixFound);
+
+		boolean stringWithPlaceholderFound = true;
+		do {
+			Matcher matcher = this.stringWithPlaceholderPattern.matcher(returnValue);
+			stringWithPlaceholderFound = matcher.find();
+
+			if (stringWithPlaceholderFound) {
+				String stringWithPlaceholder = matcher.group(1);
+				String prefix = matcher.group(2) != null ? matcher.group(2) : "";
+				String innerPlaceholder = matcher.group(3);
+				String suffix = matcher.group(4) != null ? matcher.group(4) : "";
+
+				String replacedValue = "${#" + (!prefix.isEmpty() ? "'" + prefix + "' + " : "") + innerPlaceholder
+						+ (!suffix.isEmpty() ? " + '" + suffix + "'" : "") + "#}";
+				returnValue = returnValue.replace(stringWithPlaceholder, replacedValue);
+			}
+		} while (stringWithPlaceholderFound);
 
 		return returnValue;
 	}

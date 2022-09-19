@@ -10,4 +10,6 @@ public interface PlaceholderResolver {
 	String getTransformationFunctionPackageName();
 
 	String getTransformationFunctionJavaClassName(String transformationFunction);
+
+	String transformPlaceholderNotation(String orginialPlaceholder);
 }

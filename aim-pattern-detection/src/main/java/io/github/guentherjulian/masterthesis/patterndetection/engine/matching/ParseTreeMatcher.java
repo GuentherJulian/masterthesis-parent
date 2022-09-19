@@ -190,15 +190,18 @@ public class ParseTreeMatcher {
 				try {
 					tempPathMatch = matchPath(parseTreeElementTemplate, parseTreeElementCompilationUnit);
 					matches = tempPathMatch.isMatch();
-
 				} catch (RuntimeException e) {
 					matches = false;
 				}
 
-				List<ParseTreeElement> elementsMatched = this.matchedElements.pop();
-				this.matchedElements.peek().addAll(elementsMatched);
-
-				j++;
+				if (matches) {
+					List<ParseTreeElement> elementsMatched = this.matchedElements.pop();
+					this.matchedElements.peek().addAll(elementsMatched);
+					j++;
+				} else {
+					j = (orderedTemplatePaths.size() > orderedCompilationUnitPaths.size() ? orderedTemplatePaths.size()
+							: orderedCompilationUnitPaths.size());
+				}
 			} while (!matches);
 		}
 
@@ -280,12 +283,13 @@ public class ParseTreeMatcher {
 		// }
 
 		// check if there are still non metalanguage elements left
-		int countNonMetalanguageTemplateElements = (int) unorderedTemplatePaths.stream()
-				.filter(parseTreeElement -> (parseTreeElement instanceof ParseTreePathList
-						&& !((ParseTreePathList) parseTreeElement).isMetaLang())
-						|| (parseTreeElement instanceof ParseTreePath
-								&& !((ParseTreePath) parseTreeElement).containsMetaLanguage()))
-				.count();
+		// int countNonMetalanguageTemplateElements = (int)
+		// unorderedTemplatePaths.stream()
+		// .filter(parseTreeElement -> (parseTreeElement instanceof ParseTreePathList
+		// && !((ParseTreePathList) parseTreeElement).isMetaLang())
+		// || (parseTreeElement instanceof ParseTreePath
+		// && !((ParseTreePath) parseTreeElement).containsMetaLanguage()))
+		// .count();
 		// if (countNonMetalanguageTemplateElements > 0) {
 		// throw new NoMatchException(
 		// "There are non metalanguage elements in the template that could not be found
@@ -414,8 +418,10 @@ public class ParseTreeMatcher {
 
 		boolean match = true;
 		if (!unorderedTemplatePaths.isEmpty()) {
+			LOGGER.info("Template path elements not found: {}", unorderedTemplatePaths);
 			for (ParseTreeElement unorderedTemplatePath : unorderedTemplatePaths) {
-				if ((unorderedTemplatePath instanceof ParseTreePathList)
+				if ((unorderedTemplatePath instanceof ParseTreePathList
+						&& !((ParseTreePathList) unorderedTemplatePath).isOptional())
 						|| (unorderedTemplatePath instanceof ParseTreePath
 								&& !((ParseTreePath) unorderedTemplatePath).isMetaLanguageElement()))
 					if (!matchedListElements.contains(unorderedTemplatePath)) {
@@ -462,6 +468,9 @@ public class ParseTreeMatcher {
 				match = match && tempPathMatch.isMatch();
 				conditionalExpression.setValue(match);
 				conditions.add(conditionalExpression);
+
+				if (match)
+					break;
 			}
 
 			// Check matches
@@ -481,7 +490,7 @@ public class ParseTreeMatcher {
 				}
 			}
 
-			tempPathMatch.setMatch(true);
+			// tempPathMatch.setMatch(true);
 			for (ConditionalExpression conditionalExpression : conditions) {
 				if (conditionalExpression.isTrue() && !conditionalExpression.getCondition().isEmpty()) {
 					this.registerNewPlaceholderSubstitution(conditionalExpression.getCondition(), "true", false);
@@ -518,7 +527,7 @@ public class ParseTreeMatcher {
 			if (!tempPathMatch.isMatch()) {
 				// throw new NoMatchException("Cannot match parse tree: " +
 				// parseTreePathListTemplate);
-				LOGGER.info("Cannot match parse tree: " + parseTreePathListTemplate);
+				// LOGGER.info("Cannot match parse tree: " + parseTreePathListTemplate);
 				pathMatch.setMatch(false);
 				return pathMatch;
 			} else {
@@ -892,6 +901,10 @@ public class ParseTreeMatcher {
 					.resolvePlaceholder(placeholder, substitution);
 			possibleSubstitutions = placeholderResolutionResult.getSubstitutions();
 			placeholder = placeholderResolutionResult.getPlaceholder();
+			if (!placeholderResolutionResult.isPlaceholderAtomic() || (!this.listPlaceholderIterationVariable.isEmpty()
+					&& placeholder.contains(this.listPlaceholderIterationVariable.peek()))) {
+				addAlways = true;
+			}
 		} else {
 			possibleSubstitutions = new HashSet<>();
 			possibleSubstitutions.add(substitution);

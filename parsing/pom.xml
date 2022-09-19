@@ -104,6 +104,24 @@
             </configuration>
           </execution>
           <execution>
+            <id>antlr4-freeMarker-parser</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${basedir}/src/main/resources/grammars/freeMarker</sourceDirectory>
+              <includes>
+                <include>FreemarkerLexer.g4</include>
+                <include>FreemarkerParser.g4</include>
+              </includes>
+              <arguments>
+                <argument>-package</argument>
+                <argument>org.antlr.parser.freemarker</argument>
+              </arguments>
+              <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/freemarker</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
             <id>antlr4-simpleFreeMarker-parser</id>
             <goals>
               <goal>antlr4</goal>

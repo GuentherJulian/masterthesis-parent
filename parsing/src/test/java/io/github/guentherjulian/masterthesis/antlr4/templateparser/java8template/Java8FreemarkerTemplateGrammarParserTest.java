@@ -258,4 +258,16 @@ public class Java8FreemarkerTemplateGrammarParserTest extends AbstractParserTest
 			templateParser.showTree(tree);
 		}
 	}
+
+	@Test
+	void java8RestServiceTest() throws Exception {
+		Path inputFile = testResourcesPath.resolve("templates/java_freemarker/RestService.java");
+
+		TemplateParser<Java8FreemarkerTemplateParser> templateParser = getTemplateParser("compilationUnit", inputFile,
+				grammar);
+		List<ParserRuleContext> trees = templateParser.parseAmbiguties(PredictionMode.LL);
+		for (ParserRuleContext tree : trees) {
+			templateParser.showTree(tree);
+		}
+	}
 }

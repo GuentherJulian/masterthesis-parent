@@ -111,7 +111,7 @@ public class AimPatternDetectionEngine {
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
 						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
 						this.metaLanguageConfiguration.getMetaLanguagePattern(), this.placeholderResolver);
-				instantiationPathMatch.setMatch(true);
+				// instantiationPathMatch.setMatch(true);
 
 				if (instantiationPathMatch.isMatch()) {
 					LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,
