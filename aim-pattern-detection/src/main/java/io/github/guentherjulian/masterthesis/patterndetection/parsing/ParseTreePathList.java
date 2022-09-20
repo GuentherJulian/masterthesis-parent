@@ -83,4 +83,17 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 		}
 		return isEmpty;
 	}
+
+	@Override
+	public String getText() {
+		return getTextParseTreeList(this);
+	}
+
+	private String getTextParseTreeList(ParseTreePathList parseTreePathList) {
+		String text = "";
+		for (ParseTreeElement parseTreeElement : parseTreePathList) {
+			text += parseTreeElement.getText();
+		}
+		return text;
+	}
 }

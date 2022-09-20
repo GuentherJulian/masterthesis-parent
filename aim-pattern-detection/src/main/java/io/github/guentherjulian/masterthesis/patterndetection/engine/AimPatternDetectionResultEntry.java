@@ -55,6 +55,6 @@ public class AimPatternDetectionResultEntry {
 
 	@Override
 	public String toString() {
-		return "ff";
+		return this.templatePath.getFileName().toString() + " - " + this.compilationUnitPath.getFileName().toString();
 	}
 }

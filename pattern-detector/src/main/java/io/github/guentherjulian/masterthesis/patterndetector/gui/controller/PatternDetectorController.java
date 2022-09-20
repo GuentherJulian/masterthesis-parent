@@ -1,35 +1,29 @@
 package io.github.guentherjulian.masterthesis.patterndetector.gui.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import io.github.guentherjulian.masterthesis.patterndetection.engine.AimPatternDetectionResult;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.AimPatternDetectionResultEntry;
 import io.github.guentherjulian.masterthesis.patterndetector.detection.Detector;
 import io.github.guentherjulian.masterthesis.patterndetector.detection.configuration.MetaLanguage;
 import io.github.guentherjulian.masterthesis.patterndetector.detection.configuration.ObjectLanguage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -233,77 +227,23 @@ public class PatternDetectorController implements Initializable {
 		return true;
 	}
 
-	private void showResults(AimPatternDetectionResult result) {
+	private void showResults(AimPatternDetectionResult result) throws IOException {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("pattern-detector-result.fxml"));
+		Parent root = fxmlLoader.load();
+
+		PatternDetectorResultController controller = fxmlLoader.getController();
+		controller.setAimPatternDetectionResult(result);
+		controller.init();
+
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+
 		Stage stage = new Stage();
 		stage.initModality(Modality.WINDOW_MODAL);
 		stage.initOwner(getStage());
 		stage.setResizable(false);
-
-		Label labelParsedTemplates = new Label("Number of parsed templates: " + result.getNumParsedTemplates());
-		Label labelSuccessfullyParsedTemplates = new Label(
-				"Number of successful parsed templates: " + result.getNumParseableTemplates());
-		Label labelUnsuccessfullyParsedTemplates = new Label(
-				"Number of unsuccessful parsed templates: " + result.getNumUnparseableTemplates());
-		Label labelParsedCompilationUnits = new Label(
-				"Number of parsed compilation units: " + result.getNumParsedCompilationUnits());
-		Label labelComparedFiles = new Label("Number of compared files: " + result.getNumComparedFiles());
-		Label labelInstantiationPathMatches = new Label(
-				"Number of instantiation path matches: " + result.getNumInstantiationPathMatches());
-		Label labelFileMatches = new Label("Number of file matches: " + result.getNumFileMatches());
-		Label labelProcessingTime = new Label(String.format("Processing time: %.2f ms, %.2f s",
-				(result.getProcessingTime() / 1e6), (result.getProcessingTime() / 1e9)));
-		VBox vboxLabel = new VBox(labelParsedTemplates, labelSuccessfullyParsedTemplates,
-				labelUnsuccessfullyParsedTemplates, labelParsedCompilationUnits, labelComparedFiles,
-				labelInstantiationPathMatches, labelFileMatches, labelProcessingTime);
-		vboxLabel.setPadding(new Insets(10, 0, 10, 10));
-
-		Accordion accordion = new Accordion();
-		for (AimPatternDetectionResultEntry aimPatternDetectionResultEntry : result.getResults()) {
-			VBox vBoxResultEntry = new VBox();
-
-			TextArea textArea = new TextArea();
-			textArea.setMinHeight(100);
-			textArea.appendText("Template path: " + aimPatternDetectionResultEntry.getTemplatePath() + "\n");
-			textArea.appendText(
-					"Compilation unit path: " + aimPatternDetectionResultEntry.getCompilationUnitPath() + "\n");
-			vBoxResultEntry.getChildren().add(textArea);
-
-			if (aimPatternDetectionResultEntry.getTreeMatchResult() != null) {
-				textArea.appendText("Is match: " + (aimPatternDetectionResultEntry.isMatch() ? "Yes" : "No") + "\n");
-				if (aimPatternDetectionResultEntry.isMatch()) {
-					Map<String, Set<String>> placeholderSubstitutions = aimPatternDetectionResultEntry
-							.getPlaceholderSubstitutions();
-					textArea.appendText("Placeholder substitutions: " + placeholderSubstitutions.toString());
-				}
-			}
-
-			if (aimPatternDetectionResultEntry.isTemplateUnparseable()) {
-				textArea.appendText("Template was not parseable!\n");
-			}
-
-			String templateFileName = aimPatternDetectionResultEntry.getTemplatePath().getFileName().toString();
-			String compilationUnitFileName = aimPatternDetectionResultEntry.getCompilationUnitPath().getFileName()
-					.toString();
-
-			String title = String.format("%s <-> %s (%s)", templateFileName, compilationUnitFileName,
-					(aimPatternDetectionResultEntry.isMatch() ? "Match" : "No match"));
-			if (aimPatternDetectionResultEntry.getTreeMatchResult() != null
-					&& aimPatternDetectionResultEntry.getTreeMatchResult().getPathMatch() != null) {
-				double percentage = aimPatternDetectionResultEntry.getTreeMatchResult().getPathMatch()
-						.getMatchPercentage();
-				title = String.format(title + " %.2f %%", percentage);
-			}
-			TitledPane pane = new TitledPane(title, vBoxResultEntry);
-			accordion.getPanes().add(pane);
-		}
-
-		VBox vBox = new VBox(vboxLabel, accordion);
-		vBox.setPrefWidth(640);
-		vBox.setPrefHeight(400);
-		ScrollPane scrollPane = new ScrollPane(vBox);
-
-		Scene scene = new Scene(scrollPane);
 		stage.setTitle("Results");
+
 		stage.setScene(scene);
 		stage.show();
 	}

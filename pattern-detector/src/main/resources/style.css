@@ -1,0 +1,7 @@
+.match {
+    -fx-background-color: derive(palegreen, 75%);
+}
+
+.no-match {
+    -fx-background-color: derive(red, 75%);
+}

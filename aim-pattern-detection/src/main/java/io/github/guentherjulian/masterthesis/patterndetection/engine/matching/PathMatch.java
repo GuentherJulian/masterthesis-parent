@@ -58,7 +58,7 @@ public class PathMatch {
 	public void setMatch(boolean isMatch) {
 		this.isMatch = isMatch;
 		if (isMatch) {
-			this.matchedTemplateElements = templateParseTreePath;
+			this.matchedTemplateElements = new ArrayList<>(templateParseTreePath);
 		}
 	}
 

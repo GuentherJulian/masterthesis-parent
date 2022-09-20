@@ -3,7 +3,7 @@ package ${variables.rootPackage}.${variables.component}.service.api.rest;
 import ${variables.rootPackage}.${variables.component}.common.api.${variables.entityName};
 import ${variables.rootPackage}.${variables.component}.logic.api.${variables.component?cap_first};
 import ${variables.rootPackage}.${variables.component}.logic.api.to.${variables.entityName}Eto;
-import ${variables.rootPackage}.${variables.component}.logic.api.to.${variables.entityName}SearchCriteriaTo;
+import ${variables.rootPackage}.${variables.component}.common.api.${variables.entityName}SearchCriteriaTo;
 import org.springframework.data.domain.Page;
 
 import javax.ws.rs.BadRequestException;
@@ -38,7 +38,7 @@ public interface ${variables.component?cap_first}RestService {
   */
   @GET
   @Path("/${variables.entityName?lower_case}/{id}/")
-  public ${variables.entityName}Eto get${variables.entityName}(@PathParam("id") long id);
+  public ${variables.entityName}Eto get${variables.entityName}(@PathParam("id") <#if compositeIdTypeVar!="null"> ${compositeIdTypeVar} <#else> long </#if> id);
 
   /**
    * Delegates to {@link ${variables.component?cap_first}#save${variables.entityName}}.
@@ -58,7 +58,7 @@ public interface ${variables.component?cap_first}RestService {
    */
   @DELETE
   @Path("/${variables.entityName?lower_case}/{id}/")
-  public void delete${variables.entityName}(@PathParam("id") long id);
+  public void delete${variables.entityName}(@PathParam("id") <#if compositeIdTypeVar!="null"> ${compositeIdTypeVar} <#else> long </#if> id);
 
   /**
    * Delegates to {@link ${variables.component?cap_first}#find${variables.entityName}Etos}.

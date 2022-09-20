@@ -616,10 +616,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		// compilationUnits
-		// .add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueSearchCriteriaTo.java"));
 		compilationUnits
-				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestSearchCriteriaTo.java"));
+				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueSearchCriteriaTo.java"));
+		// compilationUnits
+		// .add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestSearchCriteriaTo.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,

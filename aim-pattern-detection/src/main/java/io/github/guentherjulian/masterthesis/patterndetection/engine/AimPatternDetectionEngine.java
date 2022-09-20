@@ -196,6 +196,11 @@ public class AimPatternDetectionEngine {
 						}
 
 						if (!isTemplateUnparseable) {
+
+							if (aimPatternTemplate.getTemplatePath().toString().contains("SearchCriteriaTo.java")) {
+								System.out.println("bla");
+							}
+
 							// match trees
 							LOGGER.info("Match parse trees of {} and {}...",
 									aimPatternTemplate.getTemplatePath().getFileName(),

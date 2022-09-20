@@ -90,6 +90,7 @@ public class ParseTreeMatcher {
 			logError(e);
 		}
 		long endTime = System.nanoTime();
+		this.treeMatch.setMatchingTime(endTime - startTime);
 		LOGGER.info("Finished matching parse trees (took {} ns, {} ms)", (endTime - startTime),
 				((endTime - startTime) / 1e6));
 
@@ -139,7 +140,8 @@ public class ParseTreeMatcher {
 
 		PathMatch tempPathMatch = null;
 		try {
-			tempPathMatch = matchOrderedPaths(orderedTemplatePaths, orderedCompilationUnitPaths);
+			tempPathMatch = matchOrderedPaths(orderedTemplatePaths, orderedCompilationUnitPaths,
+					unorderedTemplatePaths);
 			pathMatch.addMatchedTemplateElements(tempPathMatch.getMatchedTemplateElements());
 
 			if (tempPathMatch.isMatch()) {
@@ -162,31 +164,65 @@ public class ParseTreeMatcher {
 	}
 
 	private PathMatch matchOrderedPaths(List<ParseTreeElement> orderedTemplatePaths,
-			List<ParseTreeElement> orderedCompilationUnitPaths) throws NoMatchException {
+			List<ParseTreeElement> orderedCompilationUnitPaths, List<ParseTreeElement> unorderedTemplatePaths)
+			throws NoMatchException {
 
 		PathMatch match = new PathMatch(orderedTemplatePaths, orderedCompilationUnitPaths);
 
 		int j = 0;
+		List<ParseTreeElement> unmatchedCompilationUnitPaths = new ArrayList<>();
 		for (int i = 0; i < orderedTemplatePaths.size(); i++) {
 			ParseTreeElement parseTreeElementTemplate = orderedTemplatePaths.get(i);
 
 			ParseTreeElement parseTreeElementCompilationUnit;
 			boolean matches = false;
 			do {
+				matches = true;
+				PathMatch tempPathMatch = null;
+
 				if (j >= orderedTemplatePaths.size() || j >= orderedCompilationUnitPaths.size()) {
 					// throw new NoMatchException(String.format("No match for ordered paths: %s ->
 					// %s",
 					// orderedTemplatePaths, orderedCompilationUnitPaths));
-					LOGGER.info(String.format("No match for ordered paths: %s -> %s", orderedTemplatePaths,
-							orderedCompilationUnitPaths));
-					match.setMatch(false);
-					return match;
+					if (unorderedTemplatePaths == null || unorderedTemplatePaths.isEmpty()
+							|| unmatchedCompilationUnitPaths.isEmpty()
+							|| unmatchedCompilationUnitPaths.size() != unorderedTemplatePaths.size()) {
+						LOGGER.info(String.format("No match for ordered paths: %s -> %s", orderedTemplatePaths,
+								orderedCompilationUnitPaths));
+						match.setMatch(false);
+						return match;
+					} else {
+						// try to match unmatched compilation unit paths with unordered template paths
+						for (int k = 0; k < unorderedTemplatePaths.size(); k++) {
+							parseTreeElementTemplate = unorderedTemplatePaths.get(k);
+							parseTreeElementCompilationUnit = unmatchedCompilationUnitPaths.get(k);
+							try {
+								tempPathMatch = matchPath(parseTreeElementTemplate, parseTreeElementCompilationUnit);
+								matches = tempPathMatch.isMatch();
+							} catch (Exception e) {
+								matches = false;
+							}
+
+							List<ParseTreeElement> elementsMatched = this.matchedElements.pop();
+							this.matchedElements.peek().addAll(elementsMatched);
+
+							if (matches) {
+								unorderedTemplatePaths.remove(k);
+							} else {
+								break;
+							}
+						}
+
+						if (!matches) {
+							LOGGER.info(String.format("No match for ordered paths: %s -> %s", orderedTemplatePaths,
+									orderedCompilationUnitPaths));
+						}
+						match.setMatch(matches);
+						return match;
+					}
 				}
 
 				parseTreeElementCompilationUnit = orderedCompilationUnitPaths.get(j);
-
-				matches = true;
-				PathMatch tempPathMatch = null;
 				try {
 					tempPathMatch = matchPath(parseTreeElementTemplate, parseTreeElementCompilationUnit);
 					matches = tempPathMatch.isMatch();
@@ -194,14 +230,16 @@ public class ParseTreeMatcher {
 					matches = false;
 				}
 
-				if (matches) {
-					List<ParseTreeElement> elementsMatched = this.matchedElements.pop();
-					this.matchedElements.peek().addAll(elementsMatched);
-					j++;
-				} else {
-					j = (orderedTemplatePaths.size() > orderedCompilationUnitPaths.size() ? orderedTemplatePaths.size()
-							: orderedCompilationUnitPaths.size());
+				List<ParseTreeElement> elementsMatched = this.matchedElements.pop();
+				this.matchedElements.peek().addAll(elementsMatched);
+
+				if (!matches) {
+					// j = (orderedTemplatePaths.size() > orderedCompilationUnitPaths.size() ?
+					// orderedTemplatePaths.size()
+					// : orderedCompilationUnitPaths.size());
+					unmatchedCompilationUnitPaths.add(parseTreeElementCompilationUnit);
 				}
+				j++;
 			} while (!matches);
 		}
 
@@ -619,102 +657,127 @@ public class ParseTreeMatcher {
 		this.currentParseTreeElement.push(templatePathElement);
 		this.matchedElements.push(new ArrayList<>());
 
-		if (templatePathElement instanceof ParseTreePath && compilationUnitPathElement instanceof ParseTreePath) {
-			ParseTreePath parseTreePathTemplate = (ParseTreePath) templatePathElement;
-			ParseTreePath parseTreePathCompilationUnit = (ParseTreePath) compilationUnitPathElement;
+		try {
+			if (templatePathElement instanceof ParseTreePath && compilationUnitPathElement instanceof ParseTreePath) {
+				ParseTreePath parseTreePathTemplate = (ParseTreePath) templatePathElement;
+				ParseTreePath parseTreePathCompilationUnit = (ParseTreePath) compilationUnitPathElement;
 
-			if (!parseTreePathTemplate.isMetaLanguageElement()) {
-				if (parseTreePathTemplate.getText().equals(parseTreePathCompilationUnit.getText())) {
-					match = true;
-					this.registerNewMatch(parseTreePathTemplate, parseTreePathCompilationUnit);
-				} else if (!parseTreePathTemplate.containsMetaLanguage()) {
-					// throw new RuntimeException("Could not find " +
-					// parseTreePathTemplate.getPath() + " in "
-					// + parseTreePathCompilationUnit.getPath());
-					match = false;
-				} else if (parseTreePathCompilationUnit.getPureObjLangPath()
-						.equals(parseTreePathTemplate.getPureObjLangPath())
-						&& parseTreePathCompilationUnit.getText().equals(parseTreePathTemplate.getText())) {
-					match = true;
-					this.registerNewMatch(parseTreePathTemplate, parseTreePathCompilationUnit);
-				} else {
-					// throw new RuntimeException("Could not find " +
-					// parseTreePathTemplate.getPath() + " in "
-					// + parseTreePathCompilationUnit.getPath());
-					match = false;
-				}
-			} else {
-				// Metalanguage code in template
-				ParseTreePath currentParseTreePathTemplate = parseTreePathTemplate;
-				ParseTreePath currentParseTreePathCompilationUnit = parseTreePathCompilationUnit;
-				boolean placeholderFound = false;
-				do {
-					if (currentParseTreePathCompilationUnit == null) {
+				if (!parseTreePathTemplate.isMetaLanguageElement()) {
+					if (parseTreePathTemplate.getText().equals(parseTreePathCompilationUnit.getText())) {
+						match = true;
+						this.registerNewMatch(parseTreePathTemplate, parseTreePathCompilationUnit);
+					} else if (!parseTreePathTemplate.containsMetaLanguage()) {
 						// throw new RuntimeException("Could not find " +
 						// parseTreePathTemplate.getPath() + " in "
 						// + parseTreePathCompilationUnit.getPath());
 						match = false;
-						break;
+					} else if (parseTreePathCompilationUnit.getPureObjLangPath()
+							.equals(parseTreePathTemplate.getPureObjLangPath())
+							&& parseTreePathCompilationUnit.getText().equals(parseTreePathTemplate.getText())) {
+						match = true;
+						this.registerNewMatch(parseTreePathTemplate, parseTreePathCompilationUnit);
+					} else {
+						// throw new RuntimeException("Could not find " +
+						// parseTreePathTemplate.getPath() + " in "
+						// + parseTreePathCompilationUnit.getPath());
+						match = false;
 					}
-
-					if (currentParseTreePathTemplate.getName().equals(currentParseTreePathCompilationUnit.getName())) {
-						currentParseTreePathCompilationUnit = currentParseTreePathCompilationUnit.getParent();
-					} else if (currentParseTreePathTemplate.isMetaLanguageElement()) {
-						MetaLanguageLexerRules metaLanguageLexerRules = this.metaLanguageConfiguration
-								.getMetaLanguageLexerRules();
-						String parserRuleToCheck = Character
-								.toUpperCase(metaLanguageLexerRules.getMetaLanguagePrefix().charAt(0))
-								+ metaLanguageLexerRules.getMetaLanguagePrefix().substring(1)
-								+ currentParseTreePathCompilationUnit.getName() + "Context";
-						if (currentParseTreePathTemplate.getParent().getName().matches(parserRuleToCheck)) {
-							this.registerNewPlaceholderSubstitution(currentParseTreePathTemplate.getText(),
-									currentParseTreePathCompilationUnit.getText(), false);
-							this.registerNewMatch(currentParseTreePathTemplate, currentParseTreePathCompilationUnit);
-							match = true;
-							placeholderFound = true;
+				} else {
+					// Metalanguage code in template
+					ParseTreePath currentParseTreePathTemplate = parseTreePathTemplate;
+					ParseTreePath currentParseTreePathCompilationUnit = parseTreePathCompilationUnit;
+					boolean placeholderFound = false;
+					do {
+						if (currentParseTreePathCompilationUnit == null) {
+							// throw new RuntimeException("Could not find " +
+							// parseTreePathTemplate.getPath() + " in "
+							// + parseTreePathCompilationUnit.getPath());
+							match = false;
 							break;
 						}
-					} else {
-						currentParseTreePathCompilationUnit = currentParseTreePathCompilationUnit.getParent();
+
+						if (currentParseTreePathTemplate.getName()
+								.equals(currentParseTreePathCompilationUnit.getName())) {
+							currentParseTreePathCompilationUnit = currentParseTreePathCompilationUnit.getParent();
+						} else if (currentParseTreePathTemplate.isMetaLanguageElement()) {
+							MetaLanguageLexerRules metaLanguageLexerRules = this.metaLanguageConfiguration
+									.getMetaLanguageLexerRules();
+							String parserRuleToCheck = Character
+									.toUpperCase(metaLanguageLexerRules.getMetaLanguagePrefix().charAt(0))
+									+ metaLanguageLexerRules.getMetaLanguagePrefix().substring(1)
+									+ currentParseTreePathCompilationUnit.getName() + "Context";
+							if (currentParseTreePathTemplate.getParent().getName().matches(parserRuleToCheck)) {
+								this.registerNewPlaceholderSubstitution(currentParseTreePathTemplate.getText(),
+										currentParseTreePathCompilationUnit.getText(), false);
+								this.registerNewMatch(currentParseTreePathTemplate,
+										currentParseTreePathCompilationUnit);
+								match = true;
+								placeholderFound = true;
+								break;
+							}
+						} else {
+							currentParseTreePathCompilationUnit = currentParseTreePathCompilationUnit.getParent();
+						}
+
+						currentParseTreePathTemplate = currentParseTreePathTemplate.getParent();
+					} while (currentParseTreePathTemplate != null);
+
+					if (!placeholderFound) {
+						this.registerNewPlaceholderSubstitution(parseTreePathTemplate.getText(),
+								parseTreePathCompilationUnit.getText(), false);
+						this.registerNewMatch(parseTreePathTemplate, parseTreePathCompilationUnit);
+						match = true;
 					}
-
-					currentParseTreePathTemplate = currentParseTreePathTemplate.getParent();
-				} while (currentParseTreePathTemplate != null);
-
-				if (!placeholderFound) {
-					this.registerNewPlaceholderSubstitution(parseTreePathTemplate.getText(),
-							parseTreePathCompilationUnit.getText(), false);
-					this.registerNewMatch(parseTreePathTemplate, parseTreePathCompilationUnit);
-					match = true;
 				}
-			}
-		} else if (templatePathElement instanceof ParseTreePathList
-				&& compilationUnitPathElement instanceof ParseTreePathList) {
-			ParseTreePathList parseTreePathListTemplate = (ParseTreePathList) templatePathElement;
-			ParseTreePathList parseTreePathListCompilationUnit = (ParseTreePathList) compilationUnitPathElement;
+			} else if (templatePathElement instanceof ParseTreePathList
+					&& compilationUnitPathElement instanceof ParseTreePathList) {
+				ParseTreePathList parseTreePathListTemplate = (ParseTreePathList) templatePathElement;
+				ParseTreePathList parseTreePathListCompilationUnit = (ParseTreePathList) compilationUnitPathElement;
 
-			if (parseTreePathListTemplate.isAtomic() && parseTreePathListCompilationUnit.isAtomic()) {
-				tempPathMatch = matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit);
-			} else if (parseTreePathListTemplate.isListPattern() && parseTreePathListCompilationUnit.isListPattern()) {
-				tempPathMatch = matchListPattern(parseTreePathListTemplate, parseTreePathListCompilationUnit);
-			} else if (!parseTreePathListTemplate.isAtomic() & !parseTreePathListCompilationUnit.isAtomic()) {
-				tempPathMatch = matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit);
-			} else {
-				// throw new NoMatchException("Unable to match the parse tree lists");
+				if (parseTreePathListTemplate.isAtomic() && parseTreePathListCompilationUnit.isAtomic()) {
+					tempPathMatch = matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit,
+							null);
+				} else if (parseTreePathListTemplate.isListPattern()
+						&& parseTreePathListCompilationUnit.isListPattern()) {
+					tempPathMatch = matchListPattern(parseTreePathListTemplate, parseTreePathListCompilationUnit);
+				} else if (!parseTreePathListTemplate.isAtomic() & !parseTreePathListCompilationUnit.isAtomic()) {
+					tempPathMatch = matchOrderedPaths(parseTreePathListTemplate, parseTreePathListCompilationUnit,
+							null);
+				} else {
+					// throw new NoMatchException("Unable to match the parse tree lists");
+					match = false;
+				}
+			} else if (templatePathElement instanceof ParseTreePathList
+					&& compilationUnitPathElement instanceof ParseTreePath) {
+				// only for inline if statements
+				ParseTreePathList parseTreePathListTemplate = (ParseTreePathList) templatePathElement;
+				ParseTreePath parseTreePathCompilationUnit = (ParseTreePath) compilationUnitPathElement;
+				if (parseTreePathListTemplate.isMetaLang()) {
+					for (int i = 0; i < parseTreePathListTemplate.size(); i++) {
+						try {
+							tempPathMatch = matchPath(parseTreePathListTemplate.get(i), parseTreePathCompilationUnit);
+						} catch (Exception e) {
+							// ignore
+						}
+
+						if (tempPathMatch.isMatch()) {
+							break;
+						}
+					}
+					match = tempPathMatch.isMatch();
+				} else {
+					match = false;
+				}
+			} else if (templatePathElement instanceof ParseTreePath
+					&& compilationUnitPathElement instanceof ParseTreePathList) {
+				// throw new NoMatchException(String.format("Cannot match ParseTreePath %s
+				// agains ParseTreePathList %s",
+				// templatePathElement, compilationUnitPathElement));
 				match = false;
 			}
-		} else if (templatePathElement instanceof ParseTreePathList
-				&& compilationUnitPathElement instanceof ParseTreePath) {
-			// throw new NoMatchException(String.format("Cannot match ParseTreePathList %s
-			// agains ParseTreePath %s",
-			// templatePathElement, compilationUnitPathElement));
-			match = false;
-		} else if (templatePathElement instanceof ParseTreePath
-				&& compilationUnitPathElement instanceof ParseTreePathList) {
-			// throw new NoMatchException(String.format("Cannot match ParseTreePath %s
-			// agains ParseTreePathList %s",
-			// templatePathElement, compilationUnitPathElement));
-			match = false;
+		} catch (Exception e) {
+			pathMatch.setMatch(false);
+			return pathMatch;
 		}
 
 		if (tempPathMatch != null) {

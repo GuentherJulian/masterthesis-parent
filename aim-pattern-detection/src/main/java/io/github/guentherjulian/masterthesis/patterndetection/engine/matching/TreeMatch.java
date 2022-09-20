@@ -18,6 +18,7 @@ public class TreeMatch {
 	private Exception exception;
 	private PathMatch pathMatch;
 	private List<ParseTreeElement> matchedTemplateElements;
+	private long matchingTime;
 
 	public TreeMatch() {
 		this.templateParseTree = null;
@@ -103,5 +104,13 @@ public class TreeMatch {
 			}
 		}
 		return count;
+	}
+
+	public long getMatchingTime() {
+		return matchingTime;
+	}
+
+	public void setMatchingTime(long matchingTime) {
+		this.matchingTime = matchingTime;
 	}
 }
