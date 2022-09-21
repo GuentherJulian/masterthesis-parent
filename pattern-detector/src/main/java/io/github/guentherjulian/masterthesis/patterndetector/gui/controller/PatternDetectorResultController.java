@@ -114,6 +114,7 @@ public class PatternDetectorResultController implements Initializable {
 				});
 
 		this.listViewResult.setCellFactory(listview -> new ListCell<AimPatternDetectionResultEntry>() {
+
 			@Override
 			public void updateItem(AimPatternDetectionResultEntry item, boolean empty) {
 				super.updateItem(item, empty);
@@ -121,10 +122,21 @@ public class PatternDetectorResultController implements Initializable {
 				if (empty || item == null) {
 					setText(null);
 					setGraphic(null);
+					setStyle(null);
 				} else {
 					setText(item.toString());
 					if (item.isMatch()) {
-						setText("Match: " + item.toString());
+						if (isSelected()) {
+							setStyle("-fx-background-color: derive(#8AFA8A, 25%); -fx-text-fill: black");
+						} else {
+							setStyle("-fx-background-color: derive(#8AFA8A, 75%);");
+						}
+					} else {
+						if (isSelected()) {
+							setStyle("-fx-background-color: derive(#FF3333, 25%);");
+						} else {
+							setStyle("-fx-background-color: derive(#FF3333, 75%);");
+						}
 					}
 				}
 			}
