@@ -20,7 +20,7 @@ import io.github.guentherjulian.masterthesis.patterndetection.exception.Preproce
 public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
 	// private final String regexPlaceholder = ".*(\\$\\{([^#].+?)\\}).*";
-	private final String regexPrefix = ".*((\\w+)\\$\\{#(.+)#\\}).*";
+	private final String regexPrefix = ".*?((\\w+)\\$\\{#(.+)#\\}).*";
 	private final String regexSuffix = ".*((\\$\\{#(.+)#\\})(\\w+)).*";
 	private final String regexStringWithPlaceholder = ".*((\\\".*)\\$\\{#(.+?)#\\}(.*\\\")).*";
 
@@ -35,7 +35,6 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 	public String processTemplateLine(String lineToProcess) throws PreprocessingException {
 		String returnValue = lineToProcess;
 
-		// boolean placeholderFound = true;
 		returnValue = RegExUtils.replaceAll(returnValue, "\\$\\{(.+?)\\}", "\\$\\{#$1#\\}");
 
 		boolean prefixFound = true;

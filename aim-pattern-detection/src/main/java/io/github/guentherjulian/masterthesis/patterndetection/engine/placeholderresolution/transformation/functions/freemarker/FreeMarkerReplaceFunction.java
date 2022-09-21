@@ -22,7 +22,11 @@ public class FreeMarkerReplaceFunction implements ReverseTransformationFunction 
 			// remove leading and trailing quotation marks
 			args[0] = removeQuotationMarks(args[0]);
 			args[1] = removeQuotationMarks(args[1]);
-			substitutions.add(substitution.replaceAll(args[1], args[0]));
+			if (!args[0].isEmpty() && !args[1].isEmpty()) {
+				substitutions.add(substitution.replaceAll(args[1], args[0]));
+			} else {
+				substitutions.add(substitution);
+			}
 		} else {
 			substitutions.add(substitution);
 		}

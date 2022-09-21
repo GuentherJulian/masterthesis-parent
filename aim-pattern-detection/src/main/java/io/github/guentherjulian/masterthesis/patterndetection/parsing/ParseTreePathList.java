@@ -8,6 +8,7 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 	public String hint;
 	public Boolean isMetaLang;
 	public MetaLanguageElement metaLanguageElement;
+	public boolean isOptionalElementInTemplate = false;
 
 	public ParseTreePathList() {
 		this.metaLanguageElement = null;
@@ -95,5 +96,14 @@ public class ParseTreePathList extends ArrayList<ParseTreeElement> implements Pa
 			text += parseTreeElement.getText();
 		}
 		return text;
+	}
+
+	public void setOptionalElementInTemplate(boolean isOptionalElementInTemplate) {
+		this.isOptionalElementInTemplate = isOptionalElementInTemplate;
+	}
+
+	@Override
+	public boolean isOptionalElementInTemplate() {
+		return this.isOptionalElementInTemplate;
 	}
 }

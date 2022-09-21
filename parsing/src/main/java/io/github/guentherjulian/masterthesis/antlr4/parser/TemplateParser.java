@@ -106,17 +106,9 @@ public class TemplateParser<P extends Parser> {
 		List<ParserRuleContext> trees = new ArrayList<>();
 		int count = 0;
 
-		// ListPatternTransformer transformer = new
-		// ListPatternTransformer(this.listPatterns);
-
 		do {
 			Method method = this.parser.getClass().getMethod(this.parseRule.getName());
 			ParserRuleContext tree = (ParserRuleContext) method.invoke(this.parser);
-
-			// ?
-			// this.showTree(tree);
-			// transformer.transform(tree);
-			// this.showTree(tree);
 
 			trees.add(tree);
 			count++;

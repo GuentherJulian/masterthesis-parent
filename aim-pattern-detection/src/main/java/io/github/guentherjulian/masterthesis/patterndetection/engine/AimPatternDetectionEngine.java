@@ -83,6 +83,9 @@ public class AimPatternDetectionEngine {
 
 	public AimPatternDetectionResult detect(String startRuleName) throws Exception {
 		AimPatternDetectionResult result = new AimPatternDetectionResult();
+		result.setNumTemplatesTotal(this.aimpattern.get(0).getAimPatternTemplates().size());
+		result.setNumCompilationUnitsTotal(this.compilationUnits.size());
+
 		int numParsedTemplates = 0;
 		int numParsedCompilationUnits = 0;
 		int numComparedFiles = 0;
@@ -161,6 +164,7 @@ public class AimPatternDetectionEngine {
 
 							byte[] preprocessedTemplate = TemplatePreprocessorUtil.applyPreprocessing(
 									this.templatePreprocessor, aimPatternTemplate.getTemplatePath());
+
 							Parser parser = createParser(preprocessedTemplate);
 							if (this.templatePreprocessor.getVariables() != null) {
 								for (Entry<String, Set<String>> variable : this.templatePreprocessor.getVariables()
@@ -197,11 +201,10 @@ public class AimPatternDetectionEngine {
 
 						if (!isTemplateUnparseable) {
 
-							if (aimPatternTemplate.getTemplatePath().toString().contains("SearchCriteriaTo.java")) {
-								System.out.println("bla");
+							if (compilationUnitPath.getFileName().toString().contains("BinaryObject")) {
+								System.out.println("");
 							}
 
-							// match trees
 							LOGGER.info("Match parse trees of {} and {}...",
 									aimPatternTemplate.getTemplatePath().getFileName(),
 									compilationUnitPath.getFileName());

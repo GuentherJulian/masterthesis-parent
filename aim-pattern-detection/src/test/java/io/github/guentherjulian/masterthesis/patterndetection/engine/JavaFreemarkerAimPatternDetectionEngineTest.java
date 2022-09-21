@@ -457,8 +457,9 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		// compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Queue.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Queue.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Test.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AccessCode.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
@@ -467,8 +468,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
-		assertEquals(treeMatches.size(), 1);
+		assertEquals(treeMatches.size(), 3);
 		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(1).isMatch());
+		assertTrue(treeMatches.get(2).isMatch());
 	}
 
 	@Test
@@ -697,6 +700,31 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(
 				compilationUnitsPath.resolve("real_compilation_units").resolve("ApplicationPersistencyEntity.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerCtoTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("${variables.entityName}Cto.java.ftl"),
+				"${variables.entityName}Cto.java.ftl"));
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+		List<AimPattern> aimPatterns = new ArrayList<>();
+		aimPatterns.add(aimPattern);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AccessCodeCto.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,

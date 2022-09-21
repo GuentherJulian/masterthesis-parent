@@ -4,4 +4,6 @@ import java.util.Set;
 
 public interface ObjectLanguageConfiguration {
 	Set<String> getNonOrderingNodes();
+
+	Set<String> getOptionalNodesForTemplates();
 }

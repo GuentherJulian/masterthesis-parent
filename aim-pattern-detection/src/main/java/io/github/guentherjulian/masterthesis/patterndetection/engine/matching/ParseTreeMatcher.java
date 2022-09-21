@@ -462,7 +462,8 @@ public class ParseTreeMatcher {
 						&& !((ParseTreePathList) unorderedTemplatePath).isOptional())
 						|| (unorderedTemplatePath instanceof ParseTreePath
 								&& !((ParseTreePath) unorderedTemplatePath).isMetaLanguageElement()))
-					if (!matchedListElements.contains(unorderedTemplatePath)) {
+					if (!matchedListElements.contains(unorderedTemplatePath)
+							&& !unorderedTemplatePath.isOptionalElementInTemplate()) {
 						match = false;
 						break;
 					}
@@ -530,8 +531,12 @@ public class ParseTreeMatcher {
 
 			// tempPathMatch.setMatch(true);
 			for (ConditionalExpression conditionalExpression : conditions) {
-				if (conditionalExpression.isTrue() && !conditionalExpression.getCondition().isEmpty()) {
-					this.registerNewPlaceholderSubstitution(conditionalExpression.getCondition(), "true", false);
+				if (!conditionalExpression.getCondition().isEmpty()) {
+					if (conditionalExpression.isTrue()) {
+						this.registerNewPlaceholderSubstitution(conditionalExpression.getCondition(), "true", false);
+					} else {
+						this.registerNewPlaceholderSubstitution(conditionalExpression.getCondition(), "false", false);
+					}
 				}
 			}
 

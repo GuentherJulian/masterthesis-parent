@@ -9,6 +9,8 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.Tr
 public class AimPatternDetectionResult {
 
 	private List<AimPatternDetectionResultEntry> results;
+	private int numTemplatesTotal;
+	private int numCompilationUnitsTotal;
 	private int numParsedTemplates;
 	private int numParsedCompilationUnits;
 	private int numComparedFiles;
@@ -102,5 +104,21 @@ public class AimPatternDetectionResult {
 
 	public void setNumUnparseableTemplates(int numUnparseableTemplates) {
 		this.numUnparseableTemplates = numUnparseableTemplates;
+	}
+
+	public int getNumTemplatesTotal() {
+		return numTemplatesTotal;
+	}
+
+	public void setNumTemplatesTotal(int numTemplatesTotal) {
+		this.numTemplatesTotal = numTemplatesTotal;
+	}
+
+	public int getNumCompilationUnitsTotal() {
+		return numCompilationUnitsTotal;
+	}
+
+	public void setNumCompilationUnitsTotal(int numCompilationUnitsTotal) {
+		this.numCompilationUnitsTotal = numCompilationUnitsTotal;
 	}
 }

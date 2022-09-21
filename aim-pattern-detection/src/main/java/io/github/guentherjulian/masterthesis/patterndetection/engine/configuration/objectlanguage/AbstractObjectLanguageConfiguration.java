@@ -26,4 +26,17 @@ abstract class AbstractObjectLanguageConfiguration implements ObjectLanguageConf
 		}
 		return nonOrderedNodes;
 	}
+
+	protected Set<String> enrichOptionalTemplateElements(Set<String> optionalNodes) {
+		Set<String> optionalTemplateNodes = new HashSet<>();
+		for (String optionalNode : optionalNodes) {
+			optionalTemplateNodes.add(optionalNode + "Context");
+		}
+		return optionalTemplateNodes;
+	}
+
+	@Override
+	public Set<String> getOptionalNodesForTemplates() {
+		return new HashSet<>();
+	}
 }

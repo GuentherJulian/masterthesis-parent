@@ -24,6 +24,12 @@ public class PatternDetectorResultController implements Initializable {
 	private ListView<AimPatternDetectionResultEntry> listViewResult;
 
 	@FXML
+	private Text textNumTemplatesTotal;
+
+	@FXML
+	private Text textNumCompilationUnitsTotal;
+
+	@FXML
 	private Text textNumTemplates;
 
 	@FXML
@@ -65,6 +71,9 @@ public class PatternDetectorResultController implements Initializable {
 
 	public void init() {
 		this.listViewResult.setItems(this.results);
+
+		this.textNumTemplatesTotal.setText(String.valueOf(this.result.getNumTemplatesTotal()));
+		this.textNumCompilationUnitsTotal.setText(String.valueOf(this.result.getNumCompilationUnitsTotal()));
 
 		this.textNumTemplates.setText(String.valueOf(this.result.getNumParsedTemplates()));
 		this.textNumSuccessfulParsedTemplates.setText(String.valueOf(this.result.getNumParseableTemplates()));
@@ -127,16 +136,24 @@ public class PatternDetectorResultController implements Initializable {
 					setText(item.toString());
 					if (item.isMatch()) {
 						if (isSelected()) {
-							setStyle("-fx-background-color: derive(#8AFA8A, 25%); -fx-text-fill: black");
+							setStyle("-fx-background-color: derive(#98FF98, 25%); -fx-text-fill: black");
 						} else {
-							setStyle("-fx-background-color: derive(#8AFA8A, 75%);");
+							setStyle("-fx-background-color: derive(#98FF98, 75%);");
 						}
 					} else {
-						if (isSelected()) {
-							setStyle("-fx-background-color: derive(#FF3333, 25%);");
-						} else {
-							setStyle("-fx-background-color: derive(#FF3333, 75%);");
+						if (!item.isTemplateUnparseable() && item.getTreeMatchResult() != null) {
+							setText(String.format("%s (%.2f %%)", item.toString(),
+									item.getTreeMatchResult().getMatchPercentage()));
 						}
+						if (isSelected()) {
+							setStyle("-fx-background-color: derive(#FF9999, 25%); -fx-text-fill: black");
+						} else {
+							setStyle("-fx-background-color: derive(#FF9999, 75%);");
+						}
+					}
+
+					if (isSelected()) {
+						setText("-> " + getText());
 					}
 				}
 			}

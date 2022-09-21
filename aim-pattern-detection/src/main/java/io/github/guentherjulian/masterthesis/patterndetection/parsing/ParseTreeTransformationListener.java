@@ -59,6 +59,10 @@ public class ParseTreeTransformationListener implements ParseTreeListener {
 					.matches(this.metaLanguageLexerRules.getMetaLanguagePrefix() + "(.+)(Opt|Star|Plus)?Context")) {
 				parseTreePathList.setIsMetaLang(true);
 			}
+
+			parseTreePathList.setOptionalElementInTemplate(
+					this.objectLanguageProperties.getOptionalNodesForTemplates().contains(ruleName));
+
 			currentCollection.peek().add(parseTreePathList);
 			currentCollection.push(parseTreePathList);
 			toPop.push(true);

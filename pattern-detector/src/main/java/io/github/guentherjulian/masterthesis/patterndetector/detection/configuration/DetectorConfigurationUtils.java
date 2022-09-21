@@ -21,6 +21,7 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessi
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.VelocityTemplatePreprocessor;
 
 public class DetectorConfigurationUtils {
+
 	public static Class<? extends Parser> getParserClass(ObjectLanguage objectLanguage, MetaLanguage metaLanguage) {
 		if (objectLanguage == ObjectLanguage.JAVA) {
 			if (metaLanguage == MetaLanguage.FREEMARKER) {
