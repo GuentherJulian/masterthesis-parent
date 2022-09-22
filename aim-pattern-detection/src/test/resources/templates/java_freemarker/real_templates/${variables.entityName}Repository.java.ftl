@@ -41,12 +41,15 @@ public interface ${variables.entityName}Repository extends <#if compositeIdTypeV
     JPAQuery<${variables.entityName}Entity> query = newDslQuery(alias);
 
     <#list pojo.fields as field>
+      <#compress>
         <#assign newFieldType=JavaUtil.boxJavaPrimitives(classObject,field.name)>
         <#assign newFieldType=newFieldType?replace("[^<>,]+Entity","Long","r")>
         <#if newFieldType?ends_with("Embeddable")><#assign newFieldType=newFieldType?replace("Embeddable","SearchCriteriaTo","r")></#if>
         <#assign newFieldType=newFieldType?replace("[^<>,]+Embeddable","SearchCriteriaTo","r")>
         <#assign fieldCapName=field.name?cap_first>
+      </#compress>
         <#if !JavaUtil.isCollection(classObject, field.name)>
+          <#compress>
           <#if field.type?ends_with("Entity") && newFieldType=='Long'>
               ${newFieldType} ${field.name} = criteria.${DevonfwUtil.resolveIdGetter(field,false,"")};
               if(${field.name} != null) {
@@ -62,10 +65,11 @@ public interface ${variables.entityName}Repository extends <#if compositeIdTypeV
           <#else>
               ${newFieldType} ${field.name} = criteria.${DevonfwUtil.resolveIdGetter(field,false,"")};
               if (${field.name} != null) {
-                query.where($(alias.get${fieldCapName}().getId()).eq(${field.name}));
+                query.where($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>${DevonfwUtil.resolveIdGetter(field, true, pojo.package)}</#if>).eq(${field.name}));
               }
               
           </#if> 
+      </#compress>
     </#if>
     </#list>
     if (criteria.getPageable() == null) {
@@ -94,10 +98,9 @@ public interface ${variables.entityName}Repository extends <#if compositeIdTypeV
           <#if !JavaUtil.isCollection(classObject, field.name)>
           case "${field.name}":
             if (next.isAscending()) {
-            	query.orderby($(alias.getBla().toString()).asc());
-                //query.orderBy($(alias.<#if field.type=='boolean'>${'i' + 's' + fieldCapName + '()'}<#else>${'g' + 'e' + 't' + field.name?cap_first + '()'}<#if field.name=='id'>. ${'toString()'}</#if></#if> ).asc());
+                query.orderBy($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>get${field.name?cap_first}()<#if field.name=="id">.toString()</#if></#if><#if field.type?ends_with("Entity") >.getId().toString()</#if>).asc());
             } else {
-                //query.orderBy($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>get${field.name?cap_first}()<#if field.name=="id">.toString()</#if></#if><#if field.type?ends_with("Entity")>.getId().toString()</#if>).desc());
+                query.orderBy($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>get${field.name?cap_first}()<#if field.name=="id">.toString()</#if></#if><#if field.type?ends_with("Entity")>.getId().toString()</#if>).desc());
             }   
           break;
           </#if>

@@ -20,6 +20,14 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 			throws PlaceholderResolutionException {
 		PlaceholderResolutionResult placeholderResolutionResult = new PlaceholderResolutionResult();
 
+		String[] valuesWithoutPreAndSuffixes = removePrefixesAndSuffixes(placeholderExpression, substitution);
+		if (valuesWithoutPreAndSuffixes == null) {
+			throw new PlaceholderResolutionException("Prefix or suffix does not match!");
+		}
+
+		placeholderExpression = valuesWithoutPreAndSuffixes[0];
+		substitution = valuesWithoutPreAndSuffixes[1];
+
 		String placeholderName = getPlaceholderName(placeholderExpression);
 		placeholderResolutionResult.setPlaceholder(placeholderName);
 		placeholderResolutionResult.setPlaceholderAtomic(isPlaceholderAtomic(placeholderName));
@@ -73,5 +81,12 @@ public abstract class AbstractPlaceholderResolver implements PlaceholderResolver
 	@Override
 	public String transformPlaceholderNotation(String orginialPlaceholder) {
 		return orginialPlaceholder;
+	}
+
+	protected String[] removePrefixesAndSuffixes(String placeholderExpression, String substitution) {
+		String[] returnValue = new String[2];
+		returnValue[0] = placeholderExpression;
+		returnValue[1] = substitution;
+		return returnValue;
 	}
 }

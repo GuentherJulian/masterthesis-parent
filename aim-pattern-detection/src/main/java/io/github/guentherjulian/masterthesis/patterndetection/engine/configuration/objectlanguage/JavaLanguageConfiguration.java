@@ -22,6 +22,6 @@ public class JavaLanguageConfiguration extends AbstractObjectLanguageConfigurati
 
 	@Override
 	public Set<String> getOptionalNodesForTemplates() {
-		return this.enrichOptionalTemplateElements(nonOrderingNodes);
+		return this.enrichOptionalTemplateElements(optionalNodesForTemplates);
 	}
 }

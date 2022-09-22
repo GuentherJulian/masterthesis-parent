@@ -94,4 +94,47 @@ public class FreeMarkerPlaceholderResolver extends AbstractPlaceholderResolver {
 	public String transformPlaceholderNotation(String orginialPlaceholder) {
 		return RegExUtils.replaceAll(orginialPlaceholder, "\\$\\{(.+?)\\}", "\\$\\{#$1#\\}");
 	}
+
+	@Override
+	protected String[] removePrefixesAndSuffixes(String placeholderExpression, String substitution) {
+		String[] returnValue = new String[2];
+		returnValue[0] = placeholderExpression;
+		returnValue[1] = substitution;
+
+		Pattern suffixPattern = Pattern.compile("(.+)[ ]*\\+[ ]*'(.+)'");
+		boolean suffixFound = true;
+		do {
+			Matcher suffixMatcher = suffixPattern.matcher(returnValue[0]);
+			suffixFound = suffixMatcher.find();
+			if (suffixFound) {
+				String suffix = suffixMatcher.group(2);
+				String placeholder = suffixMatcher.group(1);
+				if (!returnValue[1].endsWith(suffix)) {
+					return null;
+				}
+
+				returnValue[0] = placeholder;
+				returnValue[1] = returnValue[1].substring(0, returnValue[1].length() - suffix.length());
+			}
+		} while (suffixFound);
+
+		Pattern prefixPattern = Pattern.compile("'(.+)'[ ]*\\+[ ]*(.+)");
+		boolean prefixFound = true;
+		do {
+			Matcher prefixMatcher = prefixPattern.matcher(returnValue[0]);
+			prefixFound = prefixMatcher.find();
+			if (prefixFound) {
+				String prefix = prefixMatcher.group(1);
+				String placeholder = prefixMatcher.group(2);
+				if (!returnValue[1].startsWith(prefix)) {
+					return null;
+				}
+
+				returnValue[0] = placeholder;
+				returnValue[1] = returnValue[1].substring(prefix.length(), returnValue[1].length());
+			}
+		} while (prefixFound);
+
+		return returnValue;
+	}
 }

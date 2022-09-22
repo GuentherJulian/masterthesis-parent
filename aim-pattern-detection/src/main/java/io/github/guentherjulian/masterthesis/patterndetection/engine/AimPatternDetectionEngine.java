@@ -52,8 +52,8 @@ public class AimPatternDetectionEngine {
 	private Class<? extends Parser> parserClass;
 	private Class<? extends Lexer> lexerClass;
 	private Path templateGrammarPath;
-	private MetaLanguageConfiguration metaLanguageConfiguration;
-	private ObjectLanguageConfiguration objectLanguageProperties;
+	private MetaLanguageConfiguration metaLanguageConfi;
+	private ObjectLanguageConfiguration objectLanguageConfig;
 	private PlaceholderResolver placeholderResolver;
 	private TemplatePreprocessor templatePreprocessor;
 
@@ -71,8 +71,8 @@ public class AimPatternDetectionEngine {
 		this.parserClass = parserClass;
 		this.lexerClass = lexerClass;
 		this.templateGrammarPath = templateGrammarPath;
-		this.metaLanguageConfiguration = metaLanguageConfiguration;
-		this.objectLanguageProperties = objectLanguageProperties;
+		this.metaLanguageConfi = metaLanguageConfiguration;
+		this.objectLanguageConfig = objectLanguageProperties;
 		this.placeholderResolver = placeholderResolver;
 		this.templatePreprocessor = templatePreprocessor;
 	}
@@ -113,8 +113,8 @@ public class AimPatternDetectionEngine {
 				// match instantiation path
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
 						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
-						this.metaLanguageConfiguration.getMetaLanguagePattern(), this.placeholderResolver);
-				// instantiationPathMatch.setMatch(true);
+						this.metaLanguageConfi.getMetaLanguagePattern(), this.placeholderResolver);
+				instantiationPathMatch.setMatch(true);
 
 				if (instantiationPathMatch.isMatch()) {
 					LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,
@@ -148,8 +148,7 @@ public class AimPatternDetectionEngine {
 							if (parseTreeTransformer == null) {
 								parseTreeTransformer = new ParseTreeTransformer(parser.getVocabulary(),
 										templateParser.getListPatterns(),
-										this.metaLanguageConfiguration.getMetaLanguageLexerRules(),
-										this.objectLanguageProperties);
+										this.metaLanguageConfi.getMetaLanguageLexerRules(), this.objectLanguageConfig);
 							}
 
 							numParsedCompilationUnits++;
@@ -280,8 +279,8 @@ public class AimPatternDetectionEngine {
 
 			if (parseTreeTransformer == null) {
 				parseTreeTransformer = new ParseTreeTransformer(parser.getVocabulary(),
-						templateParser.getListPatterns(), this.metaLanguageConfiguration.getMetaLanguageLexerRules(),
-						this.objectLanguageProperties);
+						templateParser.getListPatterns(), this.metaLanguageConfi.getMetaLanguageLexerRules(),
+						this.objectLanguageConfig);
 			}
 
 			numParsedCompilationUnits++;
@@ -302,7 +301,7 @@ public class AimPatternDetectionEngine {
 
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
 						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
-						this.metaLanguageConfiguration.getMetaLanguagePattern(), this.placeholderResolver);
+						this.metaLanguageConfi.getMetaLanguagePattern(), this.placeholderResolver);
 				// only try to match if instantiation path matches
 				// TODO remove setMatch(true)
 				instantiationPathMatch.setMatch(true);
@@ -358,7 +357,7 @@ public class AimPatternDetectionEngine {
 		TreeMatch treeMatch = null;
 		for (ParseTree aimPatternParseTree : aimPatternParseTrees) {
 			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree,
-					this.metaLanguageConfiguration, this.placeholderResolver);
+					this.metaLanguageConfi, this.placeholderResolver);
 			treeMatch = parseTreeMatcher.match(placeholderSubstitutions);
 			if (treeMatch.isMatch())
 				break;

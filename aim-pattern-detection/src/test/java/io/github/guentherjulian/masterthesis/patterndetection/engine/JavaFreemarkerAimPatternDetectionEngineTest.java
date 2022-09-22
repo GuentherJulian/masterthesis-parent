@@ -486,7 +486,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		// compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEntity.java"));
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEntity.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestEntity.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
@@ -496,8 +496,9 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
-		assertEquals(treeMatches.size(), 1);
+		assertEquals(treeMatches.size(), 2);
 		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(1).isMatch());
 	}
 
 	@Test
@@ -562,10 +563,12 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		// compilationUnits
-		// .add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestService.java"));
+		compilationUnits
+				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestService.java"));
 		compilationUnits
 				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestmanagementRestService.java"));
+		compilationUnits
+				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AccessCodeRestService.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
@@ -574,8 +577,10 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
-		assertEquals(treeMatches.size(), 1);
+		assertEquals(treeMatches.size(), 3);
 		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(1).isMatch());
+		assertFalse(treeMatches.get(2).isMatch());
 	}
 
 	@Test
@@ -591,8 +596,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
-		// compilationUnits.add(
-		// compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestServiceImpl.java"));
+		compilationUnits.add(
+				compilationUnitsPath.resolve("real_compilation_units").resolve("QueuemanagementRestServiceImpl.java"));
 		compilationUnits.add(
 				compilationUnitsPath.resolve("real_compilation_units").resolve("TestmanagementRestServiceImpl.java"));
 
@@ -603,8 +608,9 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
-		assertEquals(treeMatches.size(), 1);
+		assertEquals(treeMatches.size(), 2);
 		assertTrue(treeMatches.get(0).isMatch());
+		assertTrue(treeMatches.get(1).isMatch());
 	}
 
 	@Test
