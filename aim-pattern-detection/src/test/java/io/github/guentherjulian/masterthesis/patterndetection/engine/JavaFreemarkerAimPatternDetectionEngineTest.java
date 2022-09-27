@@ -56,14 +56,13 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimplePackageDeclTemplate.java"),
 				"SimplePackageDeclTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimplePackageDecl.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -84,14 +83,13 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("ComplexPackageDeclTemplate.java"),
 				"ComplexPackageDeclTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("ComplexPackageDecl.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -121,14 +119,13 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimplePlaceholderTransformationTemplate.java"),
 						"SimplePlaceholderTransformationTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimplePlaceholderTransformation.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -152,15 +149,14 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithCopyConstructorTemplate.java"),
 						"SimpleClassWithCopyConstructorTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithCopyConstructorCorrect.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithCopyConstructorIncorrect.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -181,15 +177,14 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("ImportOrderingTemplate.java"),
 				"ImportOrderingTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("ImportOrdering.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("ImportOrderingInvalid.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -208,15 +203,14 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("ImportOrderingWithPlaceholdersTemplate.java"), "ImportOrderingTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("ImportOrdering.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("ImportOrderingInvalid.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -243,15 +237,14 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithFieldDeclPlaceholderTemplate.java"),
 						"SimpleClassWithFieldDeclPlaceholderTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithFieldDecl1.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithFieldDecl2.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -268,16 +261,15 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseTemplate.java"),
 				"SimpleClassWithIfElseTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf1.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -299,16 +291,15 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseifTemplate.java"),
 				"SimpleClassWithIfElseifTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf1.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -335,16 +326,15 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleClassWithIfElseifElseTemplate.java"),
 						"SimpleClassWithIfElseifElseTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf1.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -369,14 +359,13 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(
 				new AimPatternTemplate(templatesPath.resolve("SimpleListTemplate.java"), "SimpleListTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleList.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -397,14 +386,13 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("ComplexTemplate.java"), "ComplexTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("ComplexFile.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -427,14 +415,13 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("If.java"), "If.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -452,9 +439,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("${variables.entityName}.java.ftl"),
 				"${variables.entityName}.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("Queue.java"));
@@ -462,7 +448,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AccessCode.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -481,16 +467,15 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("${variables.entityName}Entity.java.ftl"),
 				"${variables.entityName}Entity.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEntity.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestEntity.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -508,15 +493,14 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("${variables.entityName}Eto.java.ftl"),
 				"${variables.entityName}Eto.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueEto.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -533,15 +517,14 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("${variables.entityName}Repository.java.ftl"),
 				"${variables.entityName}Repository.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("QueueRepository.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -558,9 +541,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("${variables.component#cap_first}RestService.java.ftl"),
 				"${variables.component#cap_first}RestService.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits
@@ -571,7 +553,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AccessCodeRestService.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -591,9 +573,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				templatesPath.resolve("real_templates")
 						.resolve("${variables.component#cap_first}RestServiceImpl.java.ftl"),
 				"${variables.component#cap_first}RestService.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(
@@ -602,7 +583,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 				compilationUnitsPath.resolve("real_compilation_units").resolve("TestmanagementRestServiceImpl.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -620,9 +601,8 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("${variables.entityName}SearchCriteriaTo.java.ftl"),
 				"${variables.entityName}SearchCriteriaTo.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits
@@ -631,7 +611,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		// .add(compilationUnitsPath.resolve("real_compilation_units").resolve("TestSearchCriteriaTo.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -648,16 +628,15 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("AbstractSearchCriteriaTo.java.ftl"),
 				"AbstractSearchCriteriaTo.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits
 				.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AbstractSearchCriteriaTo.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -674,15 +653,14 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(
 				new AimPatternTemplate(templatesPath.resolve("real_templates").resolve("ApplicationEntity.java.ftl"),
 						"ApplicationEntity.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("ApplicationEntity.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -699,16 +677,15 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("ApplicationPersistencyEntity.java.ftl"),
 				"ApplicationPersistencyEntity.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(
 				compilationUnitsPath.resolve("real_compilation_units").resolve("ApplicationPersistencyEntity.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -725,15 +702,134 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		aimPatternTemplates.add(new AimPatternTemplate(
 				templatesPath.resolve("real_templates").resolve("${variables.entityName}Cto.java.ftl"),
 				"${variables.entityName}Cto.java.ftl"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AccessCodeCto.java"));
 
 		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerAbstractUseCaseTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("Abstract${variables.entityName}Uc.java.ftl"),
+				"Abstract${variables.entityName}Uc.java.ftl"));
+
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("AbstractQueueUc.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerUcFindTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("UcFind${variables.entityName}.java.ftl"),
+				"UcFind${variables.entityName}.java.ftl"));
+
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("UcFindQueue.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerUcFindImplTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("UcFind${variables.entityName}Impl.java.ftl"),
+				"UcFind${variables.entityName}Impl.java.ftl"));
+
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("UcFindQueueImpl.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerUcManageTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("UcManage${variables.entityName}.java.ftl"),
+				"UcManage${variables.entityName}.java.ftl"));
+
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("UcManageQueue.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+		assertEquals(treeMatches.size(), 1);
+		assertTrue(treeMatches.get(0).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerUcManageImplTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates").resolve("UcManage${variables.entityName}Impl.java.ftl"),
+				"UcManage${variables.entityName}Impl.java.ftl"));
+
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+
+		List<Path> compilationUnits = new ArrayList<>();
+		compilationUnits.add(compilationUnitsPath.resolve("real_compilation_units").resolve("UcManageQueueImpl.java"));
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 

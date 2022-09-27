@@ -55,14 +55,13 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimplePlaceholder.c"), "SimplePlaceholder.c"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("CProgramForPlaceholder.c"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -84,14 +83,13 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates
 				.add(new AimPatternTemplate(templatesPath.resolve("SimpleIfCondition.c"), "SimpleIfCondition.c"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("CProgramForIfCondition.c"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 

@@ -2,7 +2,6 @@ package io.github.guentherjulian.masterthesis.patterndetector.detection;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.v4.runtime.Lexer;
@@ -53,10 +52,9 @@ public class Detector {
 			if (templates.size() == 0) {
 				throw new RuntimeException("No templates found in the given path.");
 			}
-			List<AimPattern> aimPatterns = new ArrayList<>();
+
 			AimPattern aimPattern = new AimPattern(templatesPath);
 			aimPattern.setAimPatternTemplates(templates);
-			aimPatterns.add(aimPattern);
 
 			List<Path> compilationUnits = getCompilationUnitPaths();
 			if (compilationUnits.size() == 0) {
@@ -81,12 +79,13 @@ public class Detector {
 					.getTemplatePreprocessor(this.metalanguage);
 			templatePreprocessor.setTemplatesRootPath(this.templatesRootPath);
 
-			AimPatternDetectionEngine patternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+			AimPatternDetectionEngine patternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 					compilationUnits, parserClass, lexerClass, this.templateGrammarPath, metaLanguageConfiguration,
 					objectLanguageProperties, placeholderResolver, templatePreprocessor);
 			detectionResult = patternDetectionEngine.detect();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new Exception(e.getMessage());
 		}
 
@@ -96,10 +95,10 @@ public class Detector {
 	private List<Path> getCompilationUnitPaths() throws IOException {
 		String regex = "";
 		if (this.objectLanguage == ObjectLanguage.JAVA) {
-			regex = ".+\\.java";
+			regex = ".+\\.java$";
 		}
 		if (this.objectLanguage == ObjectLanguage.C) {
-			regex = ".+\\.c";
+			regex = ".+\\.c$";
 		}
 
 		if (!regex.isEmpty()) {

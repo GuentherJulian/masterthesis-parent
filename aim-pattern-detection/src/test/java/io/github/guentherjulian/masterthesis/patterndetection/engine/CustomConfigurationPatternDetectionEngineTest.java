@@ -88,14 +88,13 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(templatesPath.resolve("SimplePackageDeclTemplate.java"),
 				"SimplePackageDeclTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimplePackageDecl.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver,
 				this.templatePreprocessor);

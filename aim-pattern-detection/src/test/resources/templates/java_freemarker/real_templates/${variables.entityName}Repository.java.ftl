@@ -65,7 +65,9 @@ public interface ${variables.entityName}Repository extends <#if compositeIdTypeV
           <#else>
               ${newFieldType} ${field.name} = criteria.${DevonfwUtil.resolveIdGetter(field,false,"")};
               if (${field.name} != null) {
-                query.where($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>${DevonfwUtil.resolveIdGetter(field, true, pojo.package)}</#if>).eq(${field.name}));
+                //query.where($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>${DevonfwUtil.resolveIdGetter(field, true, pojo.package)}</#if>).eq(${field.name}));
+                //query.where($(alias.<#if field.type=='boolean'>is${fieldCapName}<#else>${DevonfwUtil.resolveIdGetter(field, true, pojo.package)}</#if>()).eq(${field.name}));
+                objectInstance.<#if field.type=='boolean'>methodA<#else>methodB</#if>();
               }
               
           </#if> 
@@ -98,9 +100,10 @@ public interface ${variables.entityName}Repository extends <#if compositeIdTypeV
           <#if !JavaUtil.isCollection(classObject, field.name)>
           case "${field.name}":
             if (next.isAscending()) {
-                query.orderBy($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>get${field.name?cap_first}()<#if field.name=="id">.toString()</#if></#if><#if field.type?ends_with("Entity") >.getId().toString()</#if>).asc());
+                //query.orderBy($(alias.is${fieldCapName}()<#if field.type?ends_with("Entity") >.getId().toString()</#if>).asc());
+                //query.orderBy($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>get${field.name?cap_first}()<#if field.name=="id">.toString()</#if></#if><#if field.type?ends_with("Entity") >.getId().toString()</#if>).asc());
             } else {
-                query.orderBy($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>get${field.name?cap_first}()<#if field.name=="id">.toString()</#if></#if><#if field.type?ends_with("Entity")>.getId().toString()</#if>).desc());
+                //query.orderBy($(alias.<#if field.type=='boolean'>is${fieldCapName}()<#else>get${field.name?cap_first}()<#if field.name=="id">.toString()</#if></#if><#if field.type?ends_with("Entity")>.getId().toString()</#if>).desc());
             }   
           break;
           </#if>

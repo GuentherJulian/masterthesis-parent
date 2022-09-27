@@ -55,14 +55,13 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimplePackageDeclTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimplePackageDeclTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimplePackageDecl.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -83,14 +82,13 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("ComplexPackageDeclTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "ComplexPackageDeclTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("ComplexPackageDecl.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -119,15 +117,14 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimpleClassWithCopyConstructorTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithCopyConstructorTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithCopyConstructorCorrect.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithCopyConstructorIncorrect.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -148,16 +145,15 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimpleClassWithIfElseTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleClassWithIfElseTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf1.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf2.java"));
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleClassWithIf3.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 
@@ -179,14 +175,13 @@ public class JavaVelocityAimPatternDetectionEngineTest extends AbstractAimPatter
 		Path template = templatesPath.resolve("SimpleListTemplate.java");
 		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
 		aimPatternTemplates.add(new AimPatternTemplate(template, "SimpleListTemplate.java"));
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = new ArrayList<>();
 		compilationUnits.add(compilationUnitsPath.resolve("SimpleList.java"));
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
 

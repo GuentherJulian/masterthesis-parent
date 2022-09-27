@@ -3,7 +3,6 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.parser.java8velocitytemplate.Java8VelocityTemplateLexer;
@@ -53,13 +52,12 @@ public class CompletePatternDetectionTest extends AbstractAimPatternDetectionEng
 
 		// the actual test
 		List<AimPatternTemplate> aimPatternTemplates = PathUtil.getAimPatternTemplates(templatesPath);
+
 		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
-		List<AimPattern> aimPatterns = new ArrayList<>();
-		aimPatterns.add(aimPattern);
 
 		List<Path> compilationUnits = PathUtil.getAllFiles(applicationCodeProjectPath, ".+\\.java");
 
-		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPatterns,
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, placeholderResolver, templatePreprocessor);
 

@@ -91,7 +91,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 	protected byte[] preprocess(Path templatePath, byte[] templateByteArray)
 			throws PreprocessingException, IOException {
 		byte[] preprocessedByteArray = resolveIncludesAndAssignments(templatePath, templateByteArray);
-		preprocessedByteArray = removeComments(preprocessedByteArray);
+		preprocessedByteArray = removeUnnecessaryLines(preprocessedByteArray);
 		this.macros = findMacros(preprocessedByteArray);
 		preprocessedByteArray = replaceMacros(preprocessedByteArray, this.macros);
 		return preprocessedByteArray;
@@ -157,7 +157,7 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 		return byteArrayOutputStream.toByteArray();
 	}
 
-	private byte[] removeComments(byte[] templateByteArray) throws PreprocessingException, IOException {
+	private byte[] removeUnnecessaryLines(byte[] templateByteArray) throws PreprocessingException, IOException {
 		String[] lines = new String(templateByteArray).split(System.lineSeparator());
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		boolean isComment = false;
@@ -172,8 +172,12 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 				if (line.contains("<#--") && line.contains("-->")) {
 					lineWithoutComment = line.replaceAll("<#\\-\\-.+\\-\\->", "");
 				}
-				byteArrayOutputStream.write(lineWithoutComment.getBytes());
-				byteArrayOutputStream.write(System.lineSeparator().getBytes());
+
+				if (!lineWithoutComment.trim().equals("<#compress>")
+						&& !lineWithoutComment.trim().equals("</#compress>")) {
+					byteArrayOutputStream.write(lineWithoutComment.getBytes());
+					byteArrayOutputStream.write(System.lineSeparator().getBytes());
+				}
 			}
 
 			if (line.startsWith("-->") || line.endsWith("-->")) {

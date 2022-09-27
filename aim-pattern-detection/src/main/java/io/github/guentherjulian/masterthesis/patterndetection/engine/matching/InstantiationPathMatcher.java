@@ -45,14 +45,14 @@ public class InstantiationPathMatcher {
 
 		Matcher m = placeholderPatternWithoutPreAndSuffix.matcher(instantiationPathElements[0]);
 		if (!m.find()) {
-			// find first element matches the path
+			// find last element matches the path
 			String firstInstantiationPathElement = instantiationPathElements[0];
 			if (firstInstantiationPathElement.endsWith(metaLanguagePattern.getMetaLangFileExtension())) {
 				firstInstantiationPathElement = firstInstantiationPathElement.substring(0,
 						firstInstantiationPathElement.lastIndexOf(metaLanguagePattern.getMetaLangFileExtension()) - 1);
 			}
 
-			for (int i = 0; i < compilationUnitPathElements.length; i++) {
+			for (int i = compilationUnitPathElements.length - 1; i >= 0; i--) {
 				boolean isMatch = matchPathElement(firstInstantiationPathElement, compilationUnitPathElements[i],
 						placeholderResolver, instantiationPathMatch.getPlaceholderSubstitutions());
 				if (isMatch) {

@@ -47,7 +47,7 @@ public class AimPatternDetectionEngine {
 
 	private static final Logger LOGGER = LogManager.getLogger(AimPatternDetectionEngine.class);
 
-	private List<AimPattern> aimpattern;
+	private AimPattern aimpattern;
 	private List<Path> compilationUnits;
 	private Class<? extends Parser> parserClass;
 	private Class<? extends Lexer> lexerClass;
@@ -62,7 +62,7 @@ public class AimPatternDetectionEngine {
 
 	private PredictionMode predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION;
 
-	public AimPatternDetectionEngine(List<AimPattern> aimpattern, List<Path> compilationUnits,
+	public AimPatternDetectionEngine(AimPattern aimpattern, List<Path> compilationUnits,
 			Class<? extends Parser> parserClass, Class<? extends Lexer> lexerClass, Path templateGrammarPath,
 			MetaLanguageConfiguration metaLanguageConfiguration, ObjectLanguageConfiguration objectLanguageProperties,
 			PlaceholderResolver placeholderResolver, TemplatePreprocessor templatePreprocessor) {
@@ -83,7 +83,7 @@ public class AimPatternDetectionEngine {
 
 	public AimPatternDetectionResult detect(String startRuleName) throws Exception {
 		AimPatternDetectionResult result = new AimPatternDetectionResult();
-		result.setNumTemplatesTotal(this.aimpattern.get(0).getAimPatternTemplates().size());
+		result.setNumTemplatesTotal(this.aimpattern.getAimPatternTemplates().size());
 		result.setNumCompilationUnitsTotal(this.compilationUnits.size());
 
 		int numParsedTemplates = 0;
@@ -104,17 +104,17 @@ public class AimPatternDetectionEngine {
 		TemplateParser<? extends Parser> templateParser;
 
 		if (this.templatePreprocessor.getTemplatesRootPath() == null) {
-			this.templatePreprocessor.setTemplatesRootPath(this.aimpattern.get(0).getTemplatesRootPath());
+			this.templatePreprocessor.setTemplatesRootPath(this.aimpattern.getTemplatesRootPath());
 		}
 
 		for (Path compilationUnitPath : this.compilationUnits) {
-			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.get(0).getAimPatternTemplates()) {
+			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
 
 				// match instantiation path
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
 						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
 						this.metaLanguageConfi.getMetaLanguagePattern(), this.placeholderResolver);
-				instantiationPathMatch.setMatch(true);
+				// instantiationPathMatch.setMatch(true);
 
 				if (instantiationPathMatch.isMatch()) {
 					LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,
@@ -291,7 +291,7 @@ public class AimPatternDetectionEngine {
 				((endTime - startTime) / 1e6));
 
 		// TODO Implement iteration over all aim pattern
-		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.get(0).getAimPatternTemplates()) {
+		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
 
 			LOGGER.info("Process AIM pattern template {}", aimPatternTemplate.getTemplatePath());
 			// match each template with all compilation units
