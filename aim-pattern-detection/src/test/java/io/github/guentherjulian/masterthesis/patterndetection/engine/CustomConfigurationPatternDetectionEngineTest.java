@@ -98,6 +98,7 @@ public class CustomConfigurationPatternDetectionEngineTest extends AbstractAimPa
 				compilationUnits, Java8FreemarkerTemplateParser.class, Java8FreemarkerTemplateLexer.class, grammarPath,
 				metaLanguageConfiguration, objectLanguageProperties, this.placeholderResolver,
 				this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();

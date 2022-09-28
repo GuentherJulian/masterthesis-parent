@@ -6,15 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -52,15 +54,18 @@ public class AimPatternDetectionEngine {
 	private Class<? extends Parser> parserClass;
 	private Class<? extends Lexer> lexerClass;
 	private Path templateGrammarPath;
-	private MetaLanguageConfiguration metaLanguageConfi;
+	private MetaLanguageConfiguration metaLanguageConfig;
 	private ObjectLanguageConfiguration objectLanguageConfig;
 	private PlaceholderResolver placeholderResolver;
 	private TemplatePreprocessor templatePreprocessor;
 
-	private Map<String, List<String>> listPatterns = null;
+	// private Map<String, List<String>> listPatterns = null;
 	private ParseTreeTransformer parseTreeTransformer = null;
 
 	private PredictionMode predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION;
+
+	private boolean forceMatching = false;
+	private boolean preprocessTemplates = true;
 
 	public AimPatternDetectionEngine(AimPattern aimpattern, List<Path> compilationUnits,
 			Class<? extends Parser> parserClass, Class<? extends Lexer> lexerClass, Path templateGrammarPath,
@@ -71,7 +76,7 @@ public class AimPatternDetectionEngine {
 		this.parserClass = parserClass;
 		this.lexerClass = lexerClass;
 		this.templateGrammarPath = templateGrammarPath;
-		this.metaLanguageConfi = metaLanguageConfiguration;
+		this.metaLanguageConfig = metaLanguageConfiguration;
 		this.objectLanguageConfig = objectLanguageProperties;
 		this.placeholderResolver = placeholderResolver;
 		this.templatePreprocessor = templatePreprocessor;
@@ -93,6 +98,217 @@ public class AimPatternDetectionEngine {
 		int numFileMatches = 0;
 		int numSuccessfulParsedTemplates = 0;
 		int numUnsuccessfulParsedTemplates = 0;
+
+		int overallComparisions = 0;
+
+		long processingTimeStart = System.nanoTime();
+
+		Map<Path, ParseTree> compilationUnitParseTrees = new HashMap<>();
+		Map<Path, List<ParseTree>> templateParseTrees = new HashMap<>();
+		List<Path> unparseableTemplates = new ArrayList<>();
+
+		InputStream grammarInputStream = Files.newInputStream(templateGrammarPath);
+		TemplateParser<? extends Parser> templateParser;
+
+		if (this.templatePreprocessor.getTemplatesRootPath() == null) {
+			this.templatePreprocessor.setTemplatesRootPath(this.aimpattern.getTemplatesRootPath());
+		}
+
+		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
+
+			Map<String, Set<String>> placeholderSubstitutionsTemplate = new HashMap<>();
+			boolean isTemplateUnparseable = false;
+
+			// try to parse template
+			LOGGER.info("Parse template: {}", aimPatternTemplate.getTemplatePath());
+			numParsedTemplates++;
+
+			byte[] preprocessedTemplate = null;
+			if (this.preprocessTemplates) {
+				preprocessedTemplate = TemplatePreprocessorUtil.applyPreprocessing(this.templatePreprocessor,
+						aimPatternTemplate.getTemplatePath());
+			} else {
+				preprocessedTemplate = TemplatePreprocessorUtil.applyPreprocessing(null,
+						aimPatternTemplate.getTemplatePath());
+			}
+
+			Parser parser = createParser(preprocessedTemplate);
+			if (this.templatePreprocessor.getVariables() != null) {
+				for (Entry<String, Set<String>> variable : this.templatePreprocessor.getVariables().entrySet()) {
+					placeholderSubstitutionsTemplate.put(variable.getKey(), variable.getValue());
+				}
+			}
+
+			templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
+					grammarInputStream);
+
+			if (parseTreeTransformer == null) {
+				parseTreeTransformer = new ParseTreeTransformer(parser.getVocabulary(),
+						templateParser.getListPatterns(), this.metaLanguageConfig.getMetaLanguageLexerRules(),
+						this.objectLanguageConfig);
+			}
+
+			// parse template
+			List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
+			List<ParseTree> transformedTemplateParseTrees = new ArrayList<>();
+			for (ParserRuleContext parseTree : parseTrees) {
+				// templateParser.showTree(parseTree);
+				int nodes = ParseTreeUtil.countTreeNodes(parseTree);
+				int terminalNodes = ParseTreeUtil.countTerminalNodes(parseTree);
+
+				try {
+					transformedTemplateParseTrees.add(parseTreeTransformer.transform(parseTree));
+
+					templateParseTrees.put(aimPatternTemplate.getTemplatePath(), transformedTemplateParseTrees);
+				} catch (IllegalStateException e) {
+					unparseableTemplates.add(aimPatternTemplate.getTemplatePath());
+					isTemplateUnparseable = true;
+				}
+			}
+
+			if (isTemplateUnparseable) {
+				numUnsuccessfulParsedTemplates++;
+
+				AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(null,
+						aimPatternTemplate.getTemplatePath(), null);
+				aimPatternDetectionResultEntry.setTemplateUnparseable(true);
+				result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
+			} else {
+				numSuccessfulParsedTemplates++;
+
+				String instantiationPath = aimPatternTemplate.getInstantiationPath();
+
+				// filter possible compilation unit paths
+				List<String> pathWithoutPrefix = new LinkedList<>();
+				List<String> longestPathWithoutPrefix = new LinkedList<>();
+
+				if (this.placeholderResolver != null) {
+					String[] templatePathSegments = instantiationPath
+							.split(FileSystems.getDefault().getSeparator().replace("\\", "\\\\"));
+					String metaLangFileExtension = this.metaLanguageConfig.getMetaLanguagePattern()
+							.getMetaLangFileExtension();
+					for (int i = 0; i < templatePathSegments.length; i++) {
+						boolean isPlaceholder = this.placeholderResolver.isPlaceholder(templatePathSegments[i]);
+
+						if (!isPlaceholder) {
+							if (templatePathSegments[i].endsWith(metaLangFileExtension)) {
+								templatePathSegments[i] = templatePathSegments[i].substring(0,
+										templatePathSegments[i].lastIndexOf(metaLangFileExtension) - 1);
+							}
+							pathWithoutPrefix.add(templatePathSegments[i]);
+
+							if (pathWithoutPrefix.size() > longestPathWithoutPrefix.size()) {
+								longestPathWithoutPrefix = new LinkedList<>(pathWithoutPrefix);
+							}
+						} else {
+							pathWithoutPrefix = new LinkedList<>();
+						}
+					}
+				}
+
+				List<Path> possibleCompilationUnits = null;
+				if (longestPathWithoutPrefix.isEmpty() || forceMatching) {
+					possibleCompilationUnits = this.compilationUnits;
+				} else {
+					String longestPath = String.join(FileSystems.getDefault().getSeparator(), longestPathWithoutPrefix);
+					possibleCompilationUnits = this.compilationUnits.stream()
+							.filter(compilationUnitPath -> compilationUnitPath.toString().contains(longestPath))
+							.collect(Collectors.toList());
+				}
+
+				if (possibleCompilationUnits.isEmpty()) {
+					AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
+							null, aimPatternTemplate.getTemplatePath(), null);
+					aimPatternDetectionResultEntry.setNoCompilationUnitMatchedPath(true);
+					result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
+				} else {
+					for (Path compilationUnitPath : possibleCompilationUnits) {
+						overallComparisions++;
+
+						// match instantiation path
+						InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
+								compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
+								this.metaLanguageConfig.getMetaLanguagePattern(), this.placeholderResolver);
+						if (this.forceMatching) {
+							instantiationPathMatch.setMatch(true);
+						}
+
+						if (instantiationPathMatch.isMatch()) {
+							LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,
+									aimPatternTemplate.getTemplatePath());
+							numInstantiationPathMatches++;
+
+							Map<String, Set<String>> placeholderSubstitutions = instantiationPathMatch
+									.getPlaceholderSubstitutions();
+							placeholderSubstitutions.putAll(placeholderSubstitutionsTemplate);
+
+							// parse compilation unit
+							if (!compilationUnitParseTrees.containsKey(compilationUnitPath)) {
+								LOGGER.info("Parse compilation unit: {}", compilationUnitPath);
+								Parser compilationUnitParser = createParser(compilationUnitPath);
+								templateParser = new TemplateParser<>(compilationUnitParser,
+										compilationUnitParser.getClass().getMethod(startRuleName), grammarInputStream);
+
+								List<ParserRuleContext> compUnitParseTrees = templateParser
+										.parseAmbiguties(this.predictionMode);
+								ParserRuleContext parseTree = compUnitParseTrees.get(0);
+								// templateParser.showTree(parseTree);
+
+								numParsedCompilationUnits++;
+								compilationUnitParseTrees.put(compilationUnitPath,
+										parseTreeTransformer.transform(parseTree));
+							}
+
+							// match path trees
+							LOGGER.info("Match parse trees of {} and {}...",
+									aimPatternTemplate.getTemplatePath().getFileName(),
+									compilationUnitPath.getFileName());
+
+							TreeMatch treeMatch = this.match(compilationUnitParseTrees.get(compilationUnitPath),
+									templateParseTrees.get(aimPatternTemplate.getTemplatePath()),
+									placeholderSubstitutions);
+							numComparedFiles++;
+
+							if (treeMatch.isMatch()) {
+								numFileMatches++;
+							}
+
+							AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
+									compilationUnitPath, aimPatternTemplate.getTemplatePath(), treeMatch);
+							result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
+						}
+					}
+				}
+			}
+		}
+
+		long processingTimeEnd = System.nanoTime();
+		result.setProcessingTime(processingTimeEnd - processingTimeStart);
+		result.setNumParsedTemplates(numParsedTemplates);
+		result.setNumParsedCompilationUnits(numParsedCompilationUnits);
+		result.setNumComparedFiles(numComparedFiles);
+		result.setNumInstantiationPathMatches(numInstantiationPathMatches);
+		result.setNumFileMatches(numFileMatches);
+		result.setNumParseableTemplates(numSuccessfulParsedTemplates);
+		result.setNumUnparseableTemplates(numUnsuccessfulParsedTemplates);
+		return result;
+	}
+
+	public AimPatternDetectionResult detect2(String startRuleName) throws Exception {
+		AimPatternDetectionResult result = new AimPatternDetectionResult();
+		result.setNumTemplatesTotal(this.aimpattern.getAimPatternTemplates().size());
+		result.setNumCompilationUnitsTotal(this.compilationUnits.size());
+
+		int numParsedTemplates = 0;
+		int numParsedCompilationUnits = 0;
+		int numComparedFiles = 0;
+		int numInstantiationPathMatches = 0;
+		int numFileMatches = 0;
+		int numSuccessfulParsedTemplates = 0;
+		int numUnsuccessfulParsedTemplates = 0;
+
+		int overallComparisions = 0;
+
 		long processingTimeStart = System.nanoTime();
 
 		Map<Path, ParseTree> compilationUnitParseTrees = new HashMap<>();
@@ -110,10 +326,12 @@ public class AimPatternDetectionEngine {
 		for (Path compilationUnitPath : this.compilationUnits) {
 			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
 
+				overallComparisions++;
+
 				// match instantiation path
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
 						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
-						this.metaLanguageConfi.getMetaLanguagePattern(), this.placeholderResolver);
+						this.metaLanguageConfig.getMetaLanguagePattern(), this.placeholderResolver);
 				// instantiationPathMatch.setMatch(true);
 
 				if (instantiationPathMatch.isMatch()) {
@@ -141,14 +359,14 @@ public class AimPatternDetectionEngine {
 							ParserRuleContext parseTree = parseTrees.get(0);
 							// templateParser.showTree(parseTree);
 
-							if (listPatterns == null) {
-								listPatterns = templateParser.getListPatterns();
-							}
+							// if (listPatterns == null) {
+							// listPatterns = templateParser.getListPatterns();
+							// }
 
 							if (parseTreeTransformer == null) {
 								parseTreeTransformer = new ParseTreeTransformer(parser.getVocabulary(),
 										templateParser.getListPatterns(),
-										this.metaLanguageConfi.getMetaLanguageLexerRules(), this.objectLanguageConfig);
+										this.metaLanguageConfig.getMetaLanguageLexerRules(), this.objectLanguageConfig);
 							}
 
 							numParsedCompilationUnits++;
@@ -244,120 +462,13 @@ public class AimPatternDetectionEngine {
 		return result;
 	}
 
-	public AimPatternDetectionResult detectOld(String startRuleName) throws Exception {
-		AimPatternDetectionResult result = new AimPatternDetectionResult();
-		int numParsedTemplates = 0;
-		int numParsedCompilationUnits = 0;
-		int numComparedFiles = 0;
-		long processingTimeStart = System.nanoTime();
-
-		// Each path only has one parse tree
-		Map<Path, ParseTree> compilationUnitParseTrees = new LinkedHashMap<Path, ParseTree>();
-
-		Map<String, List<String>> listPatterns = null;
-		ParseTreeTransformer parseTreeTransformer = null;
-
-		InputStream grammarInputStream = Files.newInputStream(templateGrammarPath);
-
-		TemplateParser<? extends Parser> templateParser;
-
-		LOGGER.info("Parsing compilation units...");
-		long startTime = System.nanoTime();
-		for (Path compilationUnit : this.compilationUnits) {
-
-			Parser parser = createParser(compilationUnit);
-			templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
-					grammarInputStream);
-
-			List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
-			ParserRuleContext parseTree = parseTrees.get(0);
-			// templateParser.showTree(parseTree);
-
-			if (listPatterns == null) {
-				listPatterns = templateParser.getListPatterns();
-			}
-
-			if (parseTreeTransformer == null) {
-				parseTreeTransformer = new ParseTreeTransformer(parser.getVocabulary(),
-						templateParser.getListPatterns(), this.metaLanguageConfi.getMetaLanguageLexerRules(),
-						this.objectLanguageConfig);
-			}
-
-			numParsedCompilationUnits++;
-			compilationUnitParseTrees.put(compilationUnit, parseTreeTransformer.transform(parseTree));
-		}
-		long endTime = System.nanoTime();
-		LOGGER.info("Finished parsing compilation units (took {} ns, {} ms)", (endTime - startTime),
-				((endTime - startTime) / 1e6));
-
-		// TODO Implement iteration over all aim pattern
-		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
-
-			LOGGER.info("Process AIM pattern template {}", aimPatternTemplate.getTemplatePath());
-			// match each template with all compilation units
-			for (Entry<Path, ParseTree> entry : compilationUnitParseTrees.entrySet()) {
-				Path compilationUnitPath = entry.getKey();
-				ParseTree compilationUnitParseTree = entry.getValue();
-
-				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
-						compilationUnitPath.toString(), aimPatternTemplate.getInstantiationPath(),
-						this.metaLanguageConfi.getMetaLanguagePattern(), this.placeholderResolver);
-				// only try to match if instantiation path matches
-				// TODO remove setMatch(true)
-				instantiationPathMatch.setMatch(true);
-				if (instantiationPathMatch.isMatch()) {
-					LOGGER.info("Instantiation path matches with {}", compilationUnitPath);
-					// TODO matching of instantiation path
-					Map<String, Set<String>> placeholderSubstitutions = instantiationPathMatch
-							.getPlaceholderSubstitutions();
-
-					LOGGER.info("Parse template...");
-					startTime = System.nanoTime();
-
-					// TODO only parse template once, not for every compilation unit
-					Parser parser = createParser(TemplatePreprocessorUtil.applyPreprocessing(this.templatePreprocessor,
-							aimPatternTemplate.getTemplatePath()));
-					templateParser = new TemplateParser<>(parser, parser.getClass().getMethod(startRuleName),
-							grammarInputStream);
-
-					List<ParserRuleContext> parseTrees = templateParser.parseAmbiguties(this.predictionMode);
-					List<ParseTree> transformedParseTrees = new ArrayList<>();
-					for (ParserRuleContext parseTree : parseTrees) {
-						// templateParser.showTree(parseTree);
-						transformedParseTrees.add(parseTreeTransformer.transform(parseTree));
-					}
-					numParsedTemplates++;
-					endTime = System.nanoTime();
-					LOGGER.info("Finished parsing template (took {} ns, {} ms)", (endTime - startTime),
-							((endTime - startTime) / 1e6));
-
-					LOGGER.info("Match parse trees of {} and {}...", aimPatternTemplate.getTemplatePath().getFileName(),
-							compilationUnitPath.getFileName());
-					TreeMatch treeMatch = this.match(compilationUnitParseTree, transformedParseTrees,
-							placeholderSubstitutions);
-					numComparedFiles++;
-
-					AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
-							compilationUnitPath, aimPatternTemplate.getTemplatePath(), treeMatch);
-					result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
-				}
-			}
-		}
-		long processingTimeEnd = System.nanoTime();
-		result.setProcessingTime(processingTimeEnd - processingTimeStart);
-		result.setNumParsedTemplates(numParsedTemplates);
-		result.setNumParsedCompilationUnits(numParsedCompilationUnits);
-		result.setNumComparedFiles(numComparedFiles);
-		return result;
-	}
-
 	private TreeMatch match(ParseTree compilationUnitParseTree, List<ParseTree> aimPatternParseTrees,
 			Map<String, Set<String>> placeholderSubstitutions) {
 
 		TreeMatch treeMatch = null;
 		for (ParseTree aimPatternParseTree : aimPatternParseTrees) {
 			ParseTreeMatcher parseTreeMatcher = new ParseTreeMatcher(compilationUnitParseTree, aimPatternParseTree,
-					this.metaLanguageConfi, this.placeholderResolver);
+					this.metaLanguageConfig, this.placeholderResolver);
 			treeMatch = parseTreeMatcher.match(placeholderSubstitutions);
 			if (treeMatch.isMatch())
 				break;
@@ -405,5 +516,13 @@ public class AimPatternDetectionEngine {
 		Parser parser = parserConstructor.newInstance(tokenStream);
 
 		return parser;
+	}
+
+	public void setForceMatching(boolean forceMatching) {
+		this.forceMatching = forceMatching;
+	}
+
+	public void setPreprocessTemplates(boolean preprocessTemplates) {
+		this.preprocessTemplates = preprocessTemplates;
 	}
 }

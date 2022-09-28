@@ -12,4 +12,6 @@ public interface PlaceholderResolver {
 	String getTransformationFunctionJavaClassName(String transformationFunction);
 
 	String transformPlaceholderNotation(String orginialPlaceholder);
+
+	boolean isPlaceholder(String input);
 }

@@ -31,6 +31,9 @@ public class Detector {
 	private String metaLanguagePrefix;
 	private String metaLanguageFileExtension;
 
+	private boolean instantiationPathMatching = true;
+	private boolean preprocessTemplates = true;
+
 	public Detector(Path templatesPath, Path templatesRootPath, Path compilationUnitPath, Path templateGrammarPath,
 			String objectLanguageString, String metalanguageString, String metaLanguagePrefix,
 			String metaLanguageFileExtension) {
@@ -82,6 +85,14 @@ public class Detector {
 			AimPatternDetectionEngine patternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 					compilationUnits, parserClass, lexerClass, this.templateGrammarPath, metaLanguageConfiguration,
 					objectLanguageProperties, placeholderResolver, templatePreprocessor);
+
+			if (!this.instantiationPathMatching) {
+				patternDetectionEngine.setForceMatching(true);
+			}
+			if (!this.preprocessTemplates) {
+				patternDetectionEngine.setPreprocessTemplates(false);
+			}
+
 			detectionResult = patternDetectionEngine.detect();
 
 		} catch (Exception e) {
@@ -105,5 +116,13 @@ public class Detector {
 			return PathUtil.getAllFiles(this.compilationUnitPath, regex);
 		}
 		return PathUtil.getAllFiles(this.compilationUnitPath);
+	}
+
+	public void setInstantiationPathMatching(boolean instantiationPathMatching) {
+		this.instantiationPathMatching = instantiationPathMatching;
+	}
+
+	public void setTemplatePreprocessing(boolean preprocessTemplates) {
+		this.preprocessTemplates = preprocessTemplates;
 	}
 }

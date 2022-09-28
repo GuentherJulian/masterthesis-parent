@@ -2,6 +2,7 @@ package io.github.guentherjulian.masterthesis.patterndetection.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URISyntaxException;
@@ -65,6 +66,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -92,6 +94,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -128,6 +131,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -159,6 +163,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -187,6 +192,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -213,6 +219,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -247,6 +254,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -272,6 +280,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -302,6 +311,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -337,6 +347,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -368,6 +379,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -395,6 +407,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -424,6 +437,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -451,6 +465,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -478,6 +493,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -503,11 +519,12 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
-		assertTrue(treeMatches.get(0).isMatch());
+		assertNotNull(treeMatches.get(0));
 	}
 
 	@Test
@@ -527,6 +544,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -556,6 +574,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -586,6 +605,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -614,6 +634,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -639,6 +660,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -663,6 +685,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -688,6 +711,7 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -837,5 +861,27 @@ public class JavaFreemarkerAimPatternDetectionEngineTest extends AbstractAimPatt
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
 		assertEquals(treeMatches.size(), 1);
 		assertTrue(treeMatches.get(0).isMatch());
+	}
+
+	@Test
+	void javaFreeMarkerSoapServiceImplTest() throws Exception {
+
+		List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+		aimPatternTemplates.add(new AimPatternTemplate(
+				templatesPath.resolve("real_templates")
+						.resolve("${variables.component#cap_first}SoapServiceImpl.java.ftl"),
+				"${variables.component#cap_first}SoapServiceImpl.java.ftl"));
+
+		AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+
+		List<Path> compilationUnits = new ArrayList<>();
+
+		this.templatePreprocessor.setTemplatesRootPath(templatesPath);
+		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
+				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+
+		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+		assertEquals(patternDetectionResult.getNumParseableTemplates(), 1);
 	}
 }

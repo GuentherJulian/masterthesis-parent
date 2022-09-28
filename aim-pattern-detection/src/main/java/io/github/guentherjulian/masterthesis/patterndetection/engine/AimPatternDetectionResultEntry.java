@@ -11,6 +11,7 @@ public class AimPatternDetectionResultEntry {
 	private Path templatePath;
 	private TreeMatch treeMatchResult;
 	private boolean isTemplateUnparseable;
+	private boolean noCompilationUnitMatchedPath;
 
 	public AimPatternDetectionResultEntry(Path compilationUnitPath, Path templatePath, TreeMatch treeMatchResult) {
 		this.compilationUnitPath = compilationUnitPath;
@@ -55,6 +56,17 @@ public class AimPatternDetectionResultEntry {
 
 	@Override
 	public String toString() {
+		if (this.compilationUnitPath == null) {
+			return this.templatePath.getFileName().toString();
+		}
 		return this.templatePath.getFileName().toString() + " - " + this.compilationUnitPath.getFileName().toString();
+	}
+
+	public boolean isNoCompilationUnitMatchedPath() {
+		return noCompilationUnitMatchedPath;
+	}
+
+	public void setNoCompilationUnitMatchedPath(boolean noCompilationUnitMatchedPath) {
+		this.noCompilationUnitMatchedPath = noCompilationUnitMatchedPath;
 	}
 }

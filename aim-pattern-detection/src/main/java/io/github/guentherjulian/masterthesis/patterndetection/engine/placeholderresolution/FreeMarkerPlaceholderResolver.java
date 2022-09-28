@@ -137,4 +137,14 @@ public class FreeMarkerPlaceholderResolver extends AbstractPlaceholderResolver {
 
 		return returnValue;
 	}
+
+	@Override
+	public boolean isPlaceholder(String input) {
+		String regex = ".*\\$\\{.+\\}.*";
+		Pattern pattern = Pattern.compile(regex);
+		if (pattern.matcher(input).find()) {
+			return true;
+		}
+		return false;
+	}
 }

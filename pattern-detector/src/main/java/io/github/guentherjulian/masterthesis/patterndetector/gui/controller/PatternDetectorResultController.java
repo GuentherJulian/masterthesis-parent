@@ -114,6 +114,9 @@ public class PatternDetectorResultController implements Initializable {
 						if (newValue.isTemplateUnparseable()) {
 							this.textAreaMatch.appendText("Template is not parseable!\n");
 						}
+						if (newValue.isNoCompilationUnitMatchedPath()) {
+							this.textAreaMatch.appendText("No compilation unit matched the corresponding path!\n");
+						}
 					}
 
 					if (newValue.getTreeMatchResult() != null) {

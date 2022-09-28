@@ -64,6 +64,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
@@ -92,6 +93,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
 		AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
 				compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
 				objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+		aimPatternDetectionEngine.setForceMatching(true);
 
 		AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
 		List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();

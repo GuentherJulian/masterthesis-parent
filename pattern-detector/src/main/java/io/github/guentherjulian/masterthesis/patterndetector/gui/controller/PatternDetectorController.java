@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -75,6 +76,12 @@ public class PatternDetectorController implements Initializable {
 	TextField textfieldMetalanguageFileExtension;
 
 	@FXML
+	CheckBox checkBoxPathMatching;
+
+	@FXML
+	CheckBox checkBoxTemplatePreprocessing;
+
+	@FXML
 	Button btnCancel;
 
 	@FXML
@@ -112,9 +119,9 @@ public class PatternDetectorController implements Initializable {
 		btnDetect.setOnMouseClicked(event -> detect(event));
 
 		this.textfieldTemplatePath.setText(
-				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app-complex\\src\\main\\resources\\templates");
+				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app\\src\\main\\resources\\templates");
 		this.textfieldTemplatesRootPath.setText(
-				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app-complex\\src\\main\\resources");
+				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app\\src\\main\\resources");
 		this.textfieldCompilationUnitPath.setText("C:\\devonfw\\workspaces\\main\\devonfw\\jump-the-queue\\java\\jtqj");
 		this.textfieldTemplateGrammarPath.setText(
 				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\grammars\\java8FreemarkerTemplate\\Java8FreemarkerTemplate.g4");
@@ -150,8 +157,16 @@ public class PatternDetectorController implements Initializable {
 			String metaLanguage = this.comboBoxMetaLang.getValue();
 			String metaLanguagePrefix = this.textfieldMetalanguagePrefix.getText();
 			String metaLanguageFileExtension = this.textfieldMetalanguageFileExtension.getText();
+
 			Detector detector = new Detector(templatesPath, templatesRootPath, compilationUnitPath, templateGrammarPath,
 					objectLanguage, metaLanguage, metaLanguagePrefix, metaLanguageFileExtension);
+
+			if (!this.checkBoxPathMatching.isSelected()) {
+				detector.setInstantiationPathMatching(false);
+			}
+			if (!this.checkBoxTemplatePreprocessing.isSelected()) {
+				detector.setTemplatePreprocessing(false);
+			}
 
 			AimPatternDetectionResult result = null;
 			try {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -19,12 +20,12 @@ import io.github.guentherjulian.masterthesis.patterndetection.exception.Preproce
 
 public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor {
 
-	// private final String regexPlaceholder = ".*(\\$\\{([^#].+?)\\}).*";
+	private final String regexPlaceholder = "\\$\\{#(.+?)#\\}";
 	private final String regexPrefix = ".*?((\\w+)\\$\\{#(.+)#\\}).*";
 	private final String regexSuffix = ".*((\\$\\{#(.+)#\\})(\\w+)).*";
 	private final String regexStringWithPlaceholder = ".*((\\\".*)\\$\\{#(.+?)#\\}(.*\\\")).*";
 
-	// private final Pattern placeholderPattern = Pattern.compile(regexPlaceholder);
+	private final Pattern placeholderPattern = Pattern.compile(regexPlaceholder);
 	private final Pattern prefixPattern = Pattern.compile(regexPrefix);
 	private final Pattern suffixPattern = Pattern.compile(regexSuffix);
 	private final Pattern stringWithPlaceholderPattern = Pattern.compile(regexStringWithPlaceholder);
@@ -74,13 +75,42 @@ public class FreeMarkerTemplatePreprocessor extends AbstractTemplatePreprocessor
 
 			if (stringWithPlaceholderFound) {
 				String stringWithPlaceholder = matcher.group(1);
-				String prefix = matcher.group(2) != null ? matcher.group(2) : "";
-				String innerPlaceholder = matcher.group(3);
-				String suffix = matcher.group(4) != null ? matcher.group(4) : "";
 
-				String replacedValue = "${#" + (!prefix.isEmpty() ? "'" + prefix + "' + " : "") + innerPlaceholder
-						+ (!suffix.isEmpty() ? " + '" + suffix + "'" : "") + "#}";
-				returnValue = returnValue.replace(stringWithPlaceholder, replacedValue);
+				Matcher matcherPlaceholder = this.placeholderPattern.matcher(stringWithPlaceholder);
+				List<String> placeholderList = new LinkedList<>();
+				while (matcherPlaceholder.find()) {
+					placeholderList.add(matcherPlaceholder.group(1));
+				}
+
+				if (placeholderList.size() > 1) {
+					String[] stringElementsWithoutPlaceholder = stringWithPlaceholder
+							.substring(1, stringWithPlaceholder.length() - 1).split(this.regexPlaceholder);
+					String replaceValue = "";
+					for (int i = 0; i < stringElementsWithoutPlaceholder.length; i++) {
+						if (!stringElementsWithoutPlaceholder[i].isEmpty()) {
+							if (replaceValue.isEmpty()) {
+								replaceValue = "'" + stringElementsWithoutPlaceholder[i] + "' + "
+										+ placeholderList.get(i);
+							} else {
+								replaceValue = replaceValue + " + '" + stringElementsWithoutPlaceholder[i] + "' + "
+										+ placeholderList.get(i);
+							}
+						} else {
+							replaceValue = replaceValue + placeholderList.get(i);
+						}
+					}
+
+					replaceValue = "${#" + replaceValue + "#}";
+					returnValue = returnValue.replace(stringWithPlaceholder, replaceValue);
+				} else {
+					String prefix = matcher.group(2) != null ? matcher.group(2) : "";
+					String innerPlaceholder = matcher.group(3);
+					String suffix = matcher.group(4) != null ? matcher.group(4) : "";
+
+					String replacedValue = "${#" + (!prefix.isEmpty() ? "'" + prefix + "' + " : "") + innerPlaceholder
+							+ (!suffix.isEmpty() ? " + '" + suffix + "'" : "") + "#}";
+					returnValue = returnValue.replace(stringWithPlaceholder, replacedValue);
+				}
 			}
 		} while (stringWithPlaceholderFound);
 
