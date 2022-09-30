@@ -82,6 +82,9 @@ public class PatternDetectorController implements Initializable {
 	CheckBox checkBoxTemplatePreprocessing;
 
 	@FXML
+	CheckBox checkBoxPrefiltering;
+
+	@FXML
 	Button btnCancel;
 
 	@FXML
@@ -119,9 +122,9 @@ public class PatternDetectorController implements Initializable {
 		btnDetect.setOnMouseClicked(event -> detect(event));
 
 		this.textfieldTemplatePath.setText(
-				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app\\src\\main\\resources\\templates");
+				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app-complex\\src\\main\\resources\\templates");
 		this.textfieldTemplatesRootPath.setText(
-				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app\\src\\main\\resources");
+				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app-complex\\src\\main\\resources");
 		this.textfieldCompilationUnitPath.setText("C:\\devonfw\\workspaces\\main\\devonfw\\jump-the-queue\\java\\jtqj");
 		this.textfieldTemplateGrammarPath.setText(
 				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\grammars\\java8FreemarkerTemplate\\Java8FreemarkerTemplate.g4");
@@ -166,6 +169,9 @@ public class PatternDetectorController implements Initializable {
 			}
 			if (!this.checkBoxTemplatePreprocessing.isSelected()) {
 				detector.setTemplatePreprocessing(false);
+			}
+			if (!this.checkBoxPrefiltering.isSelected()) {
+				detector.setPrefiltering(false);
 			}
 
 			AimPatternDetectionResult result = null;

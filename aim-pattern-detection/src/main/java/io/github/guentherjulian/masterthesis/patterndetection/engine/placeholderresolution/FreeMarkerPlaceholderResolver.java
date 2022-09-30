@@ -147,4 +147,28 @@ public class FreeMarkerPlaceholderResolver extends AbstractPlaceholderResolver {
 		}
 		return false;
 	}
+
+	@Override
+	public String[] getPlaceholder(String input) {
+		String regex = ".*\\$\\{(.+)\\}.*";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(input);
+
+		String[] returnValue = new String[2];
+		if (matcher.find()) {
+			String placeholder = matcher.group(1);
+			returnValue[0] = placeholder;
+			returnValue[1] = placeholder;
+			if (placeholder.contains("#")) {
+				returnValue[1] = placeholder.split("#")[0];
+			}
+			return returnValue;
+		}
+		return null;
+	}
+
+	@Override
+	public String replacePlaceholder(String input, String placeholder, String value) {
+		return input.replace("${" + placeholder + "}", value);
+	}
 }

@@ -33,6 +33,7 @@ public class Detector {
 
 	private boolean instantiationPathMatching = true;
 	private boolean preprocessTemplates = true;
+	private boolean prefiltering = true;
 
 	public Detector(Path templatesPath, Path templatesRootPath, Path compilationUnitPath, Path templateGrammarPath,
 			String objectLanguageString, String metalanguageString, String metaLanguagePrefix,
@@ -92,6 +93,9 @@ public class Detector {
 			if (!this.preprocessTemplates) {
 				patternDetectionEngine.setPreprocessTemplates(false);
 			}
+			if (!this.prefiltering) {
+				patternDetectionEngine.setPrefiltering(false);
+			}
 
 			detectionResult = patternDetectionEngine.detect();
 
@@ -124,5 +128,9 @@ public class Detector {
 
 	public void setTemplatePreprocessing(boolean preprocessTemplates) {
 		this.preprocessTemplates = preprocessTemplates;
+	}
+
+	public void setPrefiltering(boolean prefiltering) {
+		this.prefiltering = prefiltering;
 	}
 }

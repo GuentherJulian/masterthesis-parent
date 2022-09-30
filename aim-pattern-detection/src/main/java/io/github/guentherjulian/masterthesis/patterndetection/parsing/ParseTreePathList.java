@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class ParseTreePathList extends ArrayList<ParseTreeElement> implements ParseTreeElement {
 
+	private static final long serialVersionUID = 1L;
+
 	public ListType type;
 	public String hint;
 	public Boolean isMetaLang;

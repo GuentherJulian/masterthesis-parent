@@ -11,11 +11,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CharStream;
@@ -41,7 +43,6 @@ import io.github.guentherjulian.masterthesis.patterndetection.engine.matching.Tr
 import io.github.guentherjulian.masterthesis.patterndetection.engine.placeholderresolution.PlaceholderResolver;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessor;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.preprocessing.TemplatePreprocessorUtil;
-import io.github.guentherjulian.masterthesis.patterndetection.engine.utils.ParseTreeUtil;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTree;
 import io.github.guentherjulian.masterthesis.patterndetection.parsing.ParseTreeTransformer;
 
@@ -66,6 +67,7 @@ public class AimPatternDetectionEngine {
 
 	private boolean forceMatching = false;
 	private boolean preprocessTemplates = true;
+	private boolean prefiltering = true;
 
 	public AimPatternDetectionEngine(AimPattern aimpattern, List<Path> compilationUnits,
 			Class<? extends Parser> parserClass, Class<? extends Lexer> lexerClass, Path templateGrammarPath,
@@ -99,10 +101,11 @@ public class AimPatternDetectionEngine {
 		int numSuccessfulParsedTemplates = 0;
 		int numUnsuccessfulParsedTemplates = 0;
 
-		int overallComparisions = 0;
+		int numOverallComparisions = 0;
 
 		long processingTimeStart = System.nanoTime();
 
+		Map<String, Set<String>> overallPlaceholderSubstitutions = new HashMap<>();
 		Map<Path, ParseTree> compilationUnitParseTrees = new HashMap<>();
 		Map<Path, List<ParseTree>> templateParseTrees = new HashMap<>();
 		List<Path> unparseableTemplates = new ArrayList<>();
@@ -114,9 +117,13 @@ public class AimPatternDetectionEngine {
 			this.templatePreprocessor.setTemplatesRootPath(this.aimpattern.getTemplatesRootPath());
 		}
 
+		// Map<String, Set<String>> placeholderSubstitutionsInstantiationPath = new
+		// HashMap<>();
+
 		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
 
-			Map<String, Set<String>> placeholderSubstitutionsTemplate = new HashMap<>();
+			Map<String, Set<String>> placeholderSubstitutionsTemplatePath = new HashMap<>();
+			Map<String, Set<String>> variableAssignmentsTemplate = new HashMap<>();
 			boolean isTemplateUnparseable = false;
 
 			// try to parse template
@@ -135,7 +142,7 @@ public class AimPatternDetectionEngine {
 			Parser parser = createParser(preprocessedTemplate);
 			if (this.templatePreprocessor.getVariables() != null) {
 				for (Entry<String, Set<String>> variable : this.templatePreprocessor.getVariables().entrySet()) {
-					placeholderSubstitutionsTemplate.put(variable.getKey(), variable.getValue());
+					variableAssignmentsTemplate.put(variable.getKey(), variable.getValue());
 				}
 			}
 
@@ -153,8 +160,8 @@ public class AimPatternDetectionEngine {
 			List<ParseTree> transformedTemplateParseTrees = new ArrayList<>();
 			for (ParserRuleContext parseTree : parseTrees) {
 				// templateParser.showTree(parseTree);
-				int nodes = ParseTreeUtil.countTreeNodes(parseTree);
-				int terminalNodes = ParseTreeUtil.countTerminalNodes(parseTree);
+				// int nodes = ParseTreeUtil.countTreeNodes(parseTree);
+				// int terminalNodes = ParseTreeUtil.countTerminalNodes(parseTree);
 
 				try {
 					transformedTemplateParseTrees.add(parseTreeTransformer.transform(parseTree));
@@ -178,41 +185,121 @@ public class AimPatternDetectionEngine {
 
 				String instantiationPath = aimPatternTemplate.getInstantiationPath();
 
-				// filter possible compilation unit paths
-				List<String> pathWithoutPrefix = new LinkedList<>();
-				List<String> longestPathWithoutPrefix = new LinkedList<>();
+				// prefiltering of possible compilation units
+				List<String> possibleCompilationUnitPaths = new LinkedList<>();
 
-				if (this.placeholderResolver != null) {
-					String[] templatePathSegments = instantiationPath
-							.split(FileSystems.getDefault().getSeparator().replace("\\", "\\\\"));
-					String metaLangFileExtension = this.metaLanguageConfig.getMetaLanguagePattern()
-							.getMetaLangFileExtension();
-					for (int i = 0; i < templatePathSegments.length; i++) {
-						boolean isPlaceholder = this.placeholderResolver.isPlaceholder(templatePathSegments[i]);
+				String seperator = FileSystems.getDefault().getSeparator();
+				if (this.prefiltering || !this.forceMatching) {
+					if (this.placeholderResolver != null) {
+						String[] templatePathSegments = instantiationPath.split(seperator.replace("\\", "\\\\"));
+						String metaLangFileExtension = this.metaLanguageConfig.getMetaLanguagePattern()
+								.getMetaLangFileExtension();
 
-						if (!isPlaceholder) {
+						String regexFilename = ".+\\..+";
+						Pattern filenamePattern = Pattern.compile(regexFilename);
+						for (int i = 0; i < templatePathSegments.length; i++) {
+							boolean isPlaceholder = this.placeholderResolver.isPlaceholder(templatePathSegments[i]);
+
 							if (templatePathSegments[i].endsWith(metaLangFileExtension)) {
 								templatePathSegments[i] = templatePathSegments[i].substring(0,
 										templatePathSegments[i].lastIndexOf(metaLangFileExtension) - 1);
 							}
-							pathWithoutPrefix.add(templatePathSegments[i]);
 
-							if (pathWithoutPrefix.size() > longestPathWithoutPrefix.size()) {
-								longestPathWithoutPrefix = new LinkedList<>(pathWithoutPrefix);
+							if (!isPlaceholder) {
+								if (possibleCompilationUnitPaths.isEmpty()) {
+									possibleCompilationUnitPaths.add(templatePathSegments[i]);
+								} else {
+									for (int j = 0; j < possibleCompilationUnitPaths.size(); j++) {
+										possibleCompilationUnitPaths.set(j, possibleCompilationUnitPaths.get(j)
+												+ seperator + templatePathSegments[i]);
+									}
+								}
+							} else {
+								if (!overallPlaceholderSubstitutions.isEmpty()) {
+									String[] placeholder = this.placeholderResolver
+											.getPlaceholder(templatePathSegments[i]);
+									if (placeholder != null
+											&& overallPlaceholderSubstitutions.containsKey(placeholder[1])) {
+
+										Set<String> placeholderSubstitutionsTemp = overallPlaceholderSubstitutions
+												.get(placeholder[1]);
+
+										if (possibleCompilationUnitPaths.isEmpty()) {
+											for (String placeholderSubstitution : placeholderSubstitutionsTemp) {
+												possibleCompilationUnitPaths.add(this.placeholderResolver
+														.replacePlaceholder(templatePathSegments[i], placeholder[0],
+																placeholderSubstitution.replaceAll("\\.", seperator)));
+											}
+										} else {
+											List<String> newPaths = new LinkedList<>();
+											boolean isFilename = filenamePattern
+													.matcher(templatePathSegments[i].replace(placeholder[0], ""))
+													.find();
+											for (int j = 0; j < possibleCompilationUnitPaths.size(); j++) {
+												for (String placeholderSubstitution : placeholderSubstitutionsTemp) {
+													if (!isFilename
+															|| (isFilename && !placeholderSubstitution.contains("."))) {
+														newPaths.add(possibleCompilationUnitPaths.get(j) + seperator
+																+ this.placeholderResolver.replacePlaceholder(
+																		templatePathSegments[i], placeholder[0],
+																		placeholderSubstitution.replaceAll("\\.",
+																				seperator.replace("\\", "\\\\"))));
+													}
+												}
+											}
+											possibleCompilationUnitPaths.clear();
+											possibleCompilationUnitPaths.addAll(newPaths);
+										}
+									} else {
+										if (!possibleCompilationUnitPaths.isEmpty()) {
+											for (int j = 0; j < possibleCompilationUnitPaths.size(); j++) {
+												possibleCompilationUnitPaths.set(j,
+														possibleCompilationUnitPaths.get(i) + seperator + "**");
+											}
+										}
+									}
+								} else {
+									if (!possibleCompilationUnitPaths.isEmpty()) {
+										for (int j = 0; j < possibleCompilationUnitPaths.size(); j++) {
+											possibleCompilationUnitPaths.set(j,
+													possibleCompilationUnitPaths.get(j) + seperator + "**");
+										}
+									}
+								}
 							}
-						} else {
-							pathWithoutPrefix = new LinkedList<>();
 						}
 					}
 				}
 
 				List<Path> possibleCompilationUnits = null;
-				if (longestPathWithoutPrefix.isEmpty() || forceMatching) {
+				if (possibleCompilationUnitPaths.isEmpty() || forceMatching) {
 					possibleCompilationUnits = this.compilationUnits;
 				} else {
-					String longestPath = String.join(FileSystems.getDefault().getSeparator(), longestPathWithoutPrefix);
+					for (int j = 0; j < possibleCompilationUnitPaths.size(); j++) {
+						List<String> pathWithoutPrefix = new LinkedList<>();
+						List<String> longestPathWithoutPrefix = new LinkedList<>();
+						if (possibleCompilationUnitPaths.get(j).contains("**")) {
+							String[] pathSegments = possibleCompilationUnitPaths.get(j)
+									.split(seperator.replace("\\", "\\\\"));
+							for (int k = 0; k < pathSegments.length; k++) {
+								if (pathSegments[k].equals("**")) {
+									pathWithoutPrefix = new LinkedList<>();
+								} else {
+									pathWithoutPrefix.add(pathSegments[k]);
+
+									if (pathWithoutPrefix.size() > longestPathWithoutPrefix.size()) {
+										longestPathWithoutPrefix = new LinkedList<>(pathWithoutPrefix);
+									}
+								}
+							}
+							possibleCompilationUnitPaths.set(j, String.join(seperator, longestPathWithoutPrefix));
+						}
+					}
+
+					Set<String> paths = new HashSet<>(possibleCompilationUnitPaths);
+
 					possibleCompilationUnits = this.compilationUnits.stream()
-							.filter(compilationUnitPath -> compilationUnitPath.toString().contains(longestPath))
+							.filter(compilationUnitPath -> containsPath(compilationUnitPath, paths))
 							.collect(Collectors.toList());
 				}
 
@@ -223,7 +310,7 @@ public class AimPatternDetectionEngine {
 					result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
 				} else {
 					for (Path compilationUnitPath : possibleCompilationUnits) {
-						overallComparisions++;
+						numOverallComparisions++;
 
 						// match instantiation path
 						InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
@@ -238,9 +325,11 @@ public class AimPatternDetectionEngine {
 									aimPatternTemplate.getTemplatePath());
 							numInstantiationPathMatches++;
 
-							Map<String, Set<String>> placeholderSubstitutions = instantiationPathMatch
-									.getPlaceholderSubstitutions();
-							placeholderSubstitutions.putAll(placeholderSubstitutionsTemplate);
+							Map<String, Set<String>> placeholderSubstitutions = new HashMap<String, Set<String>>(
+									instantiationPathMatch.getPlaceholderSubstitutions());
+							placeholderSubstitutions.putAll(variableAssignmentsTemplate);
+							placeholderSubstitutionsTemplatePath
+									.putAll(instantiationPathMatch.getPlaceholderSubstitutions());
 
 							// parse compilation unit
 							if (!compilationUnitParseTrees.containsKey(compilationUnitPath)) {
@@ -269,13 +358,17 @@ public class AimPatternDetectionEngine {
 									placeholderSubstitutions);
 							numComparedFiles++;
 
-							if (treeMatch.isMatch()) {
-								numFileMatches++;
-							}
-
 							AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
 									compilationUnitPath, aimPatternTemplate.getTemplatePath(), treeMatch);
 							result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
+
+							if (treeMatch.isMatch()) {
+								numFileMatches++;
+								if (this.prefiltering) {
+									overallPlaceholderSubstitutions = mergePlaceholerSubstitutions(
+											overallPlaceholderSubstitutions, treeMatch.getPlaceholderSubstitutions());
+								}
+							}
 						}
 					}
 				}
@@ -291,6 +384,7 @@ public class AimPatternDetectionEngine {
 		result.setNumFileMatches(numFileMatches);
 		result.setNumParseableTemplates(numSuccessfulParsedTemplates);
 		result.setNumUnparseableTemplates(numUnsuccessfulParsedTemplates);
+		result.setNumOverallComparisions(numOverallComparisions);
 		return result;
 	}
 
@@ -307,7 +401,7 @@ public class AimPatternDetectionEngine {
 		int numSuccessfulParsedTemplates = 0;
 		int numUnsuccessfulParsedTemplates = 0;
 
-		int overallComparisions = 0;
+		int numOverallComparisions = 0;
 
 		long processingTimeStart = System.nanoTime();
 
@@ -326,7 +420,7 @@ public class AimPatternDetectionEngine {
 		for (Path compilationUnitPath : this.compilationUnits) {
 			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
 
-				overallComparisions++;
+				numOverallComparisions++;
 
 				// match instantiation path
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
@@ -397,8 +491,8 @@ public class AimPatternDetectionEngine {
 							List<ParseTree> transformedTemplateParseTrees = new ArrayList<>();
 							for (ParserRuleContext parseTree : parseTrees) {
 								// templateParser.showTree(parseTree);
-								int nodes = ParseTreeUtil.countTreeNodes(parseTree);
-								int terminalNodes = ParseTreeUtil.countTerminalNodes(parseTree);
+								// int nodes = ParseTreeUtil.countTreeNodes(parseTree);
+								// int terminalNodes = ParseTreeUtil.countTerminalNodes(parseTree);
 
 								try {
 									transformedTemplateParseTrees.add(parseTreeTransformer.transform(parseTree));
@@ -459,6 +553,7 @@ public class AimPatternDetectionEngine {
 		result.setNumFileMatches(numFileMatches);
 		result.setNumParseableTemplates(numSuccessfulParsedTemplates);
 		result.setNumUnparseableTemplates(numUnsuccessfulParsedTemplates);
+		result.setNumOverallComparisions(numOverallComparisions);
 		return result;
 	}
 
@@ -524,5 +619,35 @@ public class AimPatternDetectionEngine {
 
 	public void setPreprocessTemplates(boolean preprocessTemplates) {
 		this.preprocessTemplates = preprocessTemplates;
+	}
+
+	public void setPrefiltering(boolean prefiltering) {
+		this.prefiltering = prefiltering;
+	}
+
+	private boolean containsPath(Path compilationUnitPath, Set<String> possibleCompilationUnitPaths) {
+
+		return possibleCompilationUnitPaths.stream().filter(
+				possiblePath -> compilationUnitPath.toString().toLowerCase().contains(possiblePath.toLowerCase()))
+				.collect(Collectors.toList()).size() > 0;
+	}
+
+	private Map<String, Set<String>> mergePlaceholerSubstitutions(
+			Map<String, Set<String>> overallPlaceholderSubstitutions,
+			Map<String, Set<String>> treeMatchPlaceholderSubstitutions) {
+
+		for (Entry<String, Set<String>> placeholderSubstitutionEntry : treeMatchPlaceholderSubstitutions.entrySet()) {
+			String key = placeholderSubstitutionEntry.getKey();
+			Set<String> value = placeholderSubstitutionEntry.getValue();
+
+			if (overallPlaceholderSubstitutions.containsKey(key)) {
+				Set<String> placeholderSubs = overallPlaceholderSubstitutions.get(key);
+				placeholderSubs.addAll(value);
+			} else {
+				overallPlaceholderSubstitutions.put(key, value);
+			}
+		}
+
+		return overallPlaceholderSubstitutions;
 	}
 }

@@ -14,4 +14,8 @@ public interface PlaceholderResolver {
 	String transformPlaceholderNotation(String orginialPlaceholder);
 
 	boolean isPlaceholder(String input);
+
+	String[] getPlaceholder(String input);
+
+	String replacePlaceholder(String input, String placeholder, String value);
 }

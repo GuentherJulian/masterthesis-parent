@@ -876,7 +876,6 @@ public class ParseTreeMatcher {
 		List<Map<String, String>> possibleSubstitutions = new ArrayList<>();
 
 		boolean isCombinationMatch = false;
-		int combinationCount = 0;
 		for (int[] combination : combinations) {
 			Map<String, String> variableSubstitutions = new HashMap<>();
 
@@ -1013,6 +1012,10 @@ public class ParseTreeMatcher {
 		Matcher matcher = pattern.matcher(placeholder);
 		if (matcher.find()) {
 			placeholder = matcher.group(1);
+		}
+
+		if (substitution.contains("findCategorysByPost")) {
+			System.out.println();
 		}
 
 		Set<String> possibleSubstitutions = null;

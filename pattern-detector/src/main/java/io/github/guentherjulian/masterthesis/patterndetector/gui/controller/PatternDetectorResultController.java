@@ -42,6 +42,9 @@ public class PatternDetectorResultController implements Initializable {
 	private Text textNumCompilationUnits;
 
 	@FXML
+	private Text textNumOverallComparisions;
+
+	@FXML
 	private Text textNumInstantiationPathMatches;
 
 	@FXML
@@ -79,6 +82,7 @@ public class PatternDetectorResultController implements Initializable {
 		this.textNumSuccessfulParsedTemplates.setText(String.valueOf(this.result.getNumParseableTemplates()));
 		this.textNumUnsuccessfulParsedTemplates.setText(String.valueOf(this.result.getNumUnparseableTemplates()));
 		this.textNumCompilationUnits.setText(String.valueOf(this.result.getNumParsedCompilationUnits()));
+		this.textNumOverallComparisions.setText(String.valueOf(this.result.getNumOverallComparisions()));
 
 		this.textNumInstantiationPathMatches.setText(String.valueOf(this.result.getNumInstantiationPathMatches()));
 		this.textNumComparedFiles.setText(String.valueOf(this.result.getNumComparedFiles()));

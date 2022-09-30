@@ -18,6 +18,8 @@ public class AimPatternDetectionResult {
 	private int numFileMatches;
 	private int numParseableTemplates;
 	private int numUnparseableTemplates;
+	private int numOverallComparisions;
+
 	private long processingTime;
 
 	public AimPatternDetectionResult() {
@@ -120,5 +122,13 @@ public class AimPatternDetectionResult {
 
 	public void setNumCompilationUnitsTotal(int numCompilationUnitsTotal) {
 		this.numCompilationUnitsTotal = numCompilationUnitsTotal;
+	}
+
+	public int getNumOverallComparisions() {
+		return numOverallComparisions;
+	}
+
+	public void setNumOverallComparisions(int numOverallComparisions) {
+		this.numOverallComparisions = numOverallComparisions;
 	}
 }

@@ -9,15 +9,11 @@ import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.metalanguage.MetaLanguageLexerRules;
 import io.github.guentherjulian.masterthesis.patterndetection.engine.configuration.objectlanguage.ObjectLanguageConfiguration;
 
 public class ParseTreeTransformationListener implements ParseTreeListener {
-
-	private static final Logger LOGGER = LogManager.getLogger(ParseTreeTransformationListener.class);
 
 	private ParseTree parseTree;
 	private Vocabulary parserVocabulary;
