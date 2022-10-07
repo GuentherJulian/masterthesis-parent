@@ -43,7 +43,7 @@
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="474.0" prefWidth="780.0" VBox.vgrow="ALWAYS">
       <children>
-            <ListView fx:id="listViewResult" layoutX="-2.0" layoutY="159.0" prefHeight="267.0" prefWidth="380.0" />
+            <ListView fx:id="listViewResult" layoutY="137.0" prefHeight="290.0" prefWidth="380.0" />
             <Label layoutX="14.0" layoutY="26.0" prefHeight="18.0" prefWidth="174.0" text="Templates processed" />
             <Label layoutX="14.0" layoutY="44.0" prefHeight="18.0" prefWidth="174.0" text="Successfully parsed templates" />
             <Label layoutX="14.0" layoutY="62.0" prefHeight="18.0" prefWidth="173.0" text="Unsuccessfully parsed templates" />
@@ -52,21 +52,19 @@
             <Text fx:id="textNumSuccessfulParsedTemplates" layoutX="205.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="50.13671875" />
             <Text fx:id="textNumUnsuccessfulParsedTemplates" layoutX="205.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="50.13671875" />
             <Text fx:id="textNumCompilationUnits" layoutX="205.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="50.13671875" />
-            <Label layoutX="312.0" layoutY="8.0" prefHeight="18.0" prefWidth="174.0" text="Instantiation path matches" />
-            <Label layoutX="312.0" layoutY="26.0" prefHeight="18.0" prefWidth="174.0" text="Compared files" />
+            <Label layoutX="312.0" layoutY="8.0" prefHeight="18.0" prefWidth="174.0" text="Instantiation path comparisons" />
+            <Label layoutX="312.0" layoutY="26.0" prefHeight="18.0" prefWidth="174.0" text="File comparisons" />
             <Label layoutX="312.0" layoutY="44.0" prefHeight="18.0" prefWidth="173.0" text="File matches" />
             <Label layoutX="312.0" layoutY="88.0" prefHeight="18.0" prefWidth="173.0" text="Processing time" />
-            <Text fx:id="textNumInstantiationPathMatches" layoutX="503.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="153.33673095703125" />
-            <Text fx:id="textNumComparedFiles" layoutX="503.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="153.33673095703125" />
+            <Text fx:id="textNumInstantiationPathComparisons" layoutX="503.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="153.33673095703125" />
+            <Text fx:id="textNumFileComparisons" layoutX="503.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="153.33673095703125" />
             <Text fx:id="textNumFileMatches" layoutX="503.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="153.33673095703125" />
             <Text fx:id="textProcessingTime" layoutX="503.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="235.73663330078125" />
-            <TextArea fx:id="textAreaMatch" layoutX="388.0" layoutY="159.0" prefHeight="267.0" prefWidth="411.0" />
+            <TextArea fx:id="textAreaMatch" layoutX="388.0" layoutY="137.0" prefHeight="290.0" prefWidth="411.0" />
             <Label layoutX="14.0" layoutY="8.0" prefHeight="18.0" prefWidth="174.0" text="Templates total" />
             <Text fx:id="textNumTemplatesTotal" layoutX="205.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="50.13671875" />
             <Label layoutX="14.0" layoutY="88.0" prefHeight="18.0" prefWidth="173.0" text="Compilation units total" />
             <Text fx:id="textNumCompilationUnitsTotal" layoutX="205.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="50.13671875" />
-            <Label layoutX="14.0" layoutY="124.0" prefHeight="18.0" prefWidth="173.0" text="Overall comparisions" />
-            <Text fx:id="textNumOverallComparisions" layoutX="205.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="50.13671875" />
       </children>
     </AnchorPane>
   </children>

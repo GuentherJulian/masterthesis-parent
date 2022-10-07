@@ -95,13 +95,11 @@ public class AimPatternDetectionEngine {
 
 		int numParsedTemplates = 0;
 		int numParsedCompilationUnits = 0;
-		int numComparedFiles = 0;
-		int numInstantiationPathMatches = 0;
+		int numFileComparisons = 0;
+		int numInstantiationPathComparisons = 0;
 		int numFileMatches = 0;
 		int numSuccessfulParsedTemplates = 0;
 		int numUnsuccessfulParsedTemplates = 0;
-
-		int numOverallComparisions = 0;
 
 		long processingTimeStart = System.nanoTime();
 
@@ -311,7 +309,7 @@ public class AimPatternDetectionEngine {
 					result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
 				} else {
 					for (Path compilationUnitPath : possibleCompilationUnits) {
-						numOverallComparisions++;
+						numInstantiationPathComparisons++;
 
 						// match instantiation path
 						InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
@@ -324,11 +322,8 @@ public class AimPatternDetectionEngine {
 						if (instantiationPathMatch.isMatch()) {
 							LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,
 									aimPatternTemplate.getTemplatePath());
-							numInstantiationPathMatches++;
 
-							if (compilationUnitPath.toString().contains("QueuemanagementRestService.java")) {
-								System.out.println();
-							}
+							numFileComparisons++;
 
 							Map<String, Set<String>> placeholderSubstitutions = new HashMap<String, Set<String>>(
 									instantiationPathMatch.getPlaceholderSubstitutions());
@@ -361,7 +356,6 @@ public class AimPatternDetectionEngine {
 							TreeMatch treeMatch = this.match(compilationUnitParseTrees.get(compilationUnitPath),
 									templateParseTrees.get(aimPatternTemplate.getTemplatePath()),
 									placeholderSubstitutions);
-							numComparedFiles++;
 
 							AimPatternDetectionResultEntry aimPatternDetectionResultEntry = new AimPatternDetectionResultEntry(
 									compilationUnitPath, aimPatternTemplate.getTemplatePath(), treeMatch);
@@ -384,12 +378,11 @@ public class AimPatternDetectionEngine {
 		result.setProcessingTime(processingTimeEnd - processingTimeStart);
 		result.setNumParsedTemplates(numParsedTemplates);
 		result.setNumParsedCompilationUnits(numParsedCompilationUnits);
-		result.setNumComparedFiles(numComparedFiles);
-		result.setNumInstantiationPathMatches(numInstantiationPathMatches);
+		result.setNumFileComparisons(numFileComparisons);
+		result.setNumInstantiationPathComparisons(numInstantiationPathComparisons);
 		result.setNumFileMatches(numFileMatches);
 		result.setNumParseableTemplates(numSuccessfulParsedTemplates);
 		result.setNumUnparseableTemplates(numUnsuccessfulParsedTemplates);
-		result.setNumOverallComparisions(numOverallComparisions);
 		return result;
 	}
 
@@ -400,13 +393,11 @@ public class AimPatternDetectionEngine {
 
 		int numParsedTemplates = 0;
 		int numParsedCompilationUnits = 0;
-		int numComparedFiles = 0;
-		int numInstantiationPathMatches = 0;
+		int numFileComparisons = 0;
+		int numInstantiationPathComparisons = 0;
 		int numFileMatches = 0;
 		int numSuccessfulParsedTemplates = 0;
 		int numUnsuccessfulParsedTemplates = 0;
-
-		int numOverallComparisions = 0;
 
 		long processingTimeStart = System.nanoTime();
 
@@ -425,7 +416,7 @@ public class AimPatternDetectionEngine {
 		for (Path compilationUnitPath : this.compilationUnits) {
 			for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
 
-				numOverallComparisions++;
+				numInstantiationPathComparisons++;
 
 				// match instantiation path
 				InstantiationPathMatch instantiationPathMatch = InstantiationPathMatcher.match(
@@ -436,7 +427,6 @@ public class AimPatternDetectionEngine {
 				if (instantiationPathMatch.isMatch()) {
 					LOGGER.info("Instantiation path matches: {} <-> {}", compilationUnitPath,
 							aimPatternTemplate.getTemplatePath());
-					numInstantiationPathMatches++;
 
 					Map<String, Set<String>> placeholderSubstitutions = instantiationPathMatch
 							.getPlaceholderSubstitutions();
@@ -522,7 +512,7 @@ public class AimPatternDetectionEngine {
 							TreeMatch treeMatch = this.match(compilationUnitParseTrees.get(compilationUnitPath),
 									templateParseTrees.get(aimPatternTemplate.getTemplatePath()),
 									placeholderSubstitutions);
-							numComparedFiles++;
+							numFileComparisons++;
 							if (treeMatch.isMatch()) {
 								numFileMatches++;
 							}
@@ -548,12 +538,11 @@ public class AimPatternDetectionEngine {
 		result.setProcessingTime(processingTimeEnd - processingTimeStart);
 		result.setNumParsedTemplates(numParsedTemplates);
 		result.setNumParsedCompilationUnits(numParsedCompilationUnits);
-		result.setNumComparedFiles(numComparedFiles);
-		result.setNumInstantiationPathMatches(numInstantiationPathMatches);
+		result.setNumFileComparisons(numFileComparisons);
+		result.setNumInstantiationPathComparisons(numInstantiationPathComparisons);
 		result.setNumFileMatches(numFileMatches);
 		result.setNumParseableTemplates(numSuccessfulParsedTemplates);
 		result.setNumUnparseableTemplates(numUnsuccessfulParsedTemplates);
-		result.setNumOverallComparisions(numOverallComparisions);
 		return result;
 	}
 

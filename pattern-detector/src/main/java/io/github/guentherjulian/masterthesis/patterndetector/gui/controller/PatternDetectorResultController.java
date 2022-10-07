@@ -42,13 +42,10 @@ public class PatternDetectorResultController implements Initializable {
 	private Text textNumCompilationUnits;
 
 	@FXML
-	private Text textNumOverallComparisions;
+	private Text textNumInstantiationPathComparisons;
 
 	@FXML
-	private Text textNumInstantiationPathMatches;
-
-	@FXML
-	private Text textNumComparedFiles;
+	private Text textNumFileComparisons;
 
 	@FXML
 	private Text textNumFileMatches;
@@ -82,10 +79,10 @@ public class PatternDetectorResultController implements Initializable {
 		this.textNumSuccessfulParsedTemplates.setText(String.valueOf(this.result.getNumParseableTemplates()));
 		this.textNumUnsuccessfulParsedTemplates.setText(String.valueOf(this.result.getNumUnparseableTemplates()));
 		this.textNumCompilationUnits.setText(String.valueOf(this.result.getNumParsedCompilationUnits()));
-		this.textNumOverallComparisions.setText(String.valueOf(this.result.getNumOverallComparisions()));
 
-		this.textNumInstantiationPathMatches.setText(String.valueOf(this.result.getNumInstantiationPathMatches()));
-		this.textNumComparedFiles.setText(String.valueOf(this.result.getNumComparedFiles()));
+		this.textNumInstantiationPathComparisons
+				.setText(String.valueOf(this.result.getNumInstantiationPathComparisons()));
+		this.textNumFileComparisons.setText(String.valueOf(this.result.getNumFileComparisons()));
 		this.textNumFileMatches.setText(String.valueOf(this.result.getNumFileMatches()));
 		this.textProcessingTime.setText(String.format("%.2f ms  /  %.2f s", (result.getProcessingTime() / 1e6),
 				(result.getProcessingTime() / 1e9)));

@@ -13,12 +13,11 @@ public class AimPatternDetectionResult {
 	private int numCompilationUnitsTotal;
 	private int numParsedTemplates;
 	private int numParsedCompilationUnits;
-	private int numComparedFiles;
-	private int numInstantiationPathMatches;
+	private int numFileComparisons;
+	private int numInstantiationPathComparisons;
 	private int numFileMatches;
 	private int numParseableTemplates;
 	private int numUnparseableTemplates;
-	private int numOverallComparisions;
 
 	private long processingTime;
 
@@ -60,14 +59,6 @@ public class AimPatternDetectionResult {
 		this.numParsedCompilationUnits = numParsedCompilationUnits;
 	}
 
-	public int getNumComparedFiles() {
-		return numComparedFiles;
-	}
-
-	public void setNumComparedFiles(int numComparedFiles) {
-		this.numComparedFiles = numComparedFiles;
-	}
-
 	public long getProcessingTime() {
 		return processingTime;
 	}
@@ -76,12 +67,20 @@ public class AimPatternDetectionResult {
 		this.processingTime = processingTime;
 	}
 
-	public int getNumInstantiationPathMatches() {
-		return numInstantiationPathMatches;
+	public int getNumFileComparisons() {
+		return numFileComparisons;
 	}
 
-	public void setNumInstantiationPathMatches(int numInstantiationPathMatches) {
-		this.numInstantiationPathMatches = numInstantiationPathMatches;
+	public void setNumFileComparisons(int numFileComparisons) {
+		this.numFileComparisons = numFileComparisons;
+	}
+
+	public int getNumInstantiationPathComparisons() {
+		return numInstantiationPathComparisons;
+	}
+
+	public void setNumInstantiationPathComparisons(int numInstantiationPathComparisons) {
+		this.numInstantiationPathComparisons = numInstantiationPathComparisons;
 	}
 
 	public int getNumFileMatches() {
@@ -122,13 +121,5 @@ public class AimPatternDetectionResult {
 
 	public void setNumCompilationUnitsTotal(int numCompilationUnitsTotal) {
 		this.numCompilationUnitsTotal = numCompilationUnitsTotal;
-	}
-
-	public int getNumOverallComparisions() {
-		return numOverallComparisions;
-	}
-
-	public void setNumOverallComparisions(int numOverallComparisions) {
-		this.numOverallComparisions = numOverallComparisions;
 	}
 }
