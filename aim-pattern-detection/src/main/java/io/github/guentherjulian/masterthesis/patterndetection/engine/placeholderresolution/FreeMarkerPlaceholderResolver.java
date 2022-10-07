@@ -135,6 +135,9 @@ public class FreeMarkerPlaceholderResolver extends AbstractPlaceholderResolver {
 			}
 		} while (prefixFound);
 
+		returnValue[0] = returnValue[0].trim();
+		returnValue[1] = returnValue[1].trim();
+
 		return returnValue;
 	}
 

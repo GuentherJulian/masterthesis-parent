@@ -26,6 +26,8 @@ abstract class AbstractTemplatePreprocessor implements TemplatePreprocessor {
 			throw new PreprocessingException(String.format("The file %s could not be found!", templatePath.toString()));
 		}
 
+		this.variables = new HashMap<>();
+
 		byte[] templateByteArray = getFileBytes(templatePath);
 		templateByteArray = preprocess(templatePath, templateByteArray);
 

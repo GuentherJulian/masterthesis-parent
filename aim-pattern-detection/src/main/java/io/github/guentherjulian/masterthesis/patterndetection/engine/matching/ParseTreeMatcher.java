@@ -1014,10 +1014,6 @@ public class ParseTreeMatcher {
 			placeholder = matcher.group(1);
 		}
 
-		if (substitution.contains("findCategorysByPost")) {
-			System.out.println();
-		}
-
 		Set<String> possibleSubstitutions = null;
 		if (this.placeholderResolver != null) {
 			PlaceholderResolutionResult placeholderResolutionResult = this.placeholderResolver

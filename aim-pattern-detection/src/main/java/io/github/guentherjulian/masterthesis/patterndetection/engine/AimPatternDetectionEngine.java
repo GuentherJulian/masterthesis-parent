@@ -122,7 +122,8 @@ public class AimPatternDetectionEngine {
 
 		for (AimPatternTemplate aimPatternTemplate : this.aimpattern.getAimPatternTemplates()) {
 
-			Map<String, Set<String>> placeholderSubstitutionsTemplatePath = new HashMap<>();
+			// Map<String, Set<String>> placeholderSubstitutionsTemplatePath = new
+			// HashMap<>();
 			Map<String, Set<String>> variableAssignmentsTemplate = new HashMap<>();
 			boolean isTemplateUnparseable = false;
 
@@ -189,7 +190,7 @@ public class AimPatternDetectionEngine {
 				List<String> possibleCompilationUnitPaths = new LinkedList<>();
 
 				String seperator = FileSystems.getDefault().getSeparator();
-				if (this.prefiltering || !this.forceMatching) {
+				if (this.prefiltering && !this.forceMatching) {
 					if (this.placeholderResolver != null) {
 						String[] templatePathSegments = instantiationPath.split(seperator.replace("\\", "\\\\"));
 						String metaLangFileExtension = this.metaLanguageConfig.getMetaLanguagePattern()
@@ -325,11 +326,15 @@ public class AimPatternDetectionEngine {
 									aimPatternTemplate.getTemplatePath());
 							numInstantiationPathMatches++;
 
+							if (compilationUnitPath.toString().contains("QueuemanagementRestService.java")) {
+								System.out.println();
+							}
+
 							Map<String, Set<String>> placeholderSubstitutions = new HashMap<String, Set<String>>(
 									instantiationPathMatch.getPlaceholderSubstitutions());
 							placeholderSubstitutions.putAll(variableAssignmentsTemplate);
-							placeholderSubstitutionsTemplatePath
-									.putAll(instantiationPathMatch.getPlaceholderSubstitutions());
+							// placeholderSubstitutionsTemplatePath
+							// .putAll(instantiationPathMatch.getPlaceholderSubstitutions());
 
 							// parse compilation unit
 							if (!compilationUnitParseTrees.containsKey(compilationUnitPath)) {
@@ -511,11 +516,6 @@ public class AimPatternDetectionEngine {
 						}
 
 						if (!isTemplateUnparseable) {
-
-							if (compilationUnitPath.getFileName().toString().contains("BinaryObject")) {
-								System.out.println("");
-							}
-
 							LOGGER.info("Match parse trees of {} and {}...",
 									aimPatternTemplate.getTemplatePath().getFileName(),
 									compilationUnitPath.getFileName());
@@ -642,9 +642,9 @@ public class AimPatternDetectionEngine {
 
 			if (overallPlaceholderSubstitutions.containsKey(key)) {
 				Set<String> placeholderSubs = overallPlaceholderSubstitutions.get(key);
-				placeholderSubs.addAll(value);
+				placeholderSubs.addAll(new HashSet<>(value));
 			} else {
-				overallPlaceholderSubstitutions.put(key, value);
+				overallPlaceholderSubstitutions.put(key, new HashSet<>(value));
 			}
 		}
 

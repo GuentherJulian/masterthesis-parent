@@ -53,4 +53,20 @@ public class FreemarkerParserTest extends AbstractParserTest {
 			templateParser.showTree(tree);
 		}
 	}
+
+	@Test
+	void freemarkerParsingTest2() throws Exception {
+		Path inputFile = testResourcesPath.resolve("templates/freemarker/Test.ftl");
+
+		List<ParserRuleContext> trees = parse("template", inputFile, PredictionMode.LL, grammar);
+
+		assertNotNull(trees);
+		System.out.println(trees.get(0).toStringTree());
+
+		TemplateParser<FreemarkerParser> templateParser = getTemplateParser("template", inputFile, grammar);
+		trees = templateParser.parseAmbiguties(PredictionMode.LL);
+		for (ParserRuleContext tree : trees) {
+			templateParser.showTree(tree);
+		}
+	}
 }

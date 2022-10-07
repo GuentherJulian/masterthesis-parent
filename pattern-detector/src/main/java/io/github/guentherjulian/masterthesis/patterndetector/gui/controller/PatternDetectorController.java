@@ -122,9 +122,9 @@ public class PatternDetectorController implements Initializable {
 		btnDetect.setOnMouseClicked(event -> detect(event));
 
 		this.textfieldTemplatePath.setText(
-				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app-complex\\src\\main\\resources\\templates");
+				"C:\\devonfw\\workspaces\\main\\devonfw\\cobigen\\cobigen-templates\\templates-devon4j\\src\\main\\templates\\crud_java_server_app\\templates");
 		this.textfieldTemplatesRootPath.setText(
-				"C:\\devonfw\\workspaces\\main\\GuentherJulian\\cobigen\\cobigen-templates\\crud-java-server-app-complex\\src\\main\\resources");
+				"C:\\devonfw\\workspaces\\main\\devonfw\\cobigen\\cobigen-templates\\templates-devon4j\\src\\main\\templates\\crud_java_server_app");
 		this.textfieldCompilationUnitPath.setText("C:\\devonfw\\workspaces\\main\\devonfw\\jump-the-queue\\java\\jtqj");
 		this.textfieldTemplateGrammarPath.setText(
 				"C:\\devonfw\\workspaces\\main\\Masterthesis\\masterthesis-parent\\aim-pattern-detection\\src\\test\\resources\\grammars\\java8FreemarkerTemplate\\Java8FreemarkerTemplate.g4");
