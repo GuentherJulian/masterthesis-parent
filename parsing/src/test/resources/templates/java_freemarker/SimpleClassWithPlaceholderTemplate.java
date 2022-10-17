@@ -1,3 +1,3 @@
-class ${name} {
-	${name} (${name} p) {}
+class ${#name#} {
+	${#name#} (${#name#} p) {}
 }
