@@ -244,10 +244,6 @@ public class AimPatternDetectionEngine {
                 result.addPatternDetectionResultEntry(aimPatternDetectionResultEntry);
             } else {
 
-                if (aimPatternTemplate.getTemplatePath().toString().contains("Repository")) {
-                    System.out.println();
-                }
-
                 for (Path compilationUnitPath : possibleCompilationUnits) {
                     numInstantiationPathComparisons++;
 
