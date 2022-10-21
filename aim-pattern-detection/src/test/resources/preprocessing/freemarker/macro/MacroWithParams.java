@@ -4,6 +4,8 @@ public class A {
 	<@test1 foo="a" bar="b" foobar="c"/>
 	<@test2 />
 	<@test3 bar="b" />
+	
+	${foo};
 }
 
 <#macro test1 foo bar foobar>

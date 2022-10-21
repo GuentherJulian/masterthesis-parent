@@ -367,6 +367,23 @@
               <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/csharpcombined</outputDirectory>
             </configuration>
           </execution>
+          <execution>
+            <id>antlr4-ruby-freemarker-template-parser</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${basedir}/src/main/resources/grammars/rubyFreemarkerTemplate</sourceDirectory>
+              <includes>
+                <include>CorundumTemplate.g4</include>
+              </includes>
+              <arguments>
+                <argument>-package</argument>
+                <argument>org.antlr.parser.ruby</argument>
+              </arguments>
+              <outputDirectory>${project.build.directory}/generated-sources/antlr4/org/antlr/parser/ruby</outputDirectory>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

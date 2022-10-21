@@ -1,11 +1,9 @@
 #include <stdio.h>
 
-int main() {
-    <#if anything>
+int main(int argc, char *argv[]) {
+
     int i;
-    <#else>
     int j;
-    </#if>
 
     return 0;
 }

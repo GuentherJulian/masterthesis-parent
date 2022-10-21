@@ -6,15 +6,16 @@ import java.util.Set;
 
 public class CLanguageConfiguration extends AbstractObjectLanguageConfiguration {
 
-	private static final Set<String> nonOrderingNodes = new HashSet<>(Arrays.asList("BlockItem"));
+    private static final Set<String> nonOrderingNodes = new HashSet<>(
+            Arrays.asList("BlockItem", "ExternalDeclaration"));
 
-	public CLanguageConfiguration(String metaLanguagePrefix) {
-		super(metaLanguagePrefix);
-	}
+    public CLanguageConfiguration(String metaLanguagePrefix) {
+        super(metaLanguagePrefix);
+    }
 
-	@Override
-	public Set<String> getNonOrderingNodes() {
-		return this.enrichNonOrderingNodes(nonOrderingNodes);
-	}
+    @Override
+    public Set<String> getNonOrderingNodes() {
+        return this.enrichNonOrderingNodes(nonOrderingNodes);
+    }
 
 }
