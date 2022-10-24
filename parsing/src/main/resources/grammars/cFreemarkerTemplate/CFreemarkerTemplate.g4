@@ -58,7 +58,7 @@ fm_genericAssociation: FM_PLACEHOLDER | FM_IF (fm_genericAssociation | genericAs
 postfixExpression
     :
     (   primaryExpression
-    |   FM_ImplicitToken4 ? LeftParen  (fm_typeName | typeName) RightParen  LeftBrace  (fm_initializerList | initializerList) Comma ? RightBrace 
+    |   FM_ImplicitToken1 ? LeftParen  (fm_typeName | typeName) RightParen  LeftBrace  (fm_initializerList | initializerList) Comma ? RightBrace 
     )
     (LeftBracket  (fm_expression | expression) RightBracket 
     | LeftParen  (fm_argumentExpressionListOpt | argumentExpressionList)? RightParen 
@@ -89,7 +89,7 @@ unaryOperator
 fm_unaryOperator: FM_PLACEHOLDER | FM_IF (fm_unaryOperator | unaryOperator) (FM_ELSE_IF (fm_unaryOperator | unaryOperator))* FM_ELSE (fm_unaryOperator | unaryOperator) FM_IF_CLOSE;
 
 castExpression
-    :   FM_ImplicitToken5 ? LeftParen  (fm_typeName | typeName) RightParen  (fm_castExpression | castExpression)
+    :   FM_ImplicitToken1 ? LeftParen  (fm_typeName | typeName) RightParen  (fm_castExpression | castExpression)
     |   unaryExpression
     |   (DigitSequence) // for
     ;
@@ -178,7 +178,7 @@ declaration
     :   (fm_declarationSpecifiers | declarationSpecifiers) (fm_initDeclaratorListOpt | initDeclaratorList)? Semi 
     |   staticAssertDeclaration
     ;
-fm_declarationPlus: FM_PLACEHOLDER | (FM_IF (fm_declarationPlus | declaration)* (FM_ELSE_IF (fm_declarationPlus | declaration)*)* (FM_ELSE (fm_declarationPlus | declaration)*)? FM_IF_CLOSE | FM_LIST (fm_declarationPlus | declaration)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_declarationPlus | declaration)* (FM_ELSE_IF (fm_declarationPlus | declaration)*)* FM_ELSE (fm_declarationPlus | declaration)* FM_IF_CLOSE | FM_LIST (fm_declarationPlus | declaration)* FM_ELSE (fm_declarationPlus | declaration)* FM_LIST_CLOSE) (FM_IF (fm_declarationPlus | declaration)* (FM_ELSE_IF (fm_declarationPlus | declaration)*)* (FM_ELSE (fm_declarationPlus | declaration)*)? FM_IF_CLOSE | FM_LIST (fm_declarationPlus | declaration)* FM_LIST_CLOSE)*;
+fm_declarationPlus: FM_PLACEHOLDER | (FM_IF (fm_declarationPlus | declaration)* (FM_ELSE_IF (fm_declarationPlus | declaration)*)* (FM_ELSE (fm_declarationPlus | declaration)*)? FM_IF_CLOSE | FM_LIST (fm_declarationPlus | declaration)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_declarationPlus | declaration)* (FM_ELSE_IF (fm_declarationPlus | declaration)*)* FM_ELSE (fm_declarationPlus | declaration)* FM_IF_CLOSE | FM_LIST (fm_declarationPlus | declaration)* FM_LIST_CLOSE) (FM_IF (fm_declarationPlus | declaration)* (FM_ELSE_IF (fm_declarationPlus | declaration)*)* (FM_ELSE (fm_declarationPlus | declaration)*)? FM_IF_CLOSE | FM_LIST (fm_declarationPlus | declaration)* FM_LIST_CLOSE)*;
 
 declarationSpecifiers
     :   (fm_declarationSpecifierPlus | declarationSpecifier)+
@@ -198,7 +198,7 @@ declarationSpecifier
     |   functionSpecifier
     |   alignmentSpecifier
     ;
-fm_declarationSpecifierPlus: FM_PLACEHOLDER | (FM_IF (fm_declarationSpecifierPlus | declarationSpecifier)* (FM_ELSE_IF (fm_declarationSpecifierPlus | declarationSpecifier)*)* (FM_ELSE (fm_declarationSpecifierPlus | declarationSpecifier)*)? FM_IF_CLOSE | FM_LIST (fm_declarationSpecifierPlus | declarationSpecifier)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_declarationSpecifierPlus | declarationSpecifier)* (FM_ELSE_IF (fm_declarationSpecifierPlus | declarationSpecifier)*)* FM_ELSE (fm_declarationSpecifierPlus | declarationSpecifier)* FM_IF_CLOSE | FM_LIST (fm_declarationSpecifierPlus | declarationSpecifier)* FM_ELSE (fm_declarationSpecifierPlus | declarationSpecifier)* FM_LIST_CLOSE) (FM_IF (fm_declarationSpecifierPlus | declarationSpecifier)* (FM_ELSE_IF (fm_declarationSpecifierPlus | declarationSpecifier)*)* (FM_ELSE (fm_declarationSpecifierPlus | declarationSpecifier)*)? FM_IF_CLOSE | FM_LIST (fm_declarationSpecifierPlus | declarationSpecifier)* FM_LIST_CLOSE)*;
+fm_declarationSpecifierPlus: FM_PLACEHOLDER | (FM_IF (fm_declarationSpecifierPlus | declarationSpecifier)* (FM_ELSE_IF (fm_declarationSpecifierPlus | declarationSpecifier)*)* (FM_ELSE (fm_declarationSpecifierPlus | declarationSpecifier)*)? FM_IF_CLOSE | FM_LIST (fm_declarationSpecifierPlus | declarationSpecifier)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_declarationSpecifierPlus | declarationSpecifier)* (FM_ELSE_IF (fm_declarationSpecifierPlus | declarationSpecifier)*)* FM_ELSE (fm_declarationSpecifierPlus | declarationSpecifier)* FM_IF_CLOSE | FM_LIST (fm_declarationSpecifierPlus | declarationSpecifier)* FM_LIST_CLOSE) (FM_IF (fm_declarationSpecifierPlus | declarationSpecifier)* (FM_ELSE_IF (fm_declarationSpecifierPlus | declarationSpecifier)*)* (FM_ELSE (fm_declarationSpecifierPlus | declarationSpecifier)*)? FM_IF_CLOSE | FM_LIST (fm_declarationSpecifierPlus | declarationSpecifier)* FM_LIST_CLOSE)*;
 
 initDeclaratorList
     :   (fm_initDeclarator | initDeclarator) (Comma  (fm_initDeclarator | initDeclarator))*
@@ -231,15 +231,15 @@ typeSpecifier
     |   Unsigned 
     |   Bool 
     |   Complex 
-    |   FM_ImplicitToken6 
-    |   FM_ImplicitToken7 
-    |   FM_ImplicitToken8 )
-    |   FM_ImplicitToken9  LeftParen  (FM_ImplicitToken10  | FM_ImplicitToken11  | FM_ImplicitToken12 ) RightParen 
+    |   FM_ImplicitToken4 
+    |   FM_ImplicitToken5 
+    |   FM_ImplicitToken6 )
+    |   FM_ImplicitToken1  LeftParen  (FM_ImplicitToken4  | FM_ImplicitToken5  | FM_ImplicitToken6 ) RightParen 
     |   atomicTypeSpecifier
     |   structOrUnionSpecifier
     |   enumSpecifier
     |   typedefName
-    |   FM_ImplicitToken13  LeftParen  (fm_constantExpression | constantExpression) RightParen  // GCC extension
+    |   FM_ImplicitToken7  LeftParen  (fm_constantExpression | constantExpression) RightParen  // GCC extension
     ;
 
 structOrUnionSpecifier
@@ -263,7 +263,7 @@ structDeclaration // The first two rules have priority order and cannot be simpl
     |   (fm_specifierQualifierList | specifierQualifierList) Semi 
     |   staticAssertDeclaration
     ;
-fm_structDeclarationPlus: FM_PLACEHOLDER | (FM_IF (fm_structDeclarationPlus | structDeclaration)* (FM_ELSE_IF (fm_structDeclarationPlus | structDeclaration)*)* (FM_ELSE (fm_structDeclarationPlus | structDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_structDeclarationPlus | structDeclaration)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_structDeclarationPlus | structDeclaration)* (FM_ELSE_IF (fm_structDeclarationPlus | structDeclaration)*)* FM_ELSE (fm_structDeclarationPlus | structDeclaration)* FM_IF_CLOSE | FM_LIST (fm_structDeclarationPlus | structDeclaration)* FM_ELSE (fm_structDeclarationPlus | structDeclaration)* FM_LIST_CLOSE) (FM_IF (fm_structDeclarationPlus | structDeclaration)* (FM_ELSE_IF (fm_structDeclarationPlus | structDeclaration)*)* (FM_ELSE (fm_structDeclarationPlus | structDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_structDeclarationPlus | structDeclaration)* FM_LIST_CLOSE)*;
+fm_structDeclarationPlus: FM_PLACEHOLDER | (FM_IF (fm_structDeclarationPlus | structDeclaration)* (FM_ELSE_IF (fm_structDeclarationPlus | structDeclaration)*)* (FM_ELSE (fm_structDeclarationPlus | structDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_structDeclarationPlus | structDeclaration)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_structDeclarationPlus | structDeclaration)* (FM_ELSE_IF (fm_structDeclarationPlus | structDeclaration)*)* FM_ELSE (fm_structDeclarationPlus | structDeclaration)* FM_IF_CLOSE | FM_LIST (fm_structDeclarationPlus | structDeclaration)* FM_LIST_CLOSE) (FM_IF (fm_structDeclarationPlus | structDeclaration)* (FM_ELSE_IF (fm_structDeclarationPlus | structDeclaration)*)* (FM_ELSE (fm_structDeclarationPlus | structDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_structDeclarationPlus | structDeclaration)* FM_LIST_CLOSE)*;
 
 specifierQualifierList
     :   (typeSpecifier| typeQualifier) (fm_specifierQualifierListOpt | specifierQualifierList)?
@@ -312,15 +312,15 @@ typeQualifier
     |   Volatile 
     |   Atomic 
     ;
-fm_typeQualifierPlus: FM_PLACEHOLDER | (FM_IF (fm_typeQualifierPlus | typeQualifier)* (FM_ELSE_IF (fm_typeQualifierPlus | typeQualifier)*)* (FM_ELSE (fm_typeQualifierPlus | typeQualifier)*)? FM_IF_CLOSE | FM_LIST (fm_typeQualifierPlus | typeQualifier)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_typeQualifierPlus | typeQualifier)* (FM_ELSE_IF (fm_typeQualifierPlus | typeQualifier)*)* FM_ELSE (fm_typeQualifierPlus | typeQualifier)* FM_IF_CLOSE | FM_LIST (fm_typeQualifierPlus | typeQualifier)* FM_ELSE (fm_typeQualifierPlus | typeQualifier)* FM_LIST_CLOSE) (FM_IF (fm_typeQualifierPlus | typeQualifier)* (FM_ELSE_IF (fm_typeQualifierPlus | typeQualifier)*)* (FM_ELSE (fm_typeQualifierPlus | typeQualifier)*)? FM_IF_CLOSE | FM_LIST (fm_typeQualifierPlus | typeQualifier)* FM_LIST_CLOSE)*;
+fm_typeQualifierPlus: FM_PLACEHOLDER | (FM_IF (fm_typeQualifierPlus | typeQualifier)* (FM_ELSE_IF (fm_typeQualifierPlus | typeQualifier)*)* (FM_ELSE (fm_typeQualifierPlus | typeQualifier)*)? FM_IF_CLOSE | FM_LIST (fm_typeQualifierPlus | typeQualifier)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_typeQualifierPlus | typeQualifier)* (FM_ELSE_IF (fm_typeQualifierPlus | typeQualifier)*)* FM_ELSE (fm_typeQualifierPlus | typeQualifier)* FM_IF_CLOSE | FM_LIST (fm_typeQualifierPlus | typeQualifier)* FM_LIST_CLOSE) (FM_IF (fm_typeQualifierPlus | typeQualifier)* (FM_ELSE_IF (fm_typeQualifierPlus | typeQualifier)*)* (FM_ELSE (fm_typeQualifierPlus | typeQualifier)*)? FM_IF_CLOSE | FM_LIST (fm_typeQualifierPlus | typeQualifier)* FM_LIST_CLOSE)*;
 
 functionSpecifier
     :   (Inline 
     |   Noreturn 
-    |   FM_ImplicitToken14  // GCC extension
-    |   FM_ImplicitToken15 )
+    |   FM_ImplicitToken8  // GCC extension
+    |   FM_ImplicitToken9 )
     |   gccAttributeSpecifier
-    |   FM_ImplicitToken16  LeftParen  (fm_Identifier | Identifier) RightParen 
+    |   FM_ImplicitToken10  LeftParen  (fm_Identifier | Identifier) RightParen 
     ;
 
 alignmentSpecifier
@@ -355,24 +355,24 @@ directDeclarator
 fm_directDeclarator: FM_PLACEHOLDER | FM_IF (fm_directDeclarator | directDeclarator) (FM_ELSE_IF (fm_directDeclarator | directDeclarator))* FM_ELSE (fm_directDeclarator | directDeclarator) FM_IF_CLOSE;
 
 vcSpecificModifer
-    :   (FM_ImplicitToken17  
-    |   FM_ImplicitToken18  
-    |   FM_ImplicitToken19  
-    |   FM_ImplicitToken20  
-    |   FM_ImplicitToken21  
-    |   FM_ImplicitToken22 ) 
+    :   (FM_ImplicitToken11  
+    |   FM_ImplicitToken12  
+    |   FM_ImplicitToken9  
+    |   FM_ImplicitToken13  
+    |   FM_ImplicitToken14  
+    |   FM_ImplicitToken15 ) 
     ;
 fm_vcSpecificModifer: FM_PLACEHOLDER | FM_IF (fm_vcSpecificModifer | vcSpecificModifer) (FM_ELSE_IF (fm_vcSpecificModifer | vcSpecificModifer))* FM_ELSE (fm_vcSpecificModifer | vcSpecificModifer) FM_IF_CLOSE;
 
 
 gccDeclaratorExtension
-    :   FM_ImplicitToken23  LeftParen  (StringLiteral)+ RightParen 
+    :   FM_ImplicitToken16  LeftParen  (StringLiteral)+ RightParen 
     |   gccAttributeSpecifier
     ;
 fm_gccDeclaratorExtensionStar: FM_PLACEHOLDER | FM_IF (fm_gccDeclaratorExtensionStar | gccDeclaratorExtension)* (FM_ELSE_IF (fm_gccDeclaratorExtensionStar | gccDeclaratorExtension)*)* (FM_ELSE (fm_gccDeclaratorExtensionStar | gccDeclaratorExtension)*)? FM_IF_CLOSE | FM_LIST (fm_gccDeclaratorExtensionStar | gccDeclaratorExtension)* FM_LIST_CLOSE;
 
 gccAttributeSpecifier
-    :   FM_ImplicitToken24  LeftParen  LeftParen  (fm_gccAttributeList | gccAttributeList) RightParen  RightParen 
+    :   FM_ImplicitToken17  LeftParen  LeftParen  (fm_gccAttributeList | gccAttributeList) RightParen  RightParen 
     ;
 
 gccAttributeList
@@ -487,7 +487,7 @@ designator
     :   LeftBracket  (fm_constantExpression | constantExpression) RightBracket 
     |   Dot  (fm_Identifier | Identifier)
     ;
-fm_designatorPlus: FM_PLACEHOLDER | (FM_IF (fm_designatorPlus | designator)* (FM_ELSE_IF (fm_designatorPlus | designator)*)* (FM_ELSE (fm_designatorPlus | designator)*)? FM_IF_CLOSE | FM_LIST (fm_designatorPlus | designator)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_designatorPlus | designator)* (FM_ELSE_IF (fm_designatorPlus | designator)*)* FM_ELSE (fm_designatorPlus | designator)* FM_IF_CLOSE | FM_LIST (fm_designatorPlus | designator)* FM_ELSE (fm_designatorPlus | designator)* FM_LIST_CLOSE) (FM_IF (fm_designatorPlus | designator)* (FM_ELSE_IF (fm_designatorPlus | designator)*)* (FM_ELSE (fm_designatorPlus | designator)*)? FM_IF_CLOSE | FM_LIST (fm_designatorPlus | designator)* FM_LIST_CLOSE)*;
+fm_designatorPlus: FM_PLACEHOLDER | (FM_IF (fm_designatorPlus | designator)* (FM_ELSE_IF (fm_designatorPlus | designator)*)* (FM_ELSE (fm_designatorPlus | designator)*)? FM_IF_CLOSE | FM_LIST (fm_designatorPlus | designator)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_designatorPlus | designator)* (FM_ELSE_IF (fm_designatorPlus | designator)*)* FM_ELSE (fm_designatorPlus | designator)* FM_IF_CLOSE | FM_LIST (fm_designatorPlus | designator)* FM_LIST_CLOSE) (FM_IF (fm_designatorPlus | designator)* (FM_ELSE_IF (fm_designatorPlus | designator)*)* (FM_ELSE (fm_designatorPlus | designator)*)? FM_IF_CLOSE | FM_LIST (fm_designatorPlus | designator)* FM_LIST_CLOSE)*;
 
 staticAssertDeclaration
     :   StaticAssert  LeftParen  (fm_constantExpression | constantExpression) Comma  (StringLiteral)+ RightParen  Semi 
@@ -500,7 +500,7 @@ statement
     |   selectionStatement
     |   iterationStatement
     |   jumpStatement
-    |   (FM_ImplicitToken25  | FM_ImplicitToken26 ) (Volatile  | FM_ImplicitToken27 ) LeftParen  ((fm_logicalOrExpression | logicalOrExpression) (Comma  (fm_logicalOrExpression | logicalOrExpression))*)? (Colon  ((fm_logicalOrExpression | logicalOrExpression) (Comma  (fm_logicalOrExpression | logicalOrExpression))*)?)* RightParen  Semi 
+    |   (FM_ImplicitToken16  | FM_ImplicitToken18 ) (Volatile  | FM_ImplicitToken19 ) LeftParen  ((fm_logicalOrExpression | logicalOrExpression) (Comma  (fm_logicalOrExpression | logicalOrExpression))*)? (Colon  ((fm_logicalOrExpression | logicalOrExpression) (Comma  (fm_logicalOrExpression | logicalOrExpression))*)?)* RightParen  Semi 
     ;
 fm_statement: FM_PLACEHOLDER | FM_IF (fm_statement | statement) (FM_ELSE_IF (fm_statement | statement))* FM_ELSE (fm_statement | statement) FM_IF_CLOSE;
 
@@ -524,7 +524,7 @@ blockItem
     :   statement
     |   declaration
     ;
-fm_blockItemPlus: FM_PLACEHOLDER | (FM_IF (fm_blockItemPlus | blockItem)* (FM_ELSE_IF (fm_blockItemPlus | blockItem)*)* (FM_ELSE (fm_blockItemPlus | blockItem)*)? FM_IF_CLOSE | FM_LIST (fm_blockItemPlus | blockItem)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_blockItemPlus | blockItem)* (FM_ELSE_IF (fm_blockItemPlus | blockItem)*)* FM_ELSE (fm_blockItemPlus | blockItem)* FM_IF_CLOSE | FM_LIST (fm_blockItemPlus | blockItem)* FM_ELSE (fm_blockItemPlus | blockItem)* FM_LIST_CLOSE) (FM_IF (fm_blockItemPlus | blockItem)* (FM_ELSE_IF (fm_blockItemPlus | blockItem)*)* (FM_ELSE (fm_blockItemPlus | blockItem)*)? FM_IF_CLOSE | FM_LIST (fm_blockItemPlus | blockItem)* FM_LIST_CLOSE)*;
+fm_blockItemPlus: FM_PLACEHOLDER | (FM_IF (fm_blockItemPlus | blockItem)* (FM_ELSE_IF (fm_blockItemPlus | blockItem)*)* (FM_ELSE (fm_blockItemPlus | blockItem)*)? FM_IF_CLOSE | FM_LIST (fm_blockItemPlus | blockItem)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_blockItemPlus | blockItem)* (FM_ELSE_IF (fm_blockItemPlus | blockItem)*)* FM_ELSE (fm_blockItemPlus | blockItem)* FM_IF_CLOSE | FM_LIST (fm_blockItemPlus | blockItem)* FM_LIST_CLOSE) (FM_IF (fm_blockItemPlus | blockItem)* (FM_ELSE_IF (fm_blockItemPlus | blockItem)*)* (FM_ELSE (fm_blockItemPlus | blockItem)*)? FM_IF_CLOSE | FM_LIST (fm_blockItemPlus | blockItem)* FM_LIST_CLOSE)*;
 
 expressionStatement
     :   (fm_expressionOpt | expression)? Semi 
@@ -545,8 +545,8 @@ iterationStatement
 //    |   For '(' declaration  expression? ';' expression? ')' statement
 
 forCondition
-  :   (forDeclaration | (fm_expressionOpt | expression)?) Semi  (fm_forExpressionOpt | forExpression)? Semi  (fm_forExpressionOpt | forExpression)?
-  ;
+	:   (forDeclaration | (fm_expressionOpt | expression)?) Semi  (fm_forExpressionOpt | forExpression)? Semi  (fm_forExpressionOpt | forExpression)?
+	;
 fm_forCondition: FM_PLACEHOLDER | FM_IF (fm_forCondition | forCondition) (FM_ELSE_IF (fm_forCondition | forCondition))* FM_ELSE (fm_forCondition | forCondition) FM_IF_CLOSE;
 
 forDeclaration
@@ -581,7 +581,7 @@ externalDeclaration
     |   declaration
     |   Semi  // stray ;
     ;
-fm_externalDeclarationPlus: FM_PLACEHOLDER | (FM_IF (fm_externalDeclarationPlus | externalDeclaration)* (FM_ELSE_IF (fm_externalDeclarationPlus | externalDeclaration)*)* (FM_ELSE (fm_externalDeclarationPlus | externalDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_externalDeclarationPlus | externalDeclaration)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_externalDeclarationPlus | externalDeclaration)* (FM_ELSE_IF (fm_externalDeclarationPlus | externalDeclaration)*)* FM_ELSE (fm_externalDeclarationPlus | externalDeclaration)* FM_IF_CLOSE | FM_LIST (fm_externalDeclarationPlus | externalDeclaration)* FM_ELSE (fm_externalDeclarationPlus | externalDeclaration)* FM_LIST_CLOSE) (FM_IF (fm_externalDeclarationPlus | externalDeclaration)* (FM_ELSE_IF (fm_externalDeclarationPlus | externalDeclaration)*)* (FM_ELSE (fm_externalDeclarationPlus | externalDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_externalDeclarationPlus | externalDeclaration)* FM_LIST_CLOSE)*;
+fm_externalDeclarationPlus: FM_PLACEHOLDER | (FM_IF (fm_externalDeclarationPlus | externalDeclaration)* (FM_ELSE_IF (fm_externalDeclarationPlus | externalDeclaration)*)* (FM_ELSE (fm_externalDeclarationPlus | externalDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_externalDeclarationPlus | externalDeclaration)* FM_LIST_CLOSE)* (FM_PLACEHOLDER | FM_IF (fm_externalDeclarationPlus | externalDeclaration)* (FM_ELSE_IF (fm_externalDeclarationPlus | externalDeclaration)*)* FM_ELSE (fm_externalDeclarationPlus | externalDeclaration)* FM_IF_CLOSE | FM_LIST (fm_externalDeclarationPlus | externalDeclaration)* FM_LIST_CLOSE) (FM_IF (fm_externalDeclarationPlus | externalDeclaration)* (FM_ELSE_IF (fm_externalDeclarationPlus | externalDeclaration)*)* (FM_ELSE (fm_externalDeclarationPlus | externalDeclaration)*)? FM_IF_CLOSE | FM_LIST (fm_externalDeclarationPlus | externalDeclaration)* FM_LIST_CLOSE)*;
 
 functionDefinition
     :   (fm_declarationSpecifiersOpt | declarationSpecifiers)? (fm_declarator | declarator) (fm_declarationListOpt | declarationList)? (fm_compoundStatement | compoundStatement)
@@ -742,13 +742,13 @@ IntegerConstant
     :   DecimalConstant IntegerSuffix?
     |   OctalConstant IntegerSuffix?
     |   HexadecimalConstant IntegerSuffix?
-    | BinaryConstant
+    |	BinaryConstant
     ;
 
 fragment
 BinaryConstant
-  : '0' [bB] [0-1]+
-  ;
+	:	'0' [bB] [0-1]+
+	;
 
 fragment
 DecimalConstant
@@ -952,7 +952,7 @@ IncludeDirective
  */
 AsmBlock
     :   'asm' ~'{'* '{' ~'}'* '}'
-  -> skip
+	-> skip
     ;
 
 // ignore the lines generated by c preprocessor
@@ -1003,27 +1003,19 @@ FM_LIST_CLOSE: '</#list>';
 FM_ImplicitToken1:'__extension__';
 FM_ImplicitToken2:'__builtin_va_arg';
 FM_ImplicitToken3:'__builtin_offsetof';
-FM_ImplicitToken4:'__extension__';
-FM_ImplicitToken5:'__extension__';
-FM_ImplicitToken6:'__m128';
-FM_ImplicitToken7:'__m128d';
-FM_ImplicitToken8:'__m128i';
-FM_ImplicitToken9:'__extension__';
-FM_ImplicitToken10:'__m128';
-FM_ImplicitToken11:'__m128d';
-FM_ImplicitToken12:'__m128i';
-FM_ImplicitToken13:'__typeof__';
-FM_ImplicitToken14:'__inline__';
-FM_ImplicitToken15:'__stdcall';
-FM_ImplicitToken16:'__declspec';
-FM_ImplicitToken17:'__cdecl';
-FM_ImplicitToken18:'__clrcall';
-FM_ImplicitToken19:'__stdcall';
-FM_ImplicitToken20:'__fastcall';
-FM_ImplicitToken21:'__thiscall';
-FM_ImplicitToken22:'__vectorcall';
-FM_ImplicitToken23:'__asm';
-FM_ImplicitToken24:'__attribute__';
-FM_ImplicitToken25:'__asm';
-FM_ImplicitToken26:'__asm__';
-FM_ImplicitToken27:'__volatile__';
+FM_ImplicitToken4:'__m128';
+FM_ImplicitToken5:'__m128d';
+FM_ImplicitToken6:'__m128i';
+FM_ImplicitToken7:'__typeof__';
+FM_ImplicitToken8:'__inline__';
+FM_ImplicitToken9:'__stdcall';
+FM_ImplicitToken10:'__declspec';
+FM_ImplicitToken11:'__cdecl';
+FM_ImplicitToken12:'__clrcall';
+FM_ImplicitToken13:'__fastcall';
+FM_ImplicitToken14:'__thiscall';
+FM_ImplicitToken15:'__vectorcall';
+FM_ImplicitToken16:'__asm';
+FM_ImplicitToken17:'__attribute__';
+FM_ImplicitToken18:'__asm__';
+FM_ImplicitToken19:'__volatile__';

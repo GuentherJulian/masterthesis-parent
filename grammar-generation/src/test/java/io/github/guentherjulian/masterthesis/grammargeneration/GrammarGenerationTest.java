@@ -85,4 +85,23 @@ public class GrammarGenerationTest {
                 destinationPath.resolve(targetPackage.replace(".", "/") + "/"), customTactic, metalanguageGrammarPath,
                 newGrammarName, metaLangPrefix, placeHolderName, targetPackage, "ANY");
     }
+
+    @Test
+    public void extendCGrammar() throws Exception {
+        String newGrammarName = "CTemplate";
+        String placeHolderName = "PLACEHOLDER";
+        String metaLangPrefix = "fm_";
+        String targetPackage = packageNamePrefix + "c";
+        Tactics customTactic = Tactics.ALL_PARSER_CUSTOM_LEXER;
+        HashSet<String> tokenNames = new HashSet<>();
+        tokenNames.add("Identifier");
+        customTactic.addTokens(tokenNames);
+
+        Path objectGrammarPath = grammarPath.resolve("C.g4");
+        Path metalanguageGrammarPath = grammarPath.resolve("SimpleFreeMarker.g4");
+
+        GrammarExtenderCore.extendGrammar(objectGrammarPath,
+                destinationPath.resolve(targetPackage.replace(".", "/") + "/"), customTactic, metalanguageGrammarPath,
+                newGrammarName, metaLangPrefix, placeHolderName, targetPackage, "ANY");
+    }
 }

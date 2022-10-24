@@ -152,7 +152,7 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
     }
 
     @Test
-    void cFreeMarkeFunctionOrderingTest() throws Exception {
+    void cFreeMarkerFunctionOrderingTest() throws Exception {
 
         List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
         aimPatternTemplates
@@ -172,5 +172,35 @@ public class CFreemarkerAimPatternDetectionEngineTest extends AbstractAimPattern
         List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
         assertEquals(treeMatches.size(), 1);
         assertTrue(treeMatches.get(0).isMatch());
+    }
+
+    @Test
+    void cFreeMarkerStructTest() throws Exception {
+
+        List<AimPatternTemplate> aimPatternTemplates = new ArrayList<>();
+        aimPatternTemplates
+                .add(new AimPatternTemplate(templatesPath.resolve("StructTemplate.c"), "StructTemplate.c"));
+
+        AimPattern aimPattern = new AimPattern(aimPatternTemplates, templatesPath);
+
+        List<Path> compilationUnits = new ArrayList<>();
+        compilationUnits.add(compilationUnitsPath.resolve("Struct.c"));
+
+        AimPatternDetectionEngine aimPatternDetectionEngine = new AimPatternDetectionEngine(aimPattern,
+                compilationUnits, parserClass, lexerClass, grammarPath, metaLanguageConfiguration,
+                objectLanguageProperties, this.placeholderResolver, this.templatePreprocessor);
+        aimPatternDetectionEngine.setForceMatching(true);
+
+        AimPatternDetectionResult patternDetectionResult = aimPatternDetectionEngine.detect();
+        List<TreeMatch> treeMatches = patternDetectionResult.getTreeMatches();
+        assertEquals(treeMatches.size(), 1);
+        assertTrue(treeMatches.get(0).isMatch());
+        assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("structName"));
+        assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("structName").contains("address"));
+        assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().containsKey("vars"));
+        assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("vars").contains("char name [ 50 ] ;"));
+        assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("vars").contains("char street [ 100 ] ;"));
+        assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("vars").contains("long zipcode ;"));
+        assertTrue(treeMatches.get(0).getPlaceholderSubstitutions().get("vars").contains("char city [ 50 ] ;"));
     }
 }

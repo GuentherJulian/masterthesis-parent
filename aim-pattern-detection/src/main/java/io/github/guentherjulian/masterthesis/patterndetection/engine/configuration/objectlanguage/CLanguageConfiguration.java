@@ -7,7 +7,7 @@ import java.util.Set;
 public class CLanguageConfiguration extends AbstractObjectLanguageConfiguration {
 
     private static final Set<String> nonOrderingNodes = new HashSet<>(
-            Arrays.asList("BlockItem", "ExternalDeclaration"));
+            Arrays.asList("BlockItem", "ExternalDeclaration", "StructDeclaration"));
 
     public CLanguageConfiguration(String metaLanguagePrefix) {
         super(metaLanguagePrefix);

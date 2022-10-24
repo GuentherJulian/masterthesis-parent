@@ -37,20 +37,22 @@ public class GrammarSpec {
 
     /**
      * @param newGrammarName
-     *            The name for the new grammar
+     *                            The name for the new grammar
      * @param metaLangPrefix
-     *            An unique prefix to be used for newly create meta language productions
+     *                            An unique prefix to be used for newly create meta
+     *                            language productions
      * @param placeHolderLabel
-     *            The name for the placeholder in the template grammar
+     *                            The name for the placeholder in the template
+     *                            grammar
      * @param metaLangParserRules
-     *            Grammar rules of the meta language
+     *                            Grammar rules of the meta language
      * @param metaLangLexerRules
-     *            Grammar rules of the meta language
+     *                            Grammar rules of the meta language
      * @param anyTokenName
-     *            ANY Token name
+     *                            ANY Token name
      */
     public GrammarSpec(String newGrammarName, String metaLangPrefix, String placeHolderLabel,
-        Map<String, String> metaLangParserRules, Map<String, String> metaLangLexerRules, String anyTokenName) {
+            Map<String, String> metaLangParserRules, Map<String, String> metaLangLexerRules, String anyTokenName) {
         this.newGrammarName = newGrammarName;
         metaLangLexerRulePrefix = metaLangPrefix.toUpperCase();
         metaLangParserRulePrefix = metaLangPrefix.toLowerCase();
@@ -63,6 +65,7 @@ public class GrammarSpec {
 
     /**
      * Returns the field 'newGrammarName'
+     * 
      * @return value of newGrammarName
      */
     public String getNewGrammarName() {
@@ -71,6 +74,7 @@ public class GrammarSpec {
 
     /**
      * Returns the field 'metaLangPlaceholderPrefix'
+     * 
      * @return value of metaLangPlaceholderPrefix
      */
     public String getMetaLangLexerRulePrefix() {
@@ -79,6 +83,7 @@ public class GrammarSpec {
 
     /**
      * Returns the field 'metaLangRulePrefix'
+     * 
      * @return value of metaLangRulePrefix
      */
     public String getMetaLangParserRulePrefix() {
@@ -87,6 +92,7 @@ public class GrammarSpec {
 
     /**
      * Returns the field 'placeHolderSuffix'
+     * 
      * @return value of placeHolderSuffix
      */
     public String getPlaceHolderLabel() {
@@ -121,18 +127,19 @@ public class GrammarSpec {
         String bodyStar = body.substring(0, body.length() - 1) + "*";
 
         return "(" + getParserRule(metaLangParserRulePrefix + ifRuleName).replace(ruleBodyPlaceholder, bodyStar) + " | "
-            + getParserRule(metaLangParserRulePrefix + loopRuleName).replace(ruleBodyPlaceholder, bodyStar) + ")* "
+                + getParserRule(metaLangParserRulePrefix + loopRuleName).replace(ruleBodyPlaceholder, bodyStar) + ")* "
 
-            + "(" + phTokenName + " | " + createOneRuleContent(body) + " | "
-            + getParserRule(metaLangParserRulePrefix + loopElseName).replace(ruleBodyPlaceholder, body) + ") " +
+                + "(" + phTokenName + " | " + createOneRuleContent(body) + " | "
+                + getParserRule(metaLangParserRulePrefix + loopRuleName).replace(ruleBodyPlaceholder, body) + ") " +
 
-            "(" + getParserRule(metaLangParserRulePrefix + ifRuleName).replace(ruleBodyPlaceholder, bodyStar) + " | "
-            + getParserRule(metaLangParserRulePrefix + loopRuleName).replace(ruleBodyPlaceholder, bodyStar) + ")*";
+                "(" + getParserRule(metaLangParserRulePrefix + ifRuleName).replace(ruleBodyPlaceholder, bodyStar)
+                + " | "
+                + getParserRule(metaLangParserRulePrefix + loopRuleName).replace(ruleBodyPlaceholder, bodyStar) + ")*";
     }
 
     public String createStarRuleContent(String body) {
         return getParserRule(metaLangParserRulePrefix + ifRuleName).replace(ruleBodyPlaceholder, body) + " | "
-            + getParserRule(metaLangParserRulePrefix + loopRuleName).replace(ruleBodyPlaceholder, body);
+                + getParserRule(metaLangParserRulePrefix + loopRuleName).replace(ruleBodyPlaceholder, body);
     }
 
     public String createOptRuleContent(String body) {
